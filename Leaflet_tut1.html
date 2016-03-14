@@ -6,16 +6,64 @@
 </head>
 
 <body>
-	Pre
 	<div id="mapid" style="width: 1024px; height: 512px;"></div>
-	Post
 	
 	<script>
-		 var mymap = L.map('mapid').setView([51.505, -0.09], 13);	
+	
+		//map
+		 var mymap = L.map('mapid').setView([58.8534, 5.7317], 13);	
 		  
+		 //open street map layer
 		 var osmlayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 		     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		 }).addTo(mymap); 
+		 	 
+		 
+		 //popups
+		 var marker = L.marker([58.85, 5.74]).addTo(mymap);
+		 
+		 var circle = L.circle([58.8534, 5.7207], 200, {
+		     color: 'red',
+		     fillColor: '#f03',
+		     fillOpacity: 0.5
 		 }).addTo(mymap);
+		 
+		 var polygon = L.polygon([
+		     [58.85, 5.73],
+		     [58.855, 5.74],
+		     [58.859, 5.735]
+		 ]).addTo(mymap);
+		 	 
+		 
+		 //more popup stuff
+		 marker.bindPopup("Jeg er midti byen!").openPopup();
+		 circle.bindPopup("Midt i gata")
+		 polygon.bindPopup("Langs jernbanen")
+		 
+		 var popup = L.popup()
+	  	   .setLatLng([58.86, 5.74])
+	 		.setContent("I am a standalone popup.")
+		 .openOn(mymap); //openOn lukker forrige popup automatisk
+		 
+		 
+		 //Events
+		 
+		 //gir tilbake lat/long coords
+		 // function onMapClick(e) {
+// 		     alert("You clicked the map at " + e.latlng);
+// 		 }
+// 		 mymap.on('click', onMapClick);
+		 
+		 //forbedret
+		 var popup = L.popup();
+
+		 function onMapClick(e) {
+		     popup
+		         .setLatLng(e.latlng)
+		         .setContent("You clicked the map at " + e.latlng.toString())
+		         .openOn(mymap);
+		 }
+		 mymap.on('click', onMapClick);
 		 
 		 
 	</script>	
