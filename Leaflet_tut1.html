@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+</head>
+
+<body>
+	Pre
+	<div id="mapid" style="width: 1024px; height: 512px;"></div>
+	Post
+	
+	<script>
+		 var mymap = L.map('mapid').setView([51.505, -0.09], 13);	
+		  
+		 var osmlayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+		     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		 }).addTo(mymap);
+		 
+		 
+	</script>	
+</body>
+</html>
