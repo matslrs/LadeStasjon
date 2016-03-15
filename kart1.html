@@ -2,11 +2,14 @@
 <html>
 <head>
 	
-	<link rel="stylesheet" href="css_test.css">
+	<link rel="stylesheet" href="css_test.css" />
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
+	<link rel="stylesheet" href="leafletdraw/leaflet.draw.css" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
 	<script src="leaflet/leaflet.js"></script>
+	<script src="leafletdraw/leaflet.draw.js"></script>
+	//<script src="leafletdraw/leaflet.draw-src.js"></script>
 	
 	
 	
@@ -28,12 +31,12 @@
 		     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 		 }).addTo(mymap); 
 		 
-		 //MapBox
-		 var mapbox_layer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-		     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-		     id: 'Default Public Token',
-		     accessToken: 'pk.eyJ1IjoibWF0c2VjYyIsImEiOiJjaWx0YnR1bXowMDJndmZtNnFhc2t2OXhuIn0.65XQfz_pB3CNbM5KRTi9OQ'
-		 });
+		 // //MapBox
+// 		 var mapbox_layer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+// 		     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+// 		     id: 'Default Public Token',
+// 		     accessToken: 'pk.eyJ1IjoibWF0c2VjYyIsImEiOiJjaWx0YnR1bXowMDJndmZtNnFhc2t2OXhuIn0.65XQfz_pB3CNbM5KRTi9OQ'
+// 		 });
 		 
 		 //kartverket topografisk kart
 		 var kartverk_topo2_layer = L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}', {
@@ -49,9 +52,9 @@
 		 //adds maps to base layer group
 		 var baseMaps = {
 			 "OpenStreetMap": osm_layer,
-			 "MapBox": mapbox_layer,
-			 "Kartverk Topografisk": kartverk_topo2_layer,
-			 "Kartverk Sea": kartverk_sjohovedkart2_layer
+			 //"MapBox": mapbox_layer,
+			 "Topografisk Norgeskart": kartverk_topo2_layer,
+			 "Sea Papirkart": kartverk_sjohovedkart2_layer
 		 };
 		 
 		 
@@ -84,10 +87,48 @@
 		 
 		 
 		 
+		 
 		 //Layer control
 		L.control.layers(baseMaps, overlayMaps).addTo(mymap);
-		 
-		 
+		
+		//LEAFLET.DRAW
+		// Initialize the FeatureGroup to store editable layers
+		var drawnItems = new L.FeatureGroup();
+		mymap.addLayer(drawnItems);
+
+		// Initialize the draw control and pass it the FeatureGroup of editable layers
+		var drawControl = new L.Control.Draw({
+		    edit: {
+		        featureGroup: drawnItems
+		    }
+		});
+		
+		mymap.addControl(drawControl);
+		
+	 
+	 mymap.on('draw:created', function (e) {
+	     var type = e.layerType,
+	         layer = e.layer;
+
+	     if (type === 'marker') {
+	         // Do marker specific actions
+	     }
+
+	     // Do whatever else you need to. (save to db, add to map etc)
+	     drawnItems.addLayer(layer);
+	 });
+
+	 mymap.on('draw:edited', function () {
+	     // Update db to save latest changes.
+	 });
+
+	 mymap.on('draw:deleted', function () {
+	     // Update db to save latest changes.
+	 });
+		
+		//LEAFLET.DRAW END 
+		
+		
 		  
 		 //EVENTS
 		 var popup = L.popup();
@@ -123,6 +164,10 @@
 		 mymap.on('locationerror', onLocationError);
 		 
 		 //EVENTS END
+		 
+		
+		 
+		 
 		 	 
 	</script>	
 </body>
