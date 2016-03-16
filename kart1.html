@@ -2,13 +2,14 @@
 <html>
 <head>
 	
-	<link rel="stylesheet" href="css_test.css" />
-	<link rel="stylesheet" href="leaflet/leaflet.css" />
-	<link rel="stylesheet" href="leafletdraw/leaflet.draw.css" />
+	<link rel="stylesheet" href="js/egen_css.css" />
+	<link rel="stylesheet" href="js/leaflet.css" />
+	<link rel="stylesheet" href="js/leaflet.draw.css" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
-	<script src="leaflet/leaflet.js"></script>
-	<script src="leafletdraw/leaflet.draw.js"></script>
+	<script src="js/samlet_js_kode.js"></script>
+	<script src="js/leaflet.js"></script>
+	<script src="js/leaflet.draw.js"></script>
 	<script src="js/jquery-1.12.1.js"></script>
 	
 	
@@ -65,9 +66,7 @@
 			 "Topografisk3 Norgeskart": kartverk_toporaster3_layer,
 			 "Sea Papirkart": kartverk_sjohovedkart2_layer
 			//, "Ionosphere": kartverk_ionosphere_layer
-		 };
-		 
-		 
+		 };	 
 		 
 		 
  		//LEAFLET.DRAW
@@ -115,25 +114,12 @@
 		 
 		 
 		 
-		   url = 'https://mats.maplytic.no/table/test.geojson';
-   		  $.get(url, function(data) {
+		 url = 'https://mats.maplytic.no/table/test.geojson';
+		   
+   		 $.get(url, function(data) {
   			myGeoJLayer.addData(data);
-  	 });
-	 
-	 
-	 	 		//
-	 		// $.ajax({
-	 		// 	             url: 'https://mats.maplytic.no/table/test.geojson',
-	 		// 	             type: 'GET',
-	 		// 	             dataType: 'json',
-	 		// 	             contentType: "application/octet",
-	 		// 	             success: function(data){
-	 		// 	                 myGeoJLayer.addData(data);
-	 		// 	             }
-	 		// 	         });
-	 		//
-		 
-	 
+  		 });
+
 		 
 		 
 		 //defines a GeoJSON Feature
@@ -173,44 +159,25 @@
 		 }).addTo(mymap);
 		 
 		 
-		 
-		 //POPUPS
-		 var marker = L.marker([58.85, 5.74]);
-		 
-		 var circle = L.circle([58.8534, 5.7207], 200, {
-		     color: 'red',
-		     fillColor: '#f03',
-		     fillOpacity: 0.5
-		 });
-		 
-		 var polygon = L.polygon([
-		     [58.85, 5.73],
-		     [58.855, 5.74],
-		     [58.859, 5.735]
-		 ]); 	 
-		 
-		 //more popup stuff
-		 marker.bindPopup("Jeg er midti byen!");
-		 circle.bindPopup("Midt i gata");
-		 polygon.bindPopup("Langs jernbanen");
-		 
-		//adds popups to layer group
-		 var markers_group = L.layerGroup([marker, circle, polygon]).addTo(mymap);
-		 //var json_group = L.layerGroup([geojsonFeature, myLines]);
-		 var overlayMaps = {
+	
+	 	//test popups
+	 	var markers_group = test_popups();
+		//
+		
+		
+		
+		var overlayMaps = {
 		     "Test Popups": markers_group,
-		    // "Popups (GeoJSON)": json_group,
+		     "Popups (GeoJSON)": myGeoJLayer,
 			 "Draw": drawnItems
-		 };
-		 
-		 
+		 }; 	 
+		 	 
 		 
 		 
 		 //Layer control
 		L.control.layers(baseMaps, overlayMaps).addTo(mymap);
-		
-		
-		
+		//		
+	
 		
 		  
 		 //EVENTS
@@ -246,10 +213,7 @@
 
 		 mymap.on('locationerror', onLocationError);
 		 
-		 //EVENTS END
-		 
-		
-		 
+		 //EVENTS END 
 		 
 		 	 
 	</script>	
