@@ -8,10 +8,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
 	<script src="js/layers.js"></script>
+	<script src="js/events.js"></script>
 	<script src="js/mats_geojson.js"></script>
 	<script src="js/samlet_js_kode.js"></script>
-	<script src="js/leaflet.js"></script>
-	<script src="js/leaflet.draw.js"></script>
+	<script src="js/leaflet-src.js"></script>
+	<script src="js/leaflet.draw-src.js"></script>
 	<script src="js/jquery-1.12.1.js"></script>
 	
 	
@@ -31,163 +32,14 @@
 	
 		//sets up base map layers
 		var baseMaps = setup_base_layers();
+		var overlayMaps = setup_overlay_layers();
 			
-		 
-		  
-		 
-		 
- 		//LEAFLET.DRAW
- 		// Initialize the FeatureGroup to store editable layers
- 		var drawnItems = new L.FeatureGroup();
- 		mymap.addLayer(drawnItems);
 
- 		// Initialize the draw control and pass it the FeatureGroup of editable layers
- 		var drawControl = new L.Control.Draw({
- 		    edit: {
- 		        featureGroup: drawnItems
- 		    }
- 		});
-		
- 		mymap.addControl(drawControl);
-		
-	 
- 	 	mymap.on('draw:created', function (e) {
- 	     var type = e.layerType,
- 	         layer = e.layer;
-
- 	     if (type === 'marker') {
- 	         // Do marker specific actions
- 	     }
-
- 	     // Do whatever else you need to. (save to db, add to map etc)
- 	     drawnItems.addLayer(layer);
- 		 });
-
- 		 mymap.on('draw:edited', function () {
- 	     // Update db to save latest changes.
- 		 });
-
- 		 mymap.on('draw:deleted', function () {
- 	     // Update db to save latest changes.
- 		 });
-		
- 		//LEAFLET.DRAW END 
-		
-		
-		
-		//GEOJSON LAYER
-		 
-		 //creates and empty GeoJSON Layer
-		 var myGeoJLayer = L.geoJson().addTo(mymap);
-		 
-		 
-		 
-		 
-		 url = 'https://mats.maplytic.no/table/test.geojson';
-		   
-   		 $.get(url, function(data) {
-  			myGeoJLayer.addData(data);
-			mats_json_data = data;
-  		 });
-
-		 
-		 
-		 //defines a GeoJSON Feature
-		 var geojsonFeature = {
-		     "type": "Feature",
-		     "properties": {
-		         "name": "Gisketjernet",
-		         "amenity": "Fin park",
-		         "popupContent": "Fin park med dyr og treningsmuligheter"
-		     },
-		     "geometry": {
-		         "type": "Point",
-		         "coordinates": [5.72816, 58.85807]
-		     }
-		 };
-		 
-		 //defines an array of GeoJSON lines
-		 var myLines = [{
-		     "type": "LineString",
-		     "coordinates": [[5.74337, 58.859], [5.72544, 58.8741], [5.70252, 58.93378]]
-		 }, {
-		     "type": "LineString",
-		     "coordinates": [[6.67964, 58.29851], [6.09763, 58.52284], [5.74264, 58.85794]]
-		 }];
-		 
-		 //style
-		 var myStyle = {
-		     "color": "#ff7800",
-		     "weight": 5,
-		     "opacity": 0.65
-		 };
-		 
-		 //adds GeoJSON's to myGeoJLayer
-		 // myGeoJLayer.addData(geojsonFeature);
- // 		 myGeoJLayer.addData(myLines, {
- // 			 style: myStyle
- // 		 }).addTo(mymap);
-		 
-		 L.geoJson(geojsonFeature, {
-		     onEachFeature: onEachFeature
-		 }).addTo(mymap);
-		 
-		 
-	
-	 	//test popups
-	 	var markers_group = test_popups();
-		//
-		
-		
-		
-		var overlayMaps = {
-		     "Test Popups": markers_group,
-		     "Popups (GeoJSON)": myGeoJLayer,
-			 "Draw": drawnItems
-		 }; 	 
-		 	 
-		 
-		 
 		 //Layer control
 		L.control.layers(baseMaps, overlayMaps).addTo(mymap);
 		//		
-	
-		
-		  
-		 //EVENTS
-		 var popup = L.popup();
-
-		 function onMapClick(e) {
-		     popup
-		         .setLatLng(e.latlng)
-		         .setContent("You clicked the map at " + e.latlng.toString())
-		         .openOn(mymap);
-		 }
-		 mymap.on('click', onMapClick);
-		 
-		 //find location and set view and zoom
-		 mymap.locate({setView: true, maxZoom: 16});
-		
-		//when location found, show a popup where with accuracy
-		 function onLocationFound(e) {
-		     var radius = e.accuracy / 2;
-
-		     L.marker(e.latlng).addTo(mymap)
-		         .bindPopup("You are within " + radius + " meters from this point").openPopup();
-
-		     L.circle(e.latlng, radius).addTo(mymap);
-		 }
-
-		 mymap.on('locationfound', onLocationFound);
-		 
-		 //if finding location failed, display error message
-		 function onLocationError(e) {
-		     alert(e.message);
-		 }
-
-		 mymap.on('locationerror', onLocationError);
-		 
-		 //EVENTS END 
+	 
+		events();
 		 
 		 	 
 	</script>	
