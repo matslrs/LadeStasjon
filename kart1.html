@@ -115,23 +115,23 @@
 		 
 		 
 		 
-		   // url = 'https://mats.maplytic.no/table/test.geojson';
-  //  		  $.getJSON(url, function(data) {
-  // 			myGeoJLayer.addData(data);
-  // 	 });
+		   url = 'https://mats.maplytic.no/table/test.geojson';
+   		  $.get(url, function(data) {
+  			myGeoJLayer.addData(data);
+  	 });
 	 
 	 
-	 
-	 		$.ajax({
-	             url: 'https://mats.maplytic.no/table/test.geojson',
-	             type: 'GET',
-	             dataType: 'json',
-	             contentType: "application/octet",
-	             success: function(data){
-	                 myGeoJLayer.addData(data);
-	             }
-	         });
-			 
+	 	 		//
+	 		// $.ajax({
+	 		// 	             url: 'https://mats.maplytic.no/table/test.geojson',
+	 		// 	             type: 'GET',
+	 		// 	             dataType: 'json',
+	 		// 	             contentType: "application/octet",
+	 		// 	             success: function(data){
+	 		// 	                 myGeoJLayer.addData(data);
+	 		// 	             }
+	 		// 	         });
+	 		//
 		 
 	 
 		 
