@@ -9,6 +9,7 @@
 	
 	<script src="leaflet/leaflet.js"></script>
 	<script src="leafletdraw/leaflet.draw.js"></script>
+	<script src="js/jquery-1.12.1.js"></script>
 	
 	
 	
@@ -45,7 +46,15 @@
 		 var kartverk_sjohovedkart2_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=sjo_hovedkart2&zoom={z}&x={x}&y={y}', {
 		 		 		     attribution: 'Kartverket'
 		 		 		 });
-		 
+						 
+		//kartverket ionosphere			 
+		var kartverk_ionosphere_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=ionosphere&zoom={z}&x={x}&y={y}', {
+						 		 		     attribution: 'Kartverket'
+						 		 		 });
+		//kartverket ionosphere			 
+		var kartverk_toporaster3_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=toporaster3&zoom={z}&x={x}&y={y}', {
+								 						 		 		     attribution: 'Kartverket'
+								 						 		 		 });
 		 
 		 
 		 //adds maps to base layer group
@@ -53,7 +62,9 @@
 			 "OpenStreetMap": osm_layer,
 			 //"MapBox": mapbox_layer,
 			 "Topografisk Norgeskart": kartverk_topo2_layer,
+			 "Topografisk3 Norgeskart": kartverk_toporaster3_layer,
 			 "Sea Papirkart": kartverk_sjohovedkart2_layer
+			//, "Ionosphere": kartverk_ionosphere_layer
 		 };
 		 
 		 
@@ -96,7 +107,70 @@
 		
  		//LEAFLET.DRAW END 
 		 
+		//GEOJSON LAYER
 		 
+		 //creates and empty GeoJSON Layser
+		 var myGeoJLayer = L.geoJson().addTo(mymap);
+		 
+		 
+		 
+		 
+		   // url = 'https://mats.maplytic.no/table/test.geojson';
+  //  		  $.getJSON(url, function(data) {
+  // 			myGeoJLayer.addData(data);
+  // 	 });
+	 
+	 
+	 
+	 		$.ajax({
+	             url: 'https://mats.maplytic.no/table/test.geojson',
+	             type: 'GET',
+	             dataType: 'json',
+	             contentType: "application/octet",
+	             success: function(data){
+	                 myGeoJLayer.addData(data);
+	             }
+	         });
+			 
+		 
+	 
+		 
+		 
+		 //defines a GeoJSON Feature
+		 var geojsonFeature = {
+		     "type": "Feature",
+		     "properties": {
+		         "name": "Gisketjernet",
+		         "amenity": "Fin park",
+		         "popupContent": "Fin park med dyr og treningsmuligheter"
+		     },
+		     "geometry": {
+		         "type": "Point",
+		         "coordinates": [5.72816, 58.85807]
+		     }
+		 };
+		 
+		 //defines an array of GeoJSON lines
+		 var myLines = [{
+		     "type": "LineString",
+		     "coordinates": [[5.74337, 58.859], [5.72544, 58.8741], [5.70252, 58.93378]]
+		 }, {
+		     "type": "LineString",
+		     "coordinates": [[6.67964, 58.29851], [6.09763, 58.52284], [5.74264, 58.85794]]
+		 }];
+		 
+		 //style
+		 var myStyle = {
+		     "color": "#ff7800",
+		     "weight": 5,
+		     "opacity": 0.65
+		 };
+		 
+		 //adds GeoJSON's to myGeoJLayer
+		 myGeoJLayer.addData(geojsonFeature);
+		 myGeoJLayer.addData(myLines, {
+			 style: myStyle
+		 }).addTo(mymap);
 		 
 		 
 		 
@@ -122,8 +196,10 @@
 		 
 		//adds popups to layer group
 		 var markers_group = L.layerGroup([marker, circle, polygon]).addTo(mymap);
+		 //var json_group = L.layerGroup([geojsonFeature, myLines]);
 		 var overlayMaps = {
-		     "Popups": markers_group,
+		     "Test Popups": markers_group,
+		    // "Popups (GeoJSON)": json_group,
 			 "Draw": drawnItems
 		 };
 		 
