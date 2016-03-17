@@ -25,11 +25,10 @@ function setupBaseLayers(map) {
 	//adds maps to base layer group
 	var baseMaps = {
 		"OpenStreetMap": osm_layer,
-		//"MapBox": mapbox_layer,
 		"Topografisk Norgeskart": kartverk_topo2_layer,
 		"Topografisk3 Norgeskart": kartverk_toporaster3_layer,
 		"Sea Papirkart": kartverk_sjohovedkart2_layer
-		//, "Ionosphere": kartverk_ionosphere_layer
+		, "Ionosphere": kartverk_ionosphere_layer
 	};
 
 	return baseMaps;
@@ -37,26 +36,33 @@ function setupBaseLayers(map) {
 
 
 function setupOverlayLayers(map) {
-	//LEAFLET.DRAW
+
+	//leaflet.draw
 	var drawnItems = initiateLeafletsDraw(map);
-	//LEAFLET.DRAW END 
 
-	//GEOJSON LAYER
-	//creates and empty GeoJSON Layer
+	//gets GeoJSON data from mats.maplytic.no
 	var myGeoJLayer = initiateAndGetGeojsonData(map);
-	//GEOJSON LAYER END
-
+		
+	//gets JSON data from difi
+	var helseStasjonDifi = difiDataSett(map);
+	
+	//manuelt lagt til GeoJSON data
 	var myGeoJLayer_manuelt = initiateGeojsonManuelt(map);
 
 	//test popups - kanskje en if statement for å sjekke om test popup skal være me
-	var markers_group = testPopups();
-	//
+	var markersGroup = testPopups();
+	
+	mymap.addControl( new L.Control.Search({
+		layer: myGeoJLayer_manuelt,
+		//propertyName: 'properties',
+	}) );
 
 	//Her settes overlay layers sammen i en array
 	var overlayMaps = {
-		"Test Popups": markers_group,
+		"Test Popups": markersGroup,
 		"GeoJSON database": myGeoJLayer,
 		"GeoJSON lokal": myGeoJLayer_manuelt,
+		"Helsestasjon difi": helseStasjonDifi,
 		"Draw": drawnItems
 	};
 
@@ -68,11 +74,11 @@ function initiateAndGetGeojsonData(map) {
 	var myGeoJLayer = L.geoJson().addTo(map);
 
 	//url til GeoJSON data 
-	url = 'https://mats.maplytic.no/table/test.geojson';
+	var url = 'https://mats.maplytic.no/table/test.geojson';
 	//henter data 
 	$.get(url, function(data) {
 		myGeoJLayer.addData(data);
-	});
+	});	
 
 	return myGeoJLayer;
 }
@@ -119,7 +125,6 @@ function initiateLeafletsDraw(map) {
 }
 
 //noen GeoJSON data som er manuelt lagt inn
-
 function initiateGeojsonManuelt(map) {
 	//defines a GeoJSON Feature
 	var geojsonFeature = {
@@ -171,6 +176,44 @@ function initiateGeojsonManuelt(map) {
 
 	return myGeoJLayer_manuelt;
 
+}
+
+function difiDataSett(map) {
+	
+	//creates and empty GeoJSON Layer
+	var helsestasjonGroup = L.layerGroup().addTo(map);
+	
+	//var difiData = null;
+	var helsestasjoner = [];	
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/stavanger/helsestasjoner?';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			lengdeGrad = difiData.entries[i].lengdegrad;
+			breddeGrad = difiData.entries[i].breddegrad;
+			tittel = difiData.entries[i].navn;
+			alt = difiData.entries[i].adresse;
+			
+			//Lager marker for helsestasjonen
+			helsestasjoner[i] = L.marker([breddeGrad, lengdeGrad]);
+			//helsestasjoner[i].title = tittel;
+			//helsestasjoner[i].alt = alt;
+			
+			helsestasjoner[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
+			
+			helsestasjonGroup.addLayer( helsestasjoner[i] );
+		}
+		
+		
+	});
+
+	return helsestasjonGroup;
 }
 
 function testPopups() {

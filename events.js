@@ -8,14 +8,14 @@ function events(map) {
 		popup
 			.setLatLng(e.latlng)
 			.setContent("You clicked the map at " + e.latlng.toString())
-			.openOn(mymap);
+			.openOn(map);
 	}
 	
 	
 	map.on('click', onMapClick);
 
 	//find location and set view and zoom
-	mymap.locate({
+	map.locate({
 		setView: true,
 		maxZoom: 16
 	});
