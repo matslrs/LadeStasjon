@@ -2,15 +2,14 @@
 <html>
 <head>
 	
-	<link rel="stylesheet" href="js/egen_css.css" />
+	<link rel="stylesheet" href="egen_css.css" />
 	<link rel="stylesheet" href="js/leaflet.css" />
 	<link rel="stylesheet" href="js/leaflet.draw.css" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
-	<script src="js/layers.js"></script>
-	<script src="js/events.js"></script>
-	<script src="js/mats_geojson.js"></script>
-	<script src="js/samlet_js_kode.js"></script>
+	<script src="layers.js"></script>
+	<script src="events.js"></script>
+	<script src="custom_functions.js"></script>
 	<script src="js/leaflet-src.js"></script>
 	<script src="js/leaflet.draw-src.js"></script>
 	<script src="js/jquery-1.12.1.js"></script>
@@ -23,24 +22,23 @@
 	<div id="mapid"></div>
 	
 	<script>
+	
 		//MAP
  		var mymap = L.map('mapid', { 
 			center: [58.8534, 5.7317],
 			zoom: 13
 		});
-	  
 	
 		//sets up base map layers
-		var baseMaps = setup_base_layers();
-		var overlayMaps = setup_overlay_layers();
-			
+		var baseMaps = setupBaseLayers(mymap);
+		//sets up overlay layers
+		var overlayMaps = setupOverlayLayers(mymap);	
 
 		 //Layer control
 		L.control.layers(baseMaps, overlayMaps).addTo(mymap);
 		//		
 	 
-		events();
-		 
+		events(mymap); 
 		 	 
 	</script>	
 </body>
