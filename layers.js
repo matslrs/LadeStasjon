@@ -14,10 +14,6 @@ function setupBaseLayers(map) {
 	});
 
 	//kartverket ionosphere			 
-	var kartverk_ionosphere_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=ionosphere&zoom={z}&x={x}&y={y}', {
-		attribution: 'Kartverket'
-	});
-	//kartverket ionosphere			 
 	var kartverk_toporaster3_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=toporaster3&zoom={z}&x={x}&y={y}', {
 		attribution: 'Kartverket'
 	});
@@ -28,7 +24,6 @@ function setupBaseLayers(map) {
 		"Topografisk Norgeskart": kartverk_topo2_layer,
 		"Topografisk3 Norgeskart": kartverk_toporaster3_layer,
 		"Sea Papirkart": kartverk_sjohovedkart2_layer
-		, "Ionosphere": kartverk_ionosphere_layer
 	};
 
 	return baseMaps;
@@ -42,27 +37,31 @@ function setupOverlayLayers(map) {
 
 	//gets GeoJSON data from mats.maplytic.no
 	var myGeoJLayer = initiateAndGetGeojsonData(map);
+
+	//loads locally stored geoJSONs
+	//var myLocalGeoJLayer = loadLocalGeoJSONs(map);
 		
 	//gets JSON data from difi
-	var helseStasjonDifi = difiDataSett(map);
+	//var helseStasjonDifi = difiDataSett(map);
 	
 	//manuelt lagt til GeoJSON data
 	var myGeoJLayer_manuelt = initiateGeojsonManuelt(map);
 
 	//test popups - kanskje en if statement for å sjekke om test popup skal være me
-	var markersGroup = testPopups();
+	var markersGroup = testPopups(map);
 	
 	mymap.addControl( new L.Control.Search({
 		layer: myGeoJLayer_manuelt,
-		//propertyName: 'properties',
+		propertyName: 'popupContent',
 	}) );
 
 	//Her settes overlay layers sammen i en array
 	var overlayMaps = {
 		"Test Popups": markersGroup,
 		"GeoJSON database": myGeoJLayer,
-		"GeoJSON lokal": myGeoJLayer_manuelt,
-		"Helsestasjon difi": helseStasjonDifi,
+		//"GeoJSON local": myLocalGeoJLayer,
+		"GeoJSON test": myGeoJLayer_manuelt,
+		//"Helsestasjon difi": helseStasjonDifi,
 		"Draw": drawnItems
 	};
 
@@ -78,6 +77,12 @@ function initiateAndGetGeojsonData(map) {
 	//henter data 
 	$.get(url, function(data) {
 		myGeoJLayer.addData(data);
+
+		for( i=0; i<myGeoJLayer.lentgh; i++ )
+		{
+			myGeoJLayer[i].bindPopup("<strong> Dette er nr " + i +  "</strong>");
+		}
+
 	});	
 
 	return myGeoJLayer;
@@ -124,55 +129,66 @@ function initiateLeafletsDraw(map) {
 
 }
 
+//local geoJSON data
+function loadLocalGeoJSONs(map) {
+
+	//creates and empty GeoJSON test Layer
+	var myLocalGeoJLayer = L.geoJson();
+
+	$.getJSON('localJSON/abas/fylker.geoJSON', function(data) {
+
+  //adds data to myLocalGeoJLayer
+	myLocalGeoJLayer.addData(data);
+
+});
+
+	return myLocalGeoJLayer;
+
+}
+
 //noen GeoJSON data som er manuelt lagt inn
 function initiateGeojsonManuelt(map) {
 	//defines a GeoJSON Feature
-	var geojsonFeature = {
-		"type": "Feature",
-		"properties": {
-			"name": "Gisketjernet",
-			"amenity": "Fin park",
-			"popupContent": "Fin park med dyr og treningsmuligheter"
-		},
-		"geometry": {
-			"type": "Point",
-			"coordinates": [5.72816, 58.85807]
-		}
+	var geojsonFeatures = 
+	{
+  		"type": "FeatureCollection",
+  		"features": [
+			{
+				"type": "Feature",
+				"properties": {
+					"name": "Gisketjernet",
+					"amenity": "Fin park",
+					"popupContent": "Fin park med dyr og treningsmuligheter"
+				},
+				"geometry": {
+					"type": "Point",
+					"coordinates": [5.72816, 58.85807]
+				}
+			},
+			{
+				"type": "Feature",
+				"properties": {
+					"name": "Dalsnuten",
+					"amenity": "God utsik!",
+					"popupContent": "Fin gaatur og veldig god utsikt."
+				},
+				"geometry": {
+					"type": "Point",
+					"coordinates": [5.78664, 58.89358]
+				}
+			}
+		]
 	};
 
-	//defines an array of GeoJSON lines
-	var myLines = [{
-		"type": "LineString",
-		"coordinates": [
-			[5.74337, 58.859],
-			[5.72544, 58.8741],
-			[5.70252, 58.93378]
-		]
-	}, {
-		"type": "LineString",
-		"coordinates": [
-			[6.67964, 58.29851],
-			[6.09763, 58.52284],
-			[5.74264, 58.85794]
-		]
-	}];
-
-	//style
-	var myStyle = {
-		"color": "#ff7800",
-		"weight": 5,
-		"opacity": 0.65
-	};
+	
 
 	//creates and empty GeoJSON test Layer
 	var myGeoJLayer_manuelt = L.geoJson().addTo(map);
-
 	//adds GeoJSON's to myGeoJLayer
-	myGeoJLayer_manuelt.addData(geojsonFeature);
-	myGeoJLayer_manuelt.addData(myLines, {
-		style: myStyle
-	}).addTo(map);
+	myGeoJLayer_manuelt.addData(geojsonFeatures);
 
+	//forsøk på å få opp popup content on Lclick
+	//onEachFeature(geojsonFeatures, myGeoJLayer_manuelt)
 
 	return myGeoJLayer_manuelt;
 
@@ -202,8 +218,8 @@ function difiDataSett(map) {
 			
 			//Lager marker for helsestasjonen
 			helsestasjoner[i] = L.marker([breddeGrad, lengdeGrad]);
-			//helsestasjoner[i].title = tittel;
-			//helsestasjoner[i].alt = alt;
+			helsestasjoner[i].title = tittel;
+			helsestasjoner[i].alt = alt;
 			
 			helsestasjoner[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
 			
@@ -216,7 +232,7 @@ function difiDataSett(map) {
 	return helsestasjonGroup;
 }
 
-function testPopups() {
+function testPopups(map) {
 	//POPUPS
 	var marker = L.marker([58.85, 5.74]);
 
@@ -238,7 +254,7 @@ function testPopups() {
 	polygon.bindPopup("Langs jernbanen");
 
 	//adds popups to layer group
-	var markers_group = L.layerGroup([marker, circle, polygon]);
+	var markers_group = L.layerGroup([marker, circle, polygon]).addTo(map);
 
 	return markers_group;
 }
