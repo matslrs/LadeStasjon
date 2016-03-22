@@ -154,7 +154,7 @@ function loadLocalGeoJSONs(map) {
 	//creates and empty GeoJSON test Layer
 	var myLocalGeoJLayer = L.geoJson();
 
-	$.getJSON('localJSON/abas/fylker.geoJSON', function(data) {
+	$.getJSON('GeoJSON/fylker.geoJSON', function(data) {
 
   //adds data to myLocalGeoJLayer
 	myLocalGeoJLayer.addData(data);
