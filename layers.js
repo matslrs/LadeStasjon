@@ -32,30 +32,49 @@ function setupBaseLayers(map) {
 
 function setupOverlayLayers(map) {
 
+	var overlayMaps = [];
+
 	//leaflet.draw
-	var drawnItems = initiateLeafletsDraw(map);
-
+	if(useLeafletDraw ) {
+		var drawnItems = initiateLeafletsDraw(map);
+		overlayMaps["Draw"] = drawnItems;
+	}
 	//gets GeoJSON data from mats.maplytic.no
-	var myGeoJLayer = initiateAndGetGeojsonData(map);
-
+	if(useMaplyticData ) {
+		var myGeoJLayer = initiateAndGetGeojsonData(map);
+		overlayMaps["GeoJSON database"] = myGeoJLayer;
+	}
 	//loads locally stored geoJSONs
-	//var myLocalGeoJLayer = loadLocalGeoJSONs(map);
-		
+	if(useLocalGeoJsonData ) {
+		var myLocalGeoJLayer = loadLocalGeoJSONs(map);
+		overlayMaps["GeoJSON local"] = myLocalGeoJLayer;
+	}	
 	//gets JSON data from difi
-	//var helseStasjonDifi = difiDataSett(map);
-	
+	if(useHelseStasjonData ) {
+		var helseStasjonDifi = difiDataSett(map);
+		overlayMaps["Helsestasjon difi"] = helseStasjonDifi;
+	}
 	//manuelt lagt til GeoJSON data
-	var myGeoJLayer_manuelt = initiateGeojsonManuelt(map);
-
+	if(useManualGeoData ) {
+		var myGeoJLayer_manuelt = initiateGeojsonManuelt(map);
+		overlayMaps["GeoJSON test"] = myGeoJLayer_manuelt;
+	}
 	//test popups - kanskje en if statement for å sjekke om test popup skal være me
-	var markersGroup = testPopups(map);
-	
-	mymap.addControl( new L.Control.Search({
-		layer: myGeoJLayer_manuelt,
-		propertyName: 'popupContent',
-	}) );
+	if(useTestPopup ) {
+		var markersGroup = testPopups(map);
+		overlayMaps["Test Popups"] = markersGroup;
+	}
 
-	//Her settes overlay layers sammen i en array
+	if( enableSearching )
+	{
+		mymap.addControl( new L.Control.Search({
+			layer: myGeoJLayer_manuelt,
+			propertyName: 'popupContent',
+		}) );
+	}
+
+
+	/*//Her settes overlay layers sammen i en array
 	var overlayMaps = {
 		"Test Popups": markersGroup,
 		"GeoJSON database": myGeoJLayer,
@@ -63,7 +82,7 @@ function setupOverlayLayers(map) {
 		"GeoJSON test": myGeoJLayer_manuelt,
 		//"Helsestasjon difi": helseStasjonDifi,
 		"Draw": drawnItems
-	};
+	};*/
 
 	return overlayMaps;
 }
