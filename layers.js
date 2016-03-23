@@ -89,20 +89,55 @@ function setupOverlayLayers(map) {
 
 function initiateAndGetGeojsonData(map) {
 	//creates and empty GeoJSON Layer
+	//var myGeoJLayer = L.geoJson().addTo(map);
+	var myGeoJLayer = L.geoJson();
+	//url til GeoJSON data
+	var url = 'https://mats.maplytic.no/table/test.geojson';
+	//henter data 
+	$.get(url, function(data) {
+
+		myGeoJLayer = L.geoJson(data, {
+
+    	onEachFeature: function (feature, layer) {
+    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
+	       // layer.bindPopup(feature.properties.description);      
+	    }
+
+	}).addTo(map);
+
+	});	
+
+
+	return myGeoJLayer;
+}
+
+
+function initiateAndGetGeojsonData2(map) {
+	//creates and empty GeoJSON Layer
 	var myGeoJLayer = L.geoJson().addTo(map);
 
 	//url til GeoJSON data 
 	var url = 'https://mats.maplytic.no/table/test.geojson';
 	//henter data 
-	$.get(url, function(data) {
-		myGeoJLayer.addData(data);
 
-		for( i=0; i<myGeoJLayer.lentgh; i++ )
-		{
-			myGeoJLayer[i].bindPopup("<strong> Dette er nr " + i +  "</strong>");
-		}
+	$.getJSON(url, function(data) {
 
-	});	
+    function onEachFeature(feature, layer) {
+  
+        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
+    } 
+
+
+
+    myGeoJLayer.addData(data, {
+      onEachFeature: onEachFeature
+    });
+
+    /*var map = L.map('map').fitBounds(geojson.getBounds());
+    mapTiles.addTo(map);*/
+    myGeoJLayer.addTo(map);
+  });	
+
 
 	return myGeoJLayer;
 }
