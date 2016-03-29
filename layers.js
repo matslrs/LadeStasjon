@@ -75,6 +75,7 @@ function loadDrawAndMaplyticDB(map) {
 	var drawnItems = new L.FeatureGroup();
 	map.addLayer(drawnItems);
 
+
 	// Initialize the draw control and pass it the FeatureGroup of editable layers
 	var drawControl = new L.Control.Draw({
 		edit: {
@@ -87,7 +88,7 @@ function loadDrawAndMaplyticDB(map) {
 
 //***************
 
-//creates and empty GeoJSON Layer
+	//creates and empty GeoJSON Layer
 	var myGeoJLayer = L.geoJson();
 	//url til GeoJSON data
 	var url = 'https://mats.maplytic.no/table/test.geojson';
@@ -106,36 +107,6 @@ function loadDrawAndMaplyticDB(map) {
 		
 
 	});	
-
-
-	// //creates and empty GeoJSON Layer
-	// var myGeoJLayer = L.geoJson();
-
-	// //url til GeoJSON data 
-	// var url = 'https://mats.maplytic.no/table/test.geojson';
-	// //henter data 
-
-	// $.getJSON(url, function(data) {
-
- //    function onEachFeature(feature, layer) {
-  
- //        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
- //        drawnItems.addLayer(layer);
- //    } 
-
-
-
- //    myGeoJLayer.addData(data, {
- //      onEachFeature: onEachFeature
- //    });
-
- //    myGeoJLayer.addTo(map);
-
-
- //  });	
-
-
-
 
 //***************
 
@@ -157,14 +128,19 @@ function loadDrawAndMaplyticDB(map) {
 		    type: 'POST',
 		    url: "https://mats.maplytic.no/table/test",
 		    data: polygonForDB, 
-		    success: function(data) { console.log('Draw lagret'); },
+		    success: function(data) { console.log('Draw lagret. Gid = ' +  data.properties.gid); },
 		    contentType: "application/json",
 		    dataType: 'json'
 		});
 
 	});
 
-	map.on('draw:edited', function() {	
+	map.on('draw:edited', function(e) {	
+		var layers = e.layers;
+
+   		layers.eachLayer(function (layer) {
+        //do whatever you want, most likely save back to db
+    	});
 
 	});
 
