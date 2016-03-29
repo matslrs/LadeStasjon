@@ -163,7 +163,7 @@ function loadDrawAndMaplyticDB(map) {
 		    data: polygonForDB, 
 
 		    success: function(data) { 
-		    	console.log('draw:edited. Gid = ' +  data.properties.gid); 
+		    	console.log('draw:edited. Gid = ' +  layer.feature.properties.gid); 
 
 				L.geoJson(data, {
 	    			onEachFeature: function (feature, layer) {
