@@ -181,7 +181,7 @@ function loadDrawAndMaplyticDB(map) {
 
 	});
 
-	map.on('draw:deleted', function() {
+	map.on('draw:deleted', function(e) {
 		var layers = e.layers;
 
    		layers.eachLayer(function (layer) {
