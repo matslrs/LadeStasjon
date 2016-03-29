@@ -60,7 +60,7 @@ function initiateLeafletsDraw(map) {
 
 		var type = e.layerType,
 			layer = e.layer;
-			gid = e.layer.feature.properties.gid;
+			var gid = e.layer.feature.properties.gid;
 
 		if (type === 'marker') {
 			// Do marker specific actions
