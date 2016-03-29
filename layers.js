@@ -182,7 +182,33 @@ function loadDrawAndMaplyticDB(map) {
 	});
 
 	map.on('draw:deleted', function() {
-		// Update db to save latest changes.
+		var layers = e.layers;
+
+   		layers.eachLayer(function (layer) {
+
+   			var polygon = layer.toGeoJSON();
+  			var polygonForDB = JSON.stringify(polygon);
+
+   			$.ajax({
+		    type: 'DELETE',
+		    url: "https://mats.maplytic.no/table/test/" + layer.feature.properties.gid,
+		    data: polygonForDB, 
+
+		    success: function(data) { 
+		    	console.log('draw:deleted. Gid = ' +  data.properties.gid); 
+
+				L.geoJson(data, {
+	    			onEachFeature: function (feature, layer) { 
+			    		drawnItems.removeLayer(layer);
+				   	}
+				});
+		    },
+
+		    contentType: "application/json",
+		    dataType: 'json'
+		});
+        
+    	});
 	});
 	//LEAFLET.DRAW events END 
 
