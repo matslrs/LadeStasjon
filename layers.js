@@ -65,31 +65,11 @@ function setupOverlayLayers(map) {
 		overlayMaps["Test Popups"] = markersGroup;
 	}
 
-	if( enableSearching )
-	{
-		mymap.addControl( new L.Control.Search({
-			layer: myGeoJLayer_manuelt,
-			propertyName: 'popupContent',
-		}) );
-	}
-
-
-	/*//Her settes overlay layers sammen i en array
-	var overlayMaps = {
-		"Test Popups": markersGroup,
-		"GeoJSON database": myGeoJLayer,
-		//"GeoJSON local": myLocalGeoJLayer,
-		"GeoJSON test": myGeoJLayer_manuelt,
-		//"Helsestasjon difi": helseStasjonDifi,
-		"Draw": drawnItems
-	};*/
-
 	return overlayMaps;
 }
 
 function initiateAndGetGeojsonData(map) {
 	//creates and empty GeoJSON Layer
-	//var myGeoJLayer = L.geoJson().addTo(map);
 	var myGeoJLayer = L.geoJson();
 	//url til GeoJSON data
 	var url = 'https://mats.maplytic.no/table/test.geojson';
@@ -98,12 +78,13 @@ function initiateAndGetGeojsonData(map) {
 
 		myGeoJLayer = L.geoJson(data, {
 
-    	onEachFeature: function (feature, layer) {
-    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
-	       // layer.bindPopup(feature.properties.description);      
-	    }
+	    	onEachFeature: function (feature, layer) {
+	    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);  
+		    }
 
-	}).addTo(map);
+		}).addTo(map);
+
+		
 
 	});	
 
@@ -133,8 +114,6 @@ function initiateAndGetGeojsonData2(map) {
       onEachFeature: onEachFeature
     });
 
-    /*var map = L.map('map').fitBounds(geojson.getBounds());
-    mapTiles.addTo(map);*/
     myGeoJLayer.addTo(map);
   });	
 
@@ -143,45 +122,7 @@ function initiateAndGetGeojsonData2(map) {
 }
 
 
-function initiateLeafletsDraw(map) {
 
-	// Initialize the FeatureGroup to store editable layers
-	var drawnItems = new L.FeatureGroup();
-	map.addLayer(drawnItems);
-
-	// Initialize the draw control and pass it the FeatureGroup of editable layers
-	var drawControl = new L.Control.Draw({
-		edit: {
-			featureGroup: drawnItems
-		}
-	});
-
-	map.addControl(drawControl);
-
-	//LEAFLET.DRAW events
-	map.on('draw:created', function(e) {
-		var type = e.layerType,
-			layer = e.layer;
-
-		if (type === 'marker') {
-			// Do marker specific actions
-		}
-		// Do whatever else you need to. (save to db, add to map etc)
-		drawnItems.addLayer(layer);
-	});
-
-	map.on('draw:edited', function() {
-		// Update db to save latest changes.
-	});
-
-	map.on('draw:deleted', function() {
-		// Update db to save latest changes.
-	});
-	//LEAFLET.DRAW events END 
-
-	return drawnItems;
-
-}
 
 //local geoJSON data
 function loadLocalGeoJSONs(map) {
@@ -241,8 +182,6 @@ function initiateGeojsonManuelt(map) {
 	//adds GeoJSON's to myGeoJLayer
 	myGeoJLayer_manuelt.addData(geojsonFeatures);
 
-	//forsøk på å få opp popup content on Lclick
-	//onEachFeature(geojsonFeatures, myGeoJLayer_manuelt)
 
 	return myGeoJLayer_manuelt;
 

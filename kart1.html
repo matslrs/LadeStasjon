@@ -10,6 +10,7 @@
 	
 	<script src="layers.js"></script>
 	<script src="events.js"></script>
+	<script src="functions.js"></script>
 	<script src="custom_functions.js"></script>
 	<script src="leaflet/leaflet-src.js"></script>
 	<script src="leafletdraw/leaflet.draw-src.js"></script>
@@ -54,9 +55,14 @@
 		var overlayMaps = setupOverlayLayers(mymap);	
 
 		 //Layer control
-		L.control.layers(baseMaps, overlayMaps).addTo(mymap);		
+		L.control.layers(baseMaps, overlayMaps).addTo(mymap);	
+
+		if( enableSearching ){
+			setupSearch(mymap);
+		}	
 	 
 		events(mymap); 
+		console.log("finished seting up map!");
 		 	 
 	</script>	
 </body>
