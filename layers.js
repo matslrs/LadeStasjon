@@ -78,11 +78,13 @@ function initiateAndGetGeojsonData(map) {
 
 		myGeoJLayer = L.geoJson(data, {
 
-    	onEachFeature: function (feature, layer) {
-    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);  
-	    }
+	    	onEachFeature: function (feature, layer) {
+	    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);  
+		    }
 
-	}).addTo(map);
+		}).addTo(map);
+
+		
 
 	});	
 
@@ -120,45 +122,7 @@ function initiateAndGetGeojsonData2(map) {
 }
 
 
-function initiateLeafletsDraw(map) {
 
-	// Initialize the FeatureGroup to store editable layers
-	var drawnItems = new L.FeatureGroup();
-	map.addLayer(drawnItems);
-
-	// Initialize the draw control and pass it the FeatureGroup of editable layers
-	var drawControl = new L.Control.Draw({
-		edit: {
-			featureGroup: drawnItems
-		}
-	});
-
-	map.addControl(drawControl);
-
-	//LEAFLET.DRAW events
-	map.on('draw:created', function(e) {
-		var type = e.layerType,
-			layer = e.layer;
-
-		if (type === 'marker') {
-			// Do marker specific actions
-		}
-		// Do whatever else you need to. (save to db, add to map etc)
-		drawnItems.addLayer(layer);
-	});
-
-	map.on('draw:edited', function() {
-		// Update db to save latest changes.
-	});
-
-	map.on('draw:deleted', function() {
-		// Update db to save latest changes.
-	});
-	//LEAFLET.DRAW events END 
-
-	return drawnItems;
-
-}
 
 //local geoJSON data
 function loadLocalGeoJSONs(map) {
