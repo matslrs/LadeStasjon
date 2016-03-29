@@ -128,11 +128,7 @@ function loadDrawAndMaplyticDB(map) {
 		    data: polygonForDB, 
 
 		    success: function(data) { 
-		    	console.log('Draw lagret. Gid = ' +  data.properties.gid); 
-
-		    	//layer.feature.properties.gid = data.properties.gid;
-		    	// Do whatever else you need to. (save to db, add to map etc)
-				//drawnItems.addLayer(layer);
+		    	console.log('draw:created. Gid = ' +  data.properties.gid); 
 
 				L.geoJson(data, {
 	    		onEachFeature: function (feature, layer) {
@@ -157,7 +153,30 @@ function loadDrawAndMaplyticDB(map) {
 		var layers = e.layers;
 
    		layers.eachLayer(function (layer) {
-        //do whatever you want, most likely save back to db
+
+   			var polygon = layer.toGeoJSON();
+  			var polygonForDB = JSON.stringify(polygon);
+
+   			$.ajax({
+		    type: 'POST',
+		    url: "https://mats.maplytic.no/table/test/" + layer.feature.properties.gid,
+		    data: polygonForDB, 
+
+		    success: function(data) { 
+		    	console.log('draw:edited. Gid = ' +  data.properties.gid); 
+
+				L.geoJson(data, {
+	    			onEachFeature: function (feature, layer) {
+			    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);  
+			    		drawnItems.addLayer(layer);
+				   	}
+				});
+		    },
+
+		    contentType: "application/json",
+		    dataType: 'json'
+		});
+        
     	});
 
 	});
