@@ -195,7 +195,7 @@ function loadDrawAndMaplyticDB(map) {
 		    data: polygonForDB, 
 
 		    success: function(data) { 
-		    	console.log('draw:deleted. Gid = ' +  data.properties.gid); 
+		    	console.log('draw:deleted. Gid = ' +  layer.feature.properties.gid); 
 
 				L.geoJson(data, {
 	    			onEachFeature: function (feature, layer) { 
