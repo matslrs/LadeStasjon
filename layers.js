@@ -65,31 +65,11 @@ function setupOverlayLayers(map) {
 		overlayMaps["Test Popups"] = markersGroup;
 	}
 
-	if( enableSearching )
-	{
-		mymap.addControl( new L.Control.Search({
-			layer: myGeoJLayer_manuelt,
-			propertyName: 'popupContent',
-		}) );
-	}
-
-
-	/*//Her settes overlay layers sammen i en array
-	var overlayMaps = {
-		"Test Popups": markersGroup,
-		"GeoJSON database": myGeoJLayer,
-		//"GeoJSON local": myLocalGeoJLayer,
-		"GeoJSON test": myGeoJLayer_manuelt,
-		//"Helsestasjon difi": helseStasjonDifi,
-		"Draw": drawnItems
-	};*/
-
 	return overlayMaps;
 }
 
 function initiateAndGetGeojsonData(map) {
 	//creates and empty GeoJSON Layer
-	//var myGeoJLayer = L.geoJson().addTo(map);
 	var myGeoJLayer = L.geoJson();
 	//url til GeoJSON data
 	var url = 'https://mats.maplytic.no/table/test.geojson';
@@ -99,8 +79,7 @@ function initiateAndGetGeojsonData(map) {
 		myGeoJLayer = L.geoJson(data, {
 
     	onEachFeature: function (feature, layer) {
-    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
-	       // layer.bindPopup(feature.properties.description);      
+    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);  
 	    }
 
 	}).addTo(map);
@@ -133,8 +112,6 @@ function initiateAndGetGeojsonData2(map) {
       onEachFeature: onEachFeature
     });
 
-    /*var map = L.map('map').fitBounds(geojson.getBounds());
-    mapTiles.addTo(map);*/
     myGeoJLayer.addTo(map);
   });	
 
@@ -241,8 +218,6 @@ function initiateGeojsonManuelt(map) {
 	//adds GeoJSON's to myGeoJLayer
 	myGeoJLayer_manuelt.addData(geojsonFeatures);
 
-	//forsøk på å få opp popup content on Lclick
-	//onEachFeature(geojsonFeatures, myGeoJLayer_manuelt)
 
 	return myGeoJLayer_manuelt;
 
