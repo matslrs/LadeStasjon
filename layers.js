@@ -36,12 +36,13 @@ function setupOverlayLayers(map) {
 
 	//leaflet.draw
 	if(useLeafletDraw ) {
-		var drawnItems = initiateLeafletsDraw(map);
+		//var drawnItems = initiateLeafletsDraw(map);
+		var drawnItems = loadDrawAndMaplyticDB(map);
 		overlayMaps["Draw"] = drawnItems;
 	}
 	//gets GeoJSON data from mats.maplytic.no
 	if(useMaplyticData ) {
-		var myGeoJLayer = initiateAndGetGeojsonData(map);
+		var myGeoJLayer = initiateAndGetGeojsonData2(map);
 		overlayMaps["GeoJSON database"] = myGeoJLayer;
 	}
 	//loads locally stored geoJSONs
@@ -66,6 +67,113 @@ function setupOverlayLayers(map) {
 	}
 
 	return overlayMaps;
+}
+
+function loadDrawAndMaplyticDB(map) {
+
+	// Initialize the FeatureGroup to store editable layers
+	var drawnItems = new L.FeatureGroup();
+	map.addLayer(drawnItems);
+
+	// Initialize the draw control and pass it the FeatureGroup of editable layers
+	var drawControl = new L.Control.Draw({
+		edit: {
+			featureGroup: drawnItems
+		}
+	});
+
+	map.addControl(drawControl);
+
+
+//***************
+
+//creates and empty GeoJSON Layer
+	var myGeoJLayer = L.geoJson();
+	//url til GeoJSON data
+	var url = 'https://mats.maplytic.no/table/test.geojson';
+	//henter data 
+	$.get(url, function(data) {
+
+		myGeoJLayer = L.geoJson(data, {
+
+	    	onEachFeature: function (feature, layer) {
+	    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);  
+	    		drawnItems.addLayer(layer);
+		    }
+
+		}).addTo(map);
+
+		
+
+	});	
+
+
+	// //creates and empty GeoJSON Layer
+	// var myGeoJLayer = L.geoJson();
+
+	// //url til GeoJSON data 
+	// var url = 'https://mats.maplytic.no/table/test.geojson';
+	// //henter data 
+
+	// $.getJSON(url, function(data) {
+
+ //    function onEachFeature(feature, layer) {
+  
+ //        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
+ //        drawnItems.addLayer(layer);
+ //    } 
+
+
+
+ //    myGeoJLayer.addData(data, {
+ //      onEachFeature: onEachFeature
+ //    });
+
+ //    myGeoJLayer.addTo(map);
+
+
+ //  });	
+
+
+
+
+//***************
+
+	//LEAFLET.DRAW events
+	map.on('draw:created', function(e) {
+		var type = e.layerType,
+			layer = e.layer;
+
+		if (type === 'marker') {
+			// Do marker specific actions
+		}
+		// Do whatever else you need to. (save to db, add to map etc)
+		drawnItems.addLayer(layer);
+		
+		var polygon = layer.toGeoJSON();
+  		var polygonForDB = JSON.stringify(polygon);
+
+	  	$.ajax({
+		    type: 'POST',
+		    url: "https://mats.maplytic.no/table/test",
+		    data: polygonForDB, 
+		    success: function(data) { console.log('Draw lagret'); },
+		    contentType: "application/json",
+		    dataType: 'json'
+		});
+
+	});
+
+	map.on('draw:edited', function() {	
+
+	});
+
+	map.on('draw:deleted', function() {
+		// Update db to save latest changes.
+	});
+	//LEAFLET.DRAW events END 
+
+	return drawnItems;
 }
 
 function initiateAndGetGeojsonData(map) {
@@ -95,7 +203,7 @@ function initiateAndGetGeojsonData(map) {
 
 function initiateAndGetGeojsonData2(map) {
 	//creates and empty GeoJSON Layer
-	var myGeoJLayer = L.geoJson().addTo(map);
+	var myGeoJLayer = L.geoJson();
 
 	//url til GeoJSON data 
 	var url = 'https://mats.maplytic.no/table/test.geojson';
