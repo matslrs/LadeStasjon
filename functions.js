@@ -16,7 +16,7 @@ function setupSearch(map) {
 }
 
 
-function initiateLeafletsDraw(map) {
+function initiateLeafletsDraw(map, drawnItems) {
 
 	// Initialize the FeatureGroup to store editable layers
 	var drawnItems = new L.FeatureGroup();
