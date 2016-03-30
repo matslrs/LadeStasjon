@@ -46,7 +46,7 @@ function events(map) {
 }
 
 
-function drawEvents(map){
+function drawEvents(map, drawnItems){
 
 	//LEAFLET.DRAW events
 	map.on('draw:created', function(e) {
