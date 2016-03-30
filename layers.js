@@ -84,7 +84,7 @@ function setupOverlayLayers(map) {
 
 
 	//manuelt lagt til GeoJSON data
-	if(useManualGeoData ) {
+	if(useManualTestGeoData ) {
 		var myGeoJLayer_manuelt = initiateGeojsonManuelt(map);
 		overlayMaps["GeoJSON test"] = myGeoJLayer_manuelt;
 	}
