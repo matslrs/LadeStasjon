@@ -29,7 +29,6 @@ function setupBaseLayers(map) {
 	return baseMaps;
 }
 
-
 function setupOverlayLayers(map) {
 
 	var overlayMaps = [];
@@ -55,10 +54,19 @@ function setupOverlayLayers(map) {
 	}
 	
 	//loads locally stored geoJSONs
-	if(useLocalGeoJsonData ) {
-		var myLocalGeoJLayer = loadLocalGeoJSONs(map);
-		overlayMaps["GeoJSON local"] = myLocalGeoJLayer;
-	}	
+	if(useFylkeGeoJsonData) {
+		var FylkeGeoJLayer = loadFylkeGeoJSONs(map);
+		overlayMaps["Fylker"] = FylkeGeoJLayer;
+	}
+	if(useKommuneGeoJsonData) {
+		var KommuneGeoJLayer = loadKommuneGeoJSONs(map);
+		overlayMaps["Komuner"] = KommuneGeoJLayer;
+	}
+	if(useGrunnkretsGeoJsonData) {
+		var GrunnkretsGeoJLayer = loadGrunnkretsGeoJSONs(map);
+		overlayMaps["Grunnkretser 100mb"] = GrunnkretsGeoJLayer;
+	}
+
 	//gets JSON data from difi
 	if(useHelseStasjonData ) {
 		var helseStasjonDifi = difiDataSett(map);
@@ -69,7 +77,7 @@ function setupOverlayLayers(map) {
 		var myGeoJLayer_manuelt = initiateGeojsonManuelt(map);
 		overlayMaps["GeoJSON test"] = myGeoJLayer_manuelt;
 	}
-	//test popups - kanskje en if statement for å sjekke om test popup skal være me
+	//test popups
 	if(useTestPopup ) {
 		var markersGroup = testPopups(map);
 		overlayMaps["Test Popups"] = markersGroup;
@@ -173,23 +181,41 @@ function initiateAndGetGeojsonData2(map) {
 	return myGeoJLayer;
 }
 
-
-
-
 //local geoJSON data
-function loadLocalGeoJSONs(map) {
+function loadFylkeGeoJSONs(map) {
 
 	//creates and empty GeoJSON test Layer
-	var myLocalGeoJLayer = L.geoJson();
+	var FylkeGeoJLayer = L.geoJson();
 
 	$.getJSON('GeoJSON/fylker.geoJSON', function(data) {
+		FylkeGeoJLayer.addData(data);
+	});
 
-  //adds data to myLocalGeoJLayer
-	myLocalGeoJLayer.addData(data);
+	return FylkeGeoJLayer;
 
-});
+}
+function loadKommuneGeoJSONs(map) {
 
-	return myLocalGeoJLayer;
+	//creates and empty GeoJSON test Layer
+	var KommuneGeoJLayer = L.geoJson();
+
+	$.getJSON('GeoJSON/kommuner.geoJSON', function(data) {
+		KommuneGeoJLayer.addData(data);
+	});
+
+	return KommuneGeoJLayer;
+
+}
+function loadGrunnkretsGeoJSONs(map) {
+
+	//creates and empty GeoJSON test Layer
+	var GrunnkretsGeoJLayer = L.geoJson();
+
+	$.getJSON('GeoJSON/grunnkretser.geoJSON', function(data) {
+		GrunnkretsGeoJLayer.addData(data);
+	});
+
+	return GrunnkretsGeoJLayer;
 
 }
 

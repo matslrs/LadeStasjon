@@ -37,9 +37,11 @@
 		var useDrawAndMaplyticDB = false;	//draw and DB combined	OR								
 		var useLeafletDraw = false;			//separete draw and/or
 		var useMaplyticData = false;		//seperate DB
-		var useLocalGeoJsonData = false;
+		var useFylkeGeoJsonData = true;
+		var useKommuneGeoJsonData = false;
+		var useGrunnkretsGeoJsonData = false;
 		var useHelseStasjonData = true;
-		var useManualGeoData = true;
+		var useManualGeoData = false;
 		var useTestPopup = false;
 
 		//MAP
@@ -56,7 +58,7 @@
 		 //Layer control
 		L.control.layers(baseMaps, overlayMaps).addTo(mymap);		
 	
-	
+
 		if( enableSearching ){
 			setupSearch(mymap);
 		}	
