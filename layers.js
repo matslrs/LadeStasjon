@@ -120,6 +120,7 @@ function loadDrawAndMaplyticDB(map) {
 	return drawnItems;
 }
 
+//bug: legges ikke inn i myGeoLayer
 function initiateAndGetGeojsonData(map) {
 	//creates and empty GeoJSON Layer
 	var myGeoJLayer = L.geoJson();
@@ -143,7 +144,7 @@ function initiateAndGetGeojsonData(map) {
 	return myGeoJLayer;
 }
 
-
+//bug: får ikke opp popup med informasjon om feature
 function initiateAndGetGeojsonData2(map) {
 	//creates and empty GeoJSON Layer
 	var myGeoJLayer = L.geoJson();
