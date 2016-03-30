@@ -72,24 +72,30 @@ function setupOverlayLayers(map) {
 
 
 	//gets JSON data from difi
-	if(useHelseStasjonData ) {
+	if(useHelseStasjonData) {
 		var helseStasjonDifi = difiHelsestasjon(map);
 		overlayMaps["Helsestasjon"] = helseStasjonDifi;
 	}
-	if(useBarnehageData ) {
+	if(useBarnehageData) {
 		var barnehageDifi = difiBarnehage(map);
 		overlayMaps["Barnehage"] = barnehageDifi;
 	}
-
-
+	if(useToalett) {
+		var toalettDifi = difiToalett(map);
+		overlayMaps["Offentlig Toalett"] = toalettDifi;
+	}
+	if(useBomstasjon) {
+		var bomstasjonDifi = difiBomstasjon(map);
+		overlayMaps["Bomstasjoner"] = bomstasjonDifi;
+	}
 
 	//manuelt lagt til GeoJSON data
-	if(useManualTestGeoData ) {
+	if(useManualTestGeoData) {
 		var myGeoJLayer_manuelt = initiateGeojsonManuelt(map);
 		overlayMaps["GeoJSON test"] = myGeoJLayer_manuelt;
 	}
 	//test popups
-	if(useTestPopup ) {
+	if(useTestPopup) {
 		var markersGroup = testPopups(map);
 		overlayMaps["Test Popups"] = markersGroup;
 	}
@@ -182,7 +188,7 @@ function loadGrunnkretsGeoJSONs(map) {
 function difiHelsestasjon(map) {
 	
 	//creates and empty GeoJSON Layer
-	var helsestasjonGroup = L.layerGroup().addTo(map);
+	var helsestasjonGroup = L.layerGroup();
 	
 	//var difiData = null;
 	var helsestasjoner = [];	
@@ -201,7 +207,7 @@ function difiHelsestasjon(map) {
 			tittel = difiData.entries[i].navn;
 			alt = difiData.entries[i].adresse;
 			
-			//Lager marker for helsestasjonen
+			//Lager marker for feature
 			helsestasjoner[i] = L.marker([breddeGrad, lengdeGrad]);
 			helsestasjoner[i].title = tittel;
 			helsestasjoner[i].alt = alt;
@@ -218,7 +224,7 @@ function difiHelsestasjon(map) {
 function difiBarnehage(map) {
 	
 	//creates and empty GeoJSON Layer
-	var barnehageGroup = L.layerGroup().addTo(map);
+	var barnehageGroup = L.layerGroup();
 	
 	//var difiData = null;
 	var barnehager = [];	
@@ -234,15 +240,15 @@ function difiBarnehage(map) {
 			//Finner data som skal brukes
 			lengdeGrad = difiData.entries[i].lengdegrad;
 			breddeGrad = difiData.entries[i].breddegrad;
-			tittel = difiData.entries[i].navn;
+			tittel = difiData.entries[i].barnehagens_navn;
 			alt = difiData.entries[i].adresse;
 			
-			//Lager marker for helsestasjonen
+			//Lager marker for feature
 			barnehager[i] = L.marker([breddeGrad, lengdeGrad]);
 			barnehager[i].title = tittel;
 			barnehager[i].alt = alt;
 			
-			barnehager[i].bindPopup("<strong> Barnehage: </strong> <br>" + tittel +  " <br>"+ alt);
+			barnehager[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
 			
 			barnehageGroup.addLayer( barnehager[i] );
 		}
@@ -251,6 +257,82 @@ function difiBarnehage(map) {
 	return barnehageGroup;
 }
 
+function difiToalett(map) {
+	
+	//creates and empty GeoJSON Layer
+	var toalettGroup = L.layerGroup();
+	
+	//var difiData = null;
+	var offentligToalett = [];	
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/stavanger/offentligetoalett?';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			lengdeGrad = difiData.entries[i].longitude;
+			breddeGrad = difiData.entries[i].latitude;
+			tittel = difiData.entries[i].plassering + " Toalett";
+			alt = difiData.entries[i].adresse;
+			
+			if(lengdeGrad == "" || breddeGrad == ""){
+				continue;
+			}
+
+			//Lager marker for feature
+			offentligToalett[i] = L.marker([breddeGrad, lengdeGrad]);
+			offentligToalett[i].title = tittel;
+			offentligToalett[i].alt = alt;
+			
+			offentligToalett[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
+			
+			toalettGroup.addLayer( offentligToalett[i] );
+		}
+	});
+
+	return toalettGroup;
+}
+
+
+function difiBomstasjon(map) {
+	
+	//creates and empty GeoJSON Layer
+	var bomstasjonGroup = L.layerGroup().addTo(map);
+	
+	//var difiData = null;
+	var bomstasjon = [];	
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/vegvesen/bomstasjoner?';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			lengdeGrad = difiData.entries[i].long;
+			breddeGrad = difiData.entries[i].lat;
+			tittel = "Bomstasjon: " + difiData.entries[i].navn;
+			alt = difiData.entries[i].autopass_beskrivelse;
+			
+			//Lager marker for feature
+			bomstasjon[i] = L.marker([breddeGrad, lengdeGrad]);
+			bomstasjon[i].title = tittel;
+			bomstasjon[i].alt = alt;
+			
+			bomstasjon[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
+			
+			bomstasjonGroup.addLayer( bomstasjon[i] );
+		}
+	});
+
+	return bomstasjonGroup;
+}
 
 ///////////////////
 /////Test ting////
