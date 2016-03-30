@@ -41,19 +41,6 @@ function initiateLeafletsDraw(map) {
 		}
 		// Do whatever else you need to. (save to db, add to map etc)
 		drawnItems.addLayer(layer);
-		
-		var polygon = layer.toGeoJSON();
-  		var polygonForDB = JSON.stringify(polygon);
-
-	  	$.ajax({
-		    type: 'POST',
-		    url: "https://mats.maplytic.no/table/test",
-		    data: polygonForDB, 
-		    success: function(data) { console.log('Draw lagret'); },
-		    contentType: "application/json",
-		    dataType: 'json'
-		});
-
 	});
 
 	map.on('draw:edited', function() {	

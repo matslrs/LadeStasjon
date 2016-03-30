@@ -44,3 +44,92 @@ function events(map) {
 	//EVENTS END 
 
 }
+
+
+function drawEvents(map){
+
+	//LEAFLET.DRAW events
+	map.on('draw:created', function(e) {
+		var type = e.layerType,
+			layer = e.layer;
+
+		if (type === 'marker') {
+			// Do marker specific actions
+		}
+		
+		var polygon = layer.toGeoJSON();
+  		var polygonForDB = JSON.stringify(polygon);
+
+	  	$.ajax({
+		    type: 'POST',
+		    url: "https://mats.maplytic.no/table/test",
+		    data: polygonForDB, 
+		    success: function(data) { 
+		    	console.log('draw:created. Gid = ' +  data.properties.gid); 
+				L.geoJson(data, {
+		    		onEachFeature: function (feature, layer) {
+			    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);  
+			    		drawnItems.addLayer(layer);
+				    }
+				});
+		    },
+		    contentType: "application/json",
+		    dataType: 'json'
+		});
+	});
+
+	map.on('draw:edited', function(e) {	
+		var layers = e.layers;
+
+   		layers.eachLayer(function (layer) {
+
+   			var polygon = layer.toGeoJSON();
+  			var polygonForDB = JSON.stringify(polygon);
+
+   			$.ajax({
+			    type: 'POST',
+			    url: "https://mats.maplytic.no/table/test/" + layer.feature.properties.gid,
+			    data: polygonForDB, 
+			    success: function(data) { 
+			    	console.log('draw:edited. Gid = ' +  layer.feature.properties.gid); 
+					L.geoJson(data, {
+		    			onEachFeature: function (feature, layer) {
+				    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);  
+				    		drawnItems.addLayer(layer);
+					   	}
+					});
+			    },
+			    contentType: "application/json",
+			    dataType: 'json'
+			});  
+    	});
+	});
+
+	map.on('draw:deleted', function(e) {
+		var layers = e.layers;
+
+   		layers.eachLayer(function (layer) {
+
+   			var polygon = layer.toGeoJSON();
+  			var polygonForDB = JSON.stringify(polygon);
+
+   			$.ajax({
+			    type: 'DELETE',
+			    url: "https://mats.maplytic.no/table/test/" + layer.feature.properties.gid,
+			    data: polygonForDB, 
+
+			    success: function(data) { 
+			    	console.log('draw:deleted. Gid = ' +  layer.feature.properties.gid); 
+					L.geoJson(data, {
+		    			onEachFeature: function (feature, layer) { 
+				    		drawnItems.removeLayer(layer);
+					   	}
+					});
+			    },
+			    contentType: "application/json",
+			    dataType: 'json'
+			});
+    	});
+	});
+	//LEAFLET.DRAW events END 
+}
