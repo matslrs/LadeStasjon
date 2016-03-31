@@ -27,6 +27,10 @@
 	<div id="mapid"></div>
 	
 	<script>
+		var sosiTest = false;
+
+
+
 		//Enable search function?
 		var enableSearching = true;
 
@@ -77,21 +81,22 @@
 		events(mymap); 
 
 
-		//create a parser
-		var parser = new SOSI.Parser();
+		if(sosiTest){
+			//create a parser
+			var parser = new SOSI.Parser();
 
-		//creates and empty GeoJSON test Layer
-		//var my_data;
+			//creates and empty GeoJSON test Layer
+			//var my_data;
 
-		$.get('data/naturvernomraade.sos', function(data) {
-			//my_data = data;
-			//parse SOSI-data (must be a newline-separated string!)
-			var sosidata = parser.parse(data);
-			//get as GeoJSON
-			var geojson = sosidata.dumps("geojson");
-			console.log("sosi behandlet!")
-		});
-
+			$.get('data/naturvernomraade.sos', function(data) {
+				//my_data = data;
+				//parse SOSI-data (must be a newline-separated string!)
+				var sosidata = parser.parse(data);
+				//get as GeoJSON
+				var geojson = sosidata.dumps("geojson");
+				console.log("sosi behandlet!")
+			});
+		}
 
 
 		console.log("finished seting up map!"); 
