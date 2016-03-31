@@ -15,15 +15,9 @@
 	<script src="leafletdraw/leaflet.draw-src.js"></script>
 	<script src="jquery/jquery-1.12.1.js"></script>
 	<script src="leafletsearch/leaflet-search.src.js"></script>
-	
-	
-	
-</head>
 
-<body>
-	<div id="mapid"></div>
-	
 	<script>
+
 		//Enable search function?
 		var enableSearching = true;
 
@@ -44,22 +38,39 @@
 		var useBarnehageData = false;
 		var useToalett = false;
 		var useBomstasjon = false;
+		var useFloodData = false;
+		var useQueryTest = false;
 
 		//test data
 		var useManualTestGeoData = false;
 		var useTestPopup = false;
 
+		//check the function setupBaseLayers(map) in layers.js to see names on maps
+		var startMap = "OpenStreetMap";
 
-		//MAP
-			var mymap = L.map('mapid', { 
+	</script>
+	
+	
+</head>
+
+<body>
+	<div id="mapid"></div>
+	
+	<script>
+		
+		//Creates MAP
+		var mymap = L.map('mapid', { 
 			center: [58.8534, 5.7317],
-			zoom: 13
+			zoom: 10
 		});
 
 		//sets up base map layers
 		var baseMaps = setupBaseLayers(mymap);
 		//sets up overlay layers
 		var overlayMaps = setupOverlayLayers(mymap);	
+
+		//Set initial base map here:
+		baseMaps[startMap].addTo(mymap);
 
 		 //Layer control
 		L.control.layers(baseMaps, overlayMaps).addTo(mymap);	
@@ -69,7 +80,6 @@
 		}	
 	 
 		events(mymap); 
-		console.log("finished seting up map!");
 		 	 
 	</script>	
 </body>

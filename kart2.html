@@ -16,21 +16,13 @@
 	<script src="jquery/jquery-1.12.1.js"></script>
 	<script src="leafletsearch/leaflet-search.src.js"></script>
 	
-	
-	
-	
-</head>
-
-<body>
-	<div id="mapid"></div>
-	
 	<script>
 
 		//Enable search function?
 		var enableSearching = true;
 
 		//Base layers
-		var useOsmLayer = true;
+		var useOsmLayer = false;
 		var useKartverkTopo2Layer = true;
 		var useKartverkTopo3Layer = true;
 		var useKartverSjoPapirLayer = true;
@@ -47,15 +39,29 @@
 		var useToalett = true;
 		var useBomstasjon = true;
 		var useFloodData = true;
+		var useQueryTest = true;
 
 		//test
 		var useManualTestGeoData = false;
 		var useTestPopup = false;
 
-		//MAP
-			var mymap = L.map('mapid', { 
+		//check the function setupBaseLayers(map) in layers.js to see names on maps
+		var startMap = "Topografisk Norgeskart";
+
+	</script>	
+	
+	
+</head>
+
+<body>
+	<div id="mapid"></div>
+	
+	<script>
+
+		//Creates MAP
+		var mymap = L.map('mapid', { 
 			center: [58.8534, 5.7317],
-			zoom: 13
+			zoom: 8
 		});
 
 			var awesomeData;
@@ -64,6 +70,9 @@
 		var baseMaps = setupBaseLayers(mymap);
 		//sets up overlay layers
 		var overlayMaps = setupOverlayLayers(mymap);	
+
+		//Set initial base map here:
+		baseMaps[startMap].addTo(mymap);
 
 		 //Layer control
 		L.control.layers(baseMaps, overlayMaps).addTo(mymap);		
@@ -75,8 +84,6 @@
 	 
 		events(mymap); 
 
-
-		console.log("finished seting up map!"); 
 		 	 
 	</script>	
 </body>

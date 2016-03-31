@@ -1,30 +1,35 @@
 function setupBaseLayers(map) {
+
+	baseMaps =[];
+
 	//OpenStreetMap layer
-	var osm_layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-	}).addTo(map);
-
+	if(useOsmLayer){
+		var osm_layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		});
+		baseMaps["OpenStreetMap"] = osm_layer;
+	}
 	//kartverket topografisk kart
-	var kartverk_topo2_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}', {
-		attribution: 'Kartverket'
-	});
-	//kartverket sjøkart kart			 
-	var kartverk_sjohovedkart2_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=sjo_hovedkart2&zoom={z}&x={x}&y={y}', {
-		attribution: 'Kartverket'
-	});
-
-	//kartverket ionosphere			 
-	var kartverk_toporaster3_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=toporaster3&zoom={z}&x={x}&y={y}', {
-		attribution: 'Kartverket'
-	});
-
-	//adds maps to base layer group
-	var baseMaps = {
-		"OpenStreetMap": osm_layer,
-		"Topografisk Norgeskart": kartverk_topo2_layer,
-		"Topografisk3 Norgeskart": kartverk_toporaster3_layer,
-		"Sea Papirkart": kartverk_sjohovedkart2_layer
-	};
+	if(useKartverkTopo2Layer){
+		var kartverk_topo2_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}', {
+			attribution: 'Kartverket'
+		});
+		baseMaps["Topografisk Norgeskart"] = kartverk_topo2_layer;
+	}
+	//kartverket sjøkart kart
+	if(useKartverSjoPapirLayer){			 
+		var kartverk_sjohovedkart2_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=sjo_hovedkart2&zoom={z}&x={x}&y={y}', {
+			attribution: 'Kartverket'
+		});
+		baseMaps["Sea Papirkart"] = kartverk_sjohovedkart2_layer;
+	}
+	//kartverket ionosphere
+	if(useKartverkTopo3Layer){			 
+		var kartverk_toporaster3_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=toporaster3&zoom={z}&x={x}&y={y}', {
+			attribution: 'Kartverket'
+		});
+		baseMaps["Topografisk3 Norgeskart"] = kartverk_toporaster3_layer;
+	}
 
 	return baseMaps;
 }
@@ -53,6 +58,11 @@ function setupOverlayLayers(map) {
 		}
 	}
 	
+
+	if(useQueryTest){
+		var dbQueryLayer = dbQueryTest(map);
+		overlayMaps["Query test"] = dbQueryLayer;
+	}
 
 
 	//loads locally stored geoJSONs
@@ -153,7 +163,7 @@ function loadFylkeGeoJSONs(map) {
 	//creates and empty GeoJSON test Layer
 	var FylkeGeoJLayer = L.geoJson();
 
-	$.getJSON('GeoJSON/fylker.geojson', function(data) {
+	$.getJSON('https://mats.maplytic.no/table/fylker.geojson', function(data) {
 		FylkeGeoJLayer.addData(data);
 	});
 
@@ -165,7 +175,7 @@ function loadKommuneGeoJSONs(map) {
 	//creates and empty GeoJSON test Layer
 	var KommuneGeoJLayer = L.geoJson();
 
-	$.getJSON('GeoJSON/kommuner.geoJSON', function(data) {
+	$.getJSON('https://mats.maplytic.no/table/kommuner.geojson', function(data) {
 		KommuneGeoJLayer.addData(data);
 	});
 
@@ -177,7 +187,7 @@ function loadGrunnkretsGeoJSONs(map) {
 	//creates and empty GeoJSON test Layer
 	var GrunnkretsGeoJLayer = L.geoJson();
 
-	$.getJSON('GeoJSON/grunnkretser.geoJSON', function(data) {
+	$.getJSON('https://mats.maplytic.no/table/grunnkretser.geojson', function(data) {
 		GrunnkretsGeoJLayer.addData(data);
 	});
 
@@ -412,6 +422,35 @@ function initiateAndGetGeojsonData2(map) {
 
 	return myGeoJLayer;
 }
+
+function dbQueryTest(map) {
+	//creates and empty GeoJSON Layer
+	var myGeoJLayer = L.geoJson();
+
+	//url til GeoJSON data 
+	var url = 'https://mats.maplytic.no/sql/select%20ST_Simplify(geom%2C%200.01)%20as%20geom%20%2C%20navn%2C%20fylkesnr%20from%20fylker/out.geojson';
+	//henter data 
+
+	$.getJSON(url, function(data) {
+
+    function onEachFeature(feature, layer) {
+  
+        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
+    } 
+
+
+
+    myGeoJLayer.addData(data, {
+      onEachFeature: onEachFeature
+    });
+
+    myGeoJLayer.addTo(map);
+  });	
+
+
+	return myGeoJLayer;
+}
+
 function testPopups(map) {
 	//POPUPS
 	var marker = L.marker([58.85, 5.74]);
