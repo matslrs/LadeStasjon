@@ -343,7 +343,7 @@ function dataNorgeFlomvarsel(map) {
 
 	$.ajax({
 		    type: 'GET',
-		    url: "http://api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountyOverview/1/2015-1-1/2015-31-12",
+		    url: "http://api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountyOverview/1/2015-1-12/2015-15-12",
 		    success: function(data) { 	
 		    	console.log('Flomvarsel success'); 
 		    	awesomeData = data;
