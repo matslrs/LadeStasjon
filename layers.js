@@ -100,6 +100,8 @@ function setupOverlayLayers(map) {
 		overlayMaps["Test Popups"] = markersGroup;
 	}
 
+	dataNorgeFlomvarsel(map);
+
 	return overlayMaps;
 }
 
@@ -182,9 +184,9 @@ function loadGrunnkretsGeoJSONs(map) {
 	return GrunnkretsGeoJLayer;
 
 }
+////
 
-
-
+//DIFI DATA
 function difiHelsestasjon(map) {
 	
 	//creates and empty GeoJSON Layer
@@ -333,6 +335,25 @@ function difiBomstasjon(map) {
 
 	return bomstasjonGroup;
 }
+/////
+
+function dataNorgeFlomvarsel(map) {
+
+	//var awesomeData;
+
+	$.ajax({
+		    type: 'GET',
+		    url: "http://api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountyOverview/1/2015-1-1/2015-31-12",
+		    success: function(data) { 	
+		    	console.log('Flomvarsel success'); 
+		    	awesomeData = data;
+		    },
+		    contentType: "application/json",
+		    dataType: 'json'
+		});
+
+}
+
 
 ///////////////////
 /////Test ting////
