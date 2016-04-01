@@ -31,19 +31,18 @@
 		var useDrawAndMaplyticDB = false;	//draw and DB combined	OR	
 		var useLeafletDraw = false;			//separete draw and/or
 		var useMaplyticData = false;		//seperate DB
+		//maplytic data
 		var useFylkeGeoJsonData = true;
 		var useKommuneGeoJsonData = false;
 		var useGrunnkretsGeoJsonData = false;
+		var useMaplyticQuery = true;
+		//DIFI
 		var useHelseStasjonData = true;
 		var useBarnehageData = true;
 		var useToalett = true;
 		var useBomstasjon = true;
+		//NVE
 		var useFloodData = true;
-		var useQueryTest = true;
-
-		//test
-		var useManualTestGeoData = false;
-		var useTestPopup = false;
 
 		//check the function setupBaseLayers(map) in layers.js to see names on maps
 		var startMap = "Topografisk Norgeskart";
@@ -66,7 +65,9 @@
 			zoom: 8
 		});
 
-			var awesomeData;
+		var layerControl = L.control;
+
+		var awesomeData;	//hører til ufullstendig NVE funksjon....data blir hentet, men ikke kode for behandling og vis på kart enda.
 
 		//sets up base map layers
 		var baseMaps = setupBaseLayers(mymap);
@@ -76,9 +77,13 @@
 		//Set initial base map here:
 		baseMaps[startMap].addTo(mymap);
 
+
+		var testtststst = L.tileLayer('https://mats.maplytic.no/tile/fylker/{z}/{x}/{y}.png');
+		overlayMaps["testtest"] = testtststst;
+
+
 		 //Layer control
-		L.control.layers(baseMaps, overlayMaps).addTo(mymap);		
-	
+		layerControl.layers(baseMaps, overlayMaps).addTo(mymap);		
 
 		if( enableSearching ){
 			setupSearch(mymap);
@@ -91,8 +96,7 @@
 		});
 	 
 		events(mymap); 
-
-		 	 
+	 	 
 	</script>	
 </body>
 </html>

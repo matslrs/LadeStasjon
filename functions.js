@@ -67,7 +67,9 @@ function updateDbQueryLayer(map, layerGroup){
 	swLng = newBounds.getWest();
 	
 	//tolerance in ST_Simplify(postgis)
+	//funksjonen for tolerance kan finjusteres mye bedre men mer enn ok for nå
 	var tolerance = 0.01*7/map.getZoom();
+	
 	console.log('New tolerance: ' + tolerance)
 	//url til GeoJSON data 
 	var url = 'https://mats.maplytic.no/sql/select%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%2C%20navn%2C%20fylkesnr%0Afrom%20fylker%0AWHERE%20fylker.geom%20%26%26%20ST_MakeEnvelope(' + swLng + '%2C%20' + swLat + '%2C%20' + neLng + '%2C%20' + neLat +')%3B/out.geojson';
@@ -86,10 +88,23 @@ function updateDbQueryLayer(map, layerGroup){
 	      onEachFeature: onEachFeature
 	    });
 
-	    map.removeLayer(dbQueryLayer);
+	    //layerControl.removeLayer(dbQueryLayer);
+	  	map.removeLayer(dbQueryLayer);
+	    //layerControl.RemoveFrom(dbQueryLayer);
 	    dbQueryLayer = myGeoJLayer;
+	    //layerControl.layers.addOverlay(dbQueryLayer, "nytt sql layer");
 	    dbQueryLayer.addTo(map);
+	    overlayMaps["Query test"] = dbQueryLayer;
+	   // layerControl.layers(baseMaps,overlayMaps)._update();
+	   //layerControl.removeFrom(map);
+	   layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
   	});	
 
+}
+
+
+function lalal(){
+	//Layer control
+	layerControl.layers(baseMaps, overlayMaps, {position :'bottomright'}).addTo(mymap)
 }

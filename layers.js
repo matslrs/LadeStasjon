@@ -59,14 +59,12 @@ function setupOverlayLayers(map) {
 	}
 	
 
-	if(useQueryTest){
-		//defined i html2 head
+	//data som hentes fra mats.maplytic.no
+	if(useMaplyticQuery){
+		//defined i html2 head i forsøk på å få styr på 
 		dbQueryLayer = setupDbLayer(map);
 		overlayMaps["Query test"] = dbQueryLayer;
 	}
-
-
-	//loads locally stored geoJSONs
 	if(useFylkeGeoJsonData) {
 		var FylkeGeoJLayer = loadFylkeGeoJSONs(map);
 		overlayMaps["Fylker"] = FylkeGeoJLayer;
@@ -100,19 +98,12 @@ function setupOverlayLayers(map) {
 		overlayMaps["Bomstasjoner"] = bomstasjonDifi;
 	}
 
-	//manuelt lagt til GeoJSON data
-	if(useManualTestGeoData) {
-		var myGeoJLayer_manuelt = initiateGeojsonManuelt(map);
-		overlayMaps["GeoJSON test"] = myGeoJLayer_manuelt;
-	}
-	//test popups
-	if(useTestPopup) {
-		var markersGroup = testPopups(map);
-		overlayMaps["Test Popups"] = markersGroup;
-	}
+	//NVE
 	if(useFloodData){
 		dataNorgeFlomvarsel(map);
 	}
+
+
 	return overlayMaps;
 }
 
@@ -158,7 +149,8 @@ function loadDrawAndMaplyticDB(map) {
 	return drawnItems;
 }
 
-//local geoJSON data
+//-------------------------------------------
+//Maplytic data
 function loadFylkeGeoJSONs(map) {
 
 	//creates and empty GeoJSON test Layer
@@ -195,8 +187,50 @@ function loadGrunnkretsGeoJSONs(map) {
 	return GrunnkretsGeoJLayer;
 
 }
-////
+//må fiksa på layers å layer control her...bugs
+function setupDbLayer(map) {
 
+	//gets the bound of the initial zoom and position
+	initialBounds = map.getBounds();
+	neLat = initialBounds.getNorth();
+	neLng = initialBounds.getEast();
+	swLat = initialBounds.getSouth();
+	swLng = initialBounds.getWest();
+	
+	//tolerance in ST_Simplify(postgis)
+	//funksjonen for tolerance kan finjusteres mye bedre men mer enn ok for nå
+	var tolerance = 0.01*7/map.getZoom();
+
+	//url til GeoJSON data 
+	var url = 'https://mats.maplytic.no/sql/select%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%2C%20navn%2C%20fylkesnr%0Afrom%20fylker%0AWHERE%20fylker.geom%20%26%26%20ST_MakeEnvelope(' + swLng + '%2C%20' + swLat + '%2C%20' + neLng + '%2C%20' + neLat +')%3B/out.geojson';
+	
+	//henter data 
+	$.getJSON(url, function(data) {
+
+	    function onEachFeature(feature, layer) {
+	  
+	        layer.bindPopup("Navn: " + feature.properties.navn + "<br>" + "Fylkes nr: " + feature.geometry.fylkesnr);
+	        console.log(feature.properties.navn);
+	    } 
+
+
+	    dbQueryLayer.addData(data, {
+	      onEachFeature: onEachFeature
+	    });
+
+	    dbQueryLayer.addTo(map);
+  	});	
+
+	eventDbQueryUpdates(map, dbQueryLayer);
+
+	return dbQueryLayer;
+}
+
+//-------------------------------------------
+
+
+
+//-------------------------------------------
 //DIFI DATA
 function difiHelsestasjon(map) {
 	
@@ -346,8 +380,12 @@ function difiBomstasjon(map) {
 
 	return bomstasjonGroup;
 }
-/////
+//-------------------------------------------
 
+
+
+//-------------------------------------------
+//NVE
 function dataNorgeFlomvarsel(map) {
 
 	//var awesomeData;
@@ -365,11 +403,14 @@ function dataNorgeFlomvarsel(map) {
 		});
 
 }
+//-------------------------------------------
 
 
-///////////////////
-/////Test ting////
-/////////////////
+
+
+///////////////////////
+/////Test/bug ting////
+/////////////////////
 
 
 //bug: legges ikke inn i myGeoLayer
@@ -424,111 +465,3 @@ function initiateAndGetGeojsonData2(map) {
 	return myGeoJLayer;
 }
 
-function setupDbLayer(map) {
-
-	//gets the bound of the initial zoom and position
-	initialBounds = map.getBounds();
-	neLat = initialBounds.getNorth();
-	neLng = initialBounds.getEast();
-	swLat = initialBounds.getSouth();
-	swLng = initialBounds.getWest();
-	
-	//tolerance in ST_Simplify(postgis)
-	var tolerance = 0.01*7/map.getZoom();
-
-	//url til GeoJSON data 
-	var url = 'https://mats.maplytic.no/sql/select%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%2C%20navn%2C%20fylkesnr%0Afrom%20fylker%0AWHERE%20fylker.geom%20%26%26%20ST_MakeEnvelope(' + swLng + '%2C%20' + swLat + '%2C%20' + neLng + '%2C%20' + neLat +')%3B/out.geojson';
-	//henter data 
-
-	$.getJSON(url, function(data) {
-
-	    function onEachFeature(feature, layer) {
-	  
-	        layer.bindPopup("Navn: " + feature.properties.navn + "<br>" + "Fylkes nr: " + feature.geometry.fylkesnr);
-	        console.log(feature.properties.navn);
-	    } 
-
-
-
-	    dbQueryLayer.addData(data, {
-	      onEachFeature: onEachFeature
-	    });
-
-	    dbQueryLayer.addTo(map);
-  	});	
-
-	eventDbQueryUpdates(map, dbQueryLayer);
-
-	return dbQueryLayer;
-}
-
-function testPopups(map) {
-	//POPUPS
-	var marker = L.marker([58.85, 5.74]);
-
-	var circle = L.circle([58.8534, 5.7207], 200, {
-		color: 'red',
-		fillColor: '#f03',
-		fillOpacity: 0.5
-	});
-
-	var polygon = L.polygon([
-		[58.85, 5.73],
-		[58.855, 5.74],
-		[58.859, 5.735]
-	]);
-
-	//more popup stuff
-	marker.bindPopup("Jeg er midti byen!");
-	circle.bindPopup("Midt i gata");
-	polygon.bindPopup("Langs jernbanen");
-
-	//adds popups to layer group
-	var markers_group = L.layerGroup([marker, circle, polygon]).addTo(map);
-
-	return markers_group;
-}
-//noen GeoJSON data som er manuelt lagt inn
-function initiateGeojsonManuelt(map) {
-	//defines a GeoJSON Feature
-	var geojsonFeatures = 
-	{
-  		"type": "FeatureCollection",
-  		"features": [
-			{
-				"type": "Feature",
-				"properties": {
-					"name": "Gisketjernet",
-					"amenity": "Fin park",
-					"popupContent": "Fin park med dyr og treningsmuligheter"
-				},
-				"geometry": {
-					"type": "Point",
-					"coordinates": [5.72816, 58.85807]
-				}
-			},
-			{
-				"type": "Feature",
-				"properties": {
-					"name": "Dalsnuten",
-					"amenity": "God utsik!",
-					"popupContent": "Fin gaatur og veldig god utsikt."
-				},
-				"geometry": {
-					"type": "Point",
-					"coordinates": [5.78664, 58.89358]
-				}
-			}
-		]
-	};
-
-	
-
-	//creates and empty GeoJSON test Layer
-	var myGeoJLayer_manuelt = L.geoJson().addTo(map);
-	//adds GeoJSON's to myGeoJLayer
-	myGeoJLayer_manuelt.addData(geojsonFeatures);
-
-
-	return myGeoJLayer_manuelt;
-}
