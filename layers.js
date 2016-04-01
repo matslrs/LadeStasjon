@@ -163,7 +163,8 @@ function loadFylkeGeoJSONs(map) {
 	//creates and empty GeoJSON test Layer
 	var FylkeGeoJLayer = L.geoJson();
 
-	$.getJSON('https://mats.maplytic.no/table/fylker.geojson', function(data) {
+	$.getJSON('GeoJSON/fylker.geojson', function(data) {
+	//$.getJSON('https://mats.maplytic.no/table/fylker.geojson', function(data) {
 		FylkeGeoJLayer.addData(data);
 	});
 
