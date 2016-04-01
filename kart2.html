@@ -48,6 +48,8 @@
 		//check the function setupBaseLayers(map) in layers.js to see names on maps
 		var startMap = "Topografisk Norgeskart";
 
+		var dbQueryLayer = L.geoJson();
+
 	</script>	
 	
 	
@@ -81,6 +83,12 @@
 		if( enableSearching ){
 			setupSearch(mymap);
 		}	
+
+		//find location and set view and zoom
+		mymap.locate({
+			setView: true,
+			maxZoom: 16
+		});
 	 
 		events(mymap); 
 

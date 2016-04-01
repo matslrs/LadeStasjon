@@ -60,7 +60,8 @@ function setupOverlayLayers(map) {
 	
 
 	if(useQueryTest){
-		var dbQueryLayer = dbQueryTest(map);
+		//defined i html2 head
+		dbQueryLayer = setupDbLayer(map);
 		overlayMaps["Query test"] = dbQueryLayer;
 	}
 
@@ -423,32 +424,42 @@ function initiateAndGetGeojsonData2(map) {
 	return myGeoJLayer;
 }
 
-function dbQueryTest(map) {
-	//creates and empty GeoJSON Layer
-	var myGeoJLayer = L.geoJson();
+function setupDbLayer(map) {
+
+	//gets the bound of the initial zoom and position
+	initialBounds = map.getBounds();
+	neLat = initialBounds.getNorth();
+	neLng = initialBounds.getEast();
+	swLat = initialBounds.getSouth();
+	swLng = initialBounds.getWest();
+	
+	//tolerance in ST_Simplify(postgis)
+	var tolerance = 0.01*7/map.getZoom();
 
 	//url til GeoJSON data 
-	var url = 'https://mats.maplytic.no/sql/select%20ST_Simplify(geom%2C%200.01)%20as%20geom%20%2C%20navn%2C%20fylkesnr%20from%20fylker/out.geojson';
+	var url = 'https://mats.maplytic.no/sql/select%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%2C%20navn%2C%20fylkesnr%0Afrom%20fylker%0AWHERE%20fylker.geom%20%26%26%20ST_MakeEnvelope(' + swLng + '%2C%20' + swLat + '%2C%20' + neLng + '%2C%20' + neLat +')%3B/out.geojson';
 	//henter data 
 
 	$.getJSON(url, function(data) {
 
-    function onEachFeature(feature, layer) {
-  
-        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
-    } 
+	    function onEachFeature(feature, layer) {
+	  
+	        layer.bindPopup("Navn: " + feature.properties.navn + "<br>" + "Fylkes nr: " + feature.geometry.fylkesnr);
+	        console.log(feature.properties.navn);
+	    } 
 
 
 
-    myGeoJLayer.addData(data, {
-      onEachFeature: onEachFeature
-    });
+	    dbQueryLayer.addData(data, {
+	      onEachFeature: onEachFeature
+	    });
 
-    myGeoJLayer.addTo(map);
-  });	
+	    dbQueryLayer.addTo(map);
+  	});	
 
+	eventDbQueryUpdates(map, dbQueryLayer);
 
-	return myGeoJLayer;
+	return dbQueryLayer;
 }
 
 function testPopups(map) {

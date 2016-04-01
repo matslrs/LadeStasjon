@@ -55,3 +55,41 @@ function initiateLeafletsDraw(map) {
 	return drawnItems;
 
 }
+
+function updateDbQueryLayer(map, layerGroup){
+	//creates and empty GeoJSON Layer
+	var myGeoJLayer = L.geoJson();
+
+	newBounds = map.getBounds();
+	neLat = newBounds.getNorth();
+	neLng = newBounds.getEast();
+	swLat = newBounds.getSouth();
+	swLng = newBounds.getWest();
+	
+	//tolerance in ST_Simplify(postgis)
+	var tolerance = 0.01*7/map.getZoom();
+	console.log('New tolerance: ' + tolerance)
+	//url til GeoJSON data 
+	var url = 'https://mats.maplytic.no/sql/select%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%2C%20navn%2C%20fylkesnr%0Afrom%20fylker%0AWHERE%20fylker.geom%20%26%26%20ST_MakeEnvelope(' + swLng + '%2C%20' + swLat + '%2C%20' + neLng + '%2C%20' + neLat +')%3B/out.geojson';
+	//henter data 
+
+	$.getJSON(url, function(data) {
+
+	    function onEachFeature(feature, layer) {
+	  
+	        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
+	    } 
+
+
+
+	    myGeoJLayer.addData(data, {
+	      onEachFeature: onEachFeature
+	    });
+
+	    map.removeLayer(dbQueryLayer);
+	    dbQueryLayer = myGeoJLayer;
+	    dbQueryLayer.addTo(map);
+
+  	});	
+
+}

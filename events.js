@@ -4,24 +4,15 @@ function events(map) {
 	
 	var popup = L.popup();
 
+
 	function onMapClick(e) {
 		popup
 			.setLatLng(e.latlng)
 			.setContent("You clicked the map at " + e.latlng.toString())
 			.openOn(map);
 	}
-	
-	
-	map.on('click', onMapClick);
-
-	//find location and set view and zoom
-	map.locate({
-		setView: true,
-		maxZoom: 16
-	});
 
 	//when location found, show a popup where with accuracy
-
 	function onLocationFound(e) {
 		var radius = e.accuracy / 2;
 
@@ -31,20 +22,31 @@ function events(map) {
 		L.circle(e.latlng, radius).addTo(map);
 	}
 
-	map.on('locationfound', onLocationFound);
-
 	//if finding location failed, display error message
-
 	function onLocationError(e) {
 		alert(e.message);
 	}
 
-	map.on('locationerror', onLocationError);
+	function zoomEnd(e) {
+	
+		console.log('Zoom:' + map.getZoom());
+	}
 
+	map.on('click', onMapClick);
+	map.on('locationfound', onLocationFound);
+	map.on('locationerror', onLocationError);
+	map.on('zoomend', zoomEnd);
 	//EVENTS END 
 
 }
 
+function eventDbQueryUpdates(map, layer){
+
+	function updateQuery(e) {
+		updateDbQueryLayer(map, layer);
+	}
+	map.on('moveend', updateQuery);
+}
 
 function drawEvents(map, drawnItems){
 
