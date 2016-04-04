@@ -104,7 +104,8 @@ function setupOverlayLayers(map) {
 
 	//NVE
 	if(useFloodData){
-		dataNorgeFlomvarsel(map);
+		var flomData = dataNorgeFlomvarsel(map);
+		overlayMaps["Flomvarsel"] = flomData;
 	}
 
 
@@ -394,13 +395,47 @@ function difiBomstasjon(map) {
 //NVE
 function dataNorgeFlomvarsel(map) {
 
-	//WarningByMunicipality advarsel kommune, 1103 = stavanger
+	var myGeoJLayer = L.geoJson();
+
+
+
+	//test data for storm dag 5.12-15
 	$.ajax({
 	    type: 'GET',
-	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.3/api/CountyOverview/1/2015-12-5/2015-12-6",
+	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.3/api/CountyOverview/1/2015-12-5/2015-12-5",
 	    success: function(data) { 	
 	    	console.log('Flomvarsel success'); 
-	    	warnMuniciStavanger = data;
+	    	flomTest = data;
+
+	    	for(i=0;flomTest.length;i++){
+
+	    		if( flomTest[i].HighestActivityLevel > 1){
+
+	    			for(j=0;flomTest[i].MunicipalityList.length;j++){
+
+	    				if( flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel > 1){
+
+	    					komm = flomTest[i].MunicipalityList[j].id;
+	    					tolerance = 0.01;
+
+	    					var url = 'https://mats.maplytic.no/sql/select%20navn%2C%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%0Afrom%20kommuner%20%0Awhere%20komm%20%3D%20' + komm + '/out.geojson';
+
+	    					$.getJSON(url, function(data) {
+
+							    function onEachFeature(feature, layer) {
+							  
+							        layer.bindPopup("Kommune: " + feature.properties.navn + "<br>" + "ActivityLevel: " + flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel);
+							    } 
+
+							    myGeoJLayer.addData(data, {
+							      onEachFeature: onEachFeature
+							    });
+						  	});	
+
+	    				}
+	    			}
+	    		}
+	    	}
 	    },
 	    contentType: "application/json",
 	    dataType: 'json'
@@ -471,7 +506,7 @@ function dataNorgeFlomvarsel(map) {
 	// });
 
 
-
+	return myGeoJLayer;
 
 }
 //-------------------------------------------
