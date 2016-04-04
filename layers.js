@@ -464,8 +464,8 @@ function dataNorgeFlomvarsel(map) {
 
 	    					$.getJSON(url, function(data) {
 
-						        data.feature[0].properties.beskrivelse = varselTekst;
-							   	data.feature[0].properties.color = color;
+						        data.features[0].properties.beskrivelse = varselTekst;
+							   	data.features[0].properties.color = color;
 
 							    flomGeoLayer.addData(data);
 
