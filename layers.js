@@ -73,9 +73,13 @@ function setupOverlayLayers(map) {
 		var KommuneGeoJLayer = loadKommuneGeoJSONs(map);
 		overlayMaps["Komuner"] = KommuneGeoJLayer;
 	}
-	if(useGrunnkretsGeoJsonData) {
-		var GrunnkretsGeoJLayer = loadGrunnkretsGeoJSONs(map);
-		overlayMaps["Grunnkretser 100mb"] = GrunnkretsGeoJLayer;
+	if(useMaplyticTile) {
+		var maplyticTiles = maplyticTileApi(map);
+		overlayMaps["Tile test"] = maplyticTiles;
+	}
+	if(useGrunnkretsTile) {
+		var GrunnkretsTile = loadGrunnkretsTile(map);
+		overlayMaps["Grunnkrets Tile"] = GrunnkretsTile;
 	}
 
 
@@ -151,6 +155,13 @@ function loadDrawAndMaplyticDB(map) {
 
 //-------------------------------------------
 //Maplytic data
+function maplyticTileApi(map) {
+
+	var maplyticTile = L.tileLayer('https://mats.maplytic.no/tile/fylker/{z}/{x}/{y}.png?linewidth=3');
+
+	return maplyticTile;
+
+}
 function loadFylkeGeoJSONs(map) {
 
 	//creates and empty GeoJSON test Layer
@@ -175,16 +186,11 @@ function loadKommuneGeoJSONs(map) {
 	return KommuneGeoJLayer;
 
 }
-function loadGrunnkretsGeoJSONs(map) {
+function loadGrunnkretsTile(map) {
 
-	//creates and empty GeoJSON test Layer
-	var GrunnkretsGeoJLayer = L.geoJson();
+	GrunnkretsTile = L.tileLayer('https://mats.maplytic.no/tile/grunnkretser/{z}/{x}/{y}.png?linewidth=1');
 
-	$.getJSON('https://mats.maplytic.no/table/grunnkretser.geojson', function(data) {
-		GrunnkretsGeoJLayer.addData(data);
-	});
-
-	return GrunnkretsGeoJLayer;
+	return GrunnkretsTile;
 
 }
 //må fiksa på layers å layer control her...bugs
@@ -218,7 +224,7 @@ function setupDbLayer(map) {
 	      onEachFeature: onEachFeature
 	    });
 
-	    dbQueryLayer.addTo(map);
+	    //dbQueryLayer.addTo(map);
   	});	
 
 	eventDbQueryUpdates(map);
@@ -388,11 +394,10 @@ function difiBomstasjon(map) {
 //NVE
 function dataNorgeFlomvarsel(map) {
 
-	//var awesomeData;
 
 	$.ajax({
 		    type: 'GET',
-		   // url: "http://api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountyOverview/1/2015-1-12/2015-15-12",
+		    //url: "http://api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountyOverview/1/2015-1-1/2015-15-12",
 		    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountyOverview/1",
 		    success: function(data) { 	
 		    	console.log('Flomvarsel success'); 

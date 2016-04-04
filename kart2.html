@@ -32,10 +32,11 @@
 		var useLeafletDraw = false;			//separete draw and/or
 		var useMaplyticData = false;		//seperate DB
 		//maplytic data
-		var useFylkeGeoJsonData = true;
+		var useFylkeGeoJsonData = false;
 		var useKommuneGeoJsonData = false;
-		var useGrunnkretsGeoJsonData = false;
 		var useMaplyticQuery = true;
+		var useMaplyticTile = true;
+		var useGrunnkretsTile = true;
 		//DIFI
 		var useHelseStasjonData = true;
 		var useBarnehageData = true;
@@ -76,11 +77,6 @@
 
 		//Set initial base map here:
 		baseMaps[startMap].addTo(mymap);
-
-
-		var testtststst = L.tileLayer('https://mats.maplytic.no/tile/fylker/{z}/{x}/{y}.png');
-		overlayMaps["testtest"] = testtststst;
-
 
 		 //Layer control
 		layerControl.layers(baseMaps, overlayMaps).addTo(mymap);		
