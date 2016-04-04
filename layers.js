@@ -108,6 +108,16 @@ function setupOverlayLayers(map) {
 		overlayMaps["Flomvarsel"] = flomData;
 	}
 
+	if(usePoptest){
+		var bugPop = buggyPopuptest(map);
+		overlayMaps["bugPop"] = bugPop;
+	}
+
+	if(usePoptest2){
+		var bugPop2 = buggyPopuptest2(map);
+		overlayMaps["bugPop2"] = bugPop2;
+	}
+
 
 	return overlayMaps;
 }
@@ -395,7 +405,14 @@ function difiBomstasjon(map) {
 //NVE
 function dataNorgeFlomvarsel(map) {
 
-	var flomGeoLayer = L.geoJson();
+	var flomGeoLayer = L.geoJson(null, {
+    style: function (feature) {
+        return {color: feature.properties.color};
+    },
+    onEachFeature: function (feature, layer) {
+        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.geometry.beskrivelse);
+    }
+});
 
 
 
@@ -407,31 +424,52 @@ function dataNorgeFlomvarsel(map) {
 	    	console.log('Flomvarsel success'); 
 	    	flomTest = data;
 
+	    	//går gjennom alle komuner
 	    	for(i=0;i<flomTest.length;i++){
-
+	    		//hvis fylke har høy nok aktivitets nivå
 	    		if( flomTest[i].HighestActivityLevel > 1){
-
+	    			//gå gjennom kommuner i det fylke
 	    			for(j=0;j<flomTest[i].MunicipalityList.length;j++){
-
+	    				//hvis kommunen høyt nok aktivitets nivå --> process
 	    				if( flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel > 1){
 
+
+	    					//seksjon for å laga url
+	    					//---------------temp for nå
+	    					//kommune nr
 	    					komm = flomTest[i].MunicipalityList[j].Id;
+	    					//toleranse i ST_Simplify
 	    					tolerance = 0.01;
+	    					//----------------------------------------
+
+
+	    					//DATA SOM TRENGS TIL LAYER
+	    					//aktivitets nivå
+	    					aNivaa = flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel;
+	    					//farge
+	    					if(aNivaa==2){
+	    						color = '#FFFF00';
+	    					}
+	    					else if(aNivaa==3){
+	    						color = '#FF0000';
+	    					}
+	    					else{
+	    						color = '#000000';
+	    					}
+	    					//beskrivelse
+	    					varselTekst = flomTest[i].MunicipalityList[j].WarningList[0].MainText;
+
 
 	    					var url = 'https://mats.maplytic.no/sql/select%20navn%2C%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%0Afrom%20kommuner%20%0Awhere%20komm%20%3D%20' + komm + '/out.geojson';
 
 	    					$.getJSON(url, function(data) {
 
-							    function onEachFeature(feature, layer) {
-							  
-							        layer.bindPopup("Kommune: " + feature.properties.navn );
-							        //layer.bindPopup("Kommune: " + feature.properties.navn + "<br>" + "ActivityLevel: " + flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel);
-							        feature.bindPopup("Kommune: " + feature.properties.navn + "<br>" + "ActivityLevel: " + flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel);
-							    } 
+						        data.properties.beskrivelse = varselTekst;
+							   	data.properties.color = color;
 
-							    flomGeoLayer.addData(data, {
-							      onEachFeature: onEachFeature
-							    });
+							    flomGeoLayer.addData(data);
+
+
 						  	});	
 
 	    				}
@@ -522,32 +560,41 @@ function dataNorgeFlomvarsel(map) {
 
 
 //bug: legges ikke inn i myGeoLayer
-function initiateAndGetGeojsonData(map) {
+function buggyPopuptest(map) {
 	//creates and empty GeoJSON Layer
-	var myGeoJLayer = L.geoJson();
+	var testGeolayer = L.geoJson();
 	//url til GeoJSON data
 	var url = 'https://mats.maplytic.no/table/test.geojson';
 	//henter data 
 	$.get(url, function(data) {
 
-		myGeoJLayer = L.geoJson(data, {
+		testGeolayer = L.geoJson(data, {
 
 	    	onEachFeature: function (feature, layer) {
 	    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);  
 		    }
 
-		}).addTo(map);
+		});
 
-		
+		testGeolayer.addTo(map);
 
 	});	
 
-	return myGeoJLayer;
+	return testGeolayer;
 }
+
+
 //bug: får ikke opp popup med informasjon om feature
-function initiateAndGetGeojsonData2(map) {
+function buggyPopuptest2(map) {
 	//creates and empty GeoJSON Layer
-	var myGeoJLayer = L.geoJson();
+	var testGeolayer2 = L.geoJson(null, {
+    style: function (feature) {
+        return {color: '#FF00FF'};
+    },
+    onEachFeature: function (feature, layer) {
+        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
+    }
+});
 
 	//url til GeoJSON data 
 	var url = 'https://mats.maplytic.no/table/test.geojson';
@@ -555,21 +602,16 @@ function initiateAndGetGeojsonData2(map) {
 
 	$.getJSON(url, function(data) {
 
-    function onEachFeature(feature, layer) {
-  
-        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
-    } 
+	    // function onEachFeature(feature, layer) {
+	  
+	    //     layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
+	    // } 
 
+	    testGeolayer2.addData(data).addTo(map);
 
-
-    myGeoJLayer.addData(data, {
-      onEachFeature: onEachFeature
-    });
-
-    myGeoJLayer.addTo(map);
   });	
 
 
-	return myGeoJLayer;
+	return testGeolayer2;
 }
 
