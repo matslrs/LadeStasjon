@@ -397,7 +397,7 @@ function dataNorgeFlomvarsel(map) {
 	//WarningByMunicipality advarsel kommune, 1103 = stavanger
 	$.ajax({
 	    type: 'GET',
-	    url: "https://api01.nve.no/hydrology/forecast/flood/v1.0.3/api/WarningByMunicipality/1103/1/",
+	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.3/api/WarningByMunicipality/1103/1/",
 	    success: function(data) { 	
 	    	console.log('Flomvarsel success'); 
 	    	warnMuniciStavanger = data;
