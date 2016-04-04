@@ -463,9 +463,9 @@ function dataNorgeFlomvarsel(map) {
 	    					var url = 'https://mats.maplytic.no/sql/select%20navn%2C%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%0Afrom%20kommuner%20%0Awhere%20komm%20%3D%20' + komm + '/out.geojson';
 
 	    					$.getJSON(url, function(data) {
-
-						        data.properties.beskrivelse = varselTekst;
-							   	data.properties.color = color;
+	    						tempData = data;
+						        tempData.properties.beskrivelse = varselTekst;
+							   	tempData.properties.color = color;
 
 							    flomGeoLayer.addData(data);
 
