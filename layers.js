@@ -415,7 +415,7 @@ function dataNorgeFlomvarsel(map) {
 
 	    				if( flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel > 1){
 
-	    					komm = flomTest[i].MunicipalityList[j].id;
+	    					komm = flomTest[i].MunicipalityList[j].Id;
 	    					tolerance = 0.01;
 
 	    					var url = 'https://mats.maplytic.no/sql/select%20navn%2C%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%0Afrom%20kommuner%20%0Awhere%20komm%20%3D%20' + komm + '/out.geojson';
