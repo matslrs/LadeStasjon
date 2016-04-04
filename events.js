@@ -40,10 +40,10 @@ function events(map) {
 
 }
 
-function eventDbQueryUpdates(map, layer){
+function eventDbQueryUpdates(map){
 
 	function updateQuery(e) {
-		updateDbQueryLayer(map, layer);
+		updateDbQueryLayer(map);
 	}
 	map.on('moveend', updateQuery);
 }

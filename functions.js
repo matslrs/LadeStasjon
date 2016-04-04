@@ -56,9 +56,8 @@ function initiateLeafletsDraw(map) {
 
 }
 
-function updateDbQueryLayer(map, layerGroup){
+function updateDbQueryLayer(map){
 	//creates and empty GeoJSON Layer
-	var myGeoJLayer = L.geoJson();
 
 	newBounds = map.getBounds();
 	neLat = newBounds.getNorth();
@@ -82,29 +81,11 @@ function updateDbQueryLayer(map, layerGroup){
 	        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
 	    } 
 
+	    dbQueryLayer.clearLayers();
 
-
-	    myGeoJLayer.addData(data, {
+	    dbQueryLayer.addData(data, {
 	      onEachFeature: onEachFeature
 	    });
-
-	    //layerControl.removeLayer(dbQueryLayer);
-	  	map.removeLayer(dbQueryLayer);
-	    //layerControl.RemoveFrom(dbQueryLayer);
-	    dbQueryLayer = myGeoJLayer;
-	    //layerControl.layers.addOverlay(dbQueryLayer, "nytt sql layer");
-	    dbQueryLayer.addTo(map);
-	    overlayMaps["Query test"] = dbQueryLayer;
-	   // layerControl.layers(baseMaps,overlayMaps)._update();
-	   //layerControl.removeFrom(map);
-	   layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
-
   	});	
 
-}
-
-
-function lalal(){
-	//Layer control
-	layerControl.layers(baseMaps, overlayMaps, {position :'bottomright'}).addTo(mymap)
 }

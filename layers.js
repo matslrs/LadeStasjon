@@ -221,7 +221,7 @@ function setupDbLayer(map) {
 	    dbQueryLayer.addTo(map);
   	});	
 
-	eventDbQueryUpdates(map, dbQueryLayer);
+	eventDbQueryUpdates(map);
 
 	return dbQueryLayer;
 }
