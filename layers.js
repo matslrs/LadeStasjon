@@ -394,18 +394,66 @@ function difiBomstasjon(map) {
 //NVE
 function dataNorgeFlomvarsel(map) {
 
-
+	//WarningByMunicipality advarsel kommune, 1103 = stavanger
 	$.ajax({
-		    type: 'GET',
-		    //url: "http://api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountyOverview/1/2015-1-1/2015-15-12",
-		    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountyOverview/1",
-		    success: function(data) { 	
-		    	console.log('Flomvarsel success'); 
-		    	awesomeData = data;
-		    },
-		    contentType: "application/json",
-		    dataType: 'json'
-		});
+	    type: 'GET',
+	    url: "http://api01.nve.no/hydrology/forecast/flood/v1.0.3/api/WarningByMunicipality/1103/1/",
+	    success: function(data) { 	
+	    	console.log('Flomvarsel success'); 
+	    	warnMuniciStavanger = data;
+	    },
+	    contentType: "application/json",
+	    dataType: 'json'
+	});
+
+
+	//CountySummary
+	$.ajax({
+	    type: 'GET',
+	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountySummary/1",
+	    success: function(data) { 	
+	    	console.log('Flomvarsel success'); 
+	    	countySummary = data;
+	    },
+	    contentType: "application/json",
+	    dataType: 'json'
+	});
+
+	//CountyOverview
+	$.ajax({
+	    type: 'GET',
+	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountyOverview/1",
+	    success: function(data) { 	
+	    	console.log('Flomvarsel success'); 
+	    	countyOverview = data;
+	    },
+	    contentType: "application/json",
+	    dataType: 'json'
+	});
+
+	//EmergencyWarning
+	$.ajax({
+	    type: 'GET',
+	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.2/api/EmergencyWarning/1",
+	    success: function(data) { 	
+	    	console.log('Flomvarsel success'); 
+	    	emergencyWarning = data;
+	    },
+	    contentType: "application/json",
+	    dataType: 'json'
+	});
+
+	//MapComments
+	$.ajax({
+	    type: 'GET',
+	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.2/api/MapComments/1",
+	    success: function(data) { 	
+	    	console.log('Flomvarsel success'); 
+	    	mapComments = data;
+	    },
+	    contentType: "application/json",
+	    dataType: 'json'
+	});
 
 }
 //-------------------------------------------
