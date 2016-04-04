@@ -424,7 +424,9 @@ function dataNorgeFlomvarsel(map) {
 
 							    function onEachFeature(feature, layer) {
 							  
-							        layer.bindPopup("Kommune: " + feature.properties.navn + "<br>" + "ActivityLevel: " + flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel);
+							        layer.bindPopup("Kommune: " + feature.properties.navn );
+							        //layer.bindPopup("Kommune: " + feature.properties.navn + "<br>" + "ActivityLevel: " + flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel);
+							        feature.bindPopup("Kommune: " + feature.properties.navn + "<br>" + "ActivityLevel: " + flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel);
 							    } 
 
 							    myGeoJLayer.addData(data, {
