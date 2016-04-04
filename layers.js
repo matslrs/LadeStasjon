@@ -407,11 +407,11 @@ function dataNorgeFlomvarsel(map) {
 	    	console.log('Flomvarsel success'); 
 	    	flomTest = data;
 
-	    	for(i=0;flomTest.length;i++){
+	    	for(i=0;i<flomTest.length;i++){
 
 	    		if( flomTest[i].HighestActivityLevel > 1){
 
-	    			for(j=0;flomTest[i].MunicipalityList.length;j++){
+	    			for(j=0;j<flomTest[i].MunicipalityList.length;j++){
 
 	    				if( flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel > 1){
 
