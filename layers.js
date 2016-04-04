@@ -395,7 +395,7 @@ function difiBomstasjon(map) {
 //NVE
 function dataNorgeFlomvarsel(map) {
 
-	var myGeoJLayer = L.geoJson();
+	var flomGeoLayer = L.geoJson();
 
 
 
@@ -429,7 +429,7 @@ function dataNorgeFlomvarsel(map) {
 							        feature.bindPopup("Kommune: " + feature.properties.navn + "<br>" + "ActivityLevel: " + flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel);
 							    } 
 
-							    myGeoJLayer.addData(data, {
+							    flomGeoLayer.addData(data, {
 							      onEachFeature: onEachFeature
 							    });
 						  	});	
@@ -508,7 +508,7 @@ function dataNorgeFlomvarsel(map) {
 	// });
 
 
-	return myGeoJLayer;
+	return flomGeoLayer;
 
 }
 //-------------------------------------------
