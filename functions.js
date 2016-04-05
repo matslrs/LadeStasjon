@@ -108,8 +108,8 @@ function updateDynamicLayers(map){
 					kNr = data.features[i].properties.komm;
 				}
 
-		        data.features[i].properties.beskrivelse = kommuneInfo[kNr]["varselTekst"];
-			   	data.features[i].properties.color = kommuneInfo[kNr]["color"];
+		        data.features[i].properties.beskrivelse = flomKommuneInfo[kNr]["varselTekst"];
+			   	data.features[i].properties.color = flomKommuneInfo[kNr]["color"];
 			}
 
 			//add it to the layer
