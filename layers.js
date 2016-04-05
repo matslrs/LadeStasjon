@@ -104,7 +104,7 @@ function setupOverlayLayers(map) {
 
 	//NVE
 	if(useFloodData){
-		flomDataQuery = dataNorgeFlomVarsel(map);
+		/*flomDataQuery = */dataNorgeFlomVarsel(map);
 		overlayMaps["Flom Varsel"] = flomDataQuery;
 	}
 
@@ -512,7 +512,7 @@ function dataNorgeFlomVarsel(map) {
 					}
 
 					//add it to the layer
-				    flomGeoLayer.addData(data).addTo(map);
+				    flomDataQuery.addData(data).addTo(map);
 
 
 			  	});	
