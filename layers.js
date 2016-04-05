@@ -104,18 +104,13 @@ function setupOverlayLayers(map) {
 
 	//NVE
 	if(useFloodData){
-		var flomData = dataNorgeFlomvarsel(map);
-		overlayMaps["Flomvarsel"] = flomData;
+		var flomData = dataNorgeFlomVarsel(map);
+		overlayMaps["Flom Varsel"] = flomData;
 	}
 
-	if(usePoptest){
-		var bugPop = buggyPopuptest(map);
-		overlayMaps["bugPop"] = bugPop;
-	}
-
-	if(usePoptest2){
-		var bugPop2 = buggyPopuptest2(map);
-		overlayMaps["bugPop2"] = bugPop2;
+	if(useLandslideData){
+		var skredData = dataNorgeJordkredVarsel(map);
+		overlayMaps["Jordskred Varsel"] = skredData;
 	}
 
 
@@ -403,16 +398,16 @@ function difiBomstasjon(map) {
 
 //-------------------------------------------
 //NVE
-function dataNorgeFlomvarsel(map) {
+function dataNorgeFlomVarsel(map) {
 
 	var flomGeoLayer = L.geoJson(null, {
-    style: function (feature) {
-        return {color: feature.properties.color};
-    },
-    onEachFeature: function (feature, layer) {
-        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
-    }
-});
+	    style: function (feature) {
+	        return {color: feature.properties.color};
+	    },
+	    onEachFeature: function (feature, layer) {
+	        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
+	    }
+	});
 
 
 
@@ -463,13 +458,16 @@ function dataNorgeFlomvarsel(map) {
 	    		}
 	    	}
 
+	    	//hvis flomvarsel
 	    	if(kommuneNr.length > 0){
-		    	//gjør DB query her
+
 
 		    	//toleranse i ST_Simplify
 				tolerance = 0.01;
+
 				//sql query code
 		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom,' + tolerance + ') as geom FROM kommuner WHERE';
+
 		    	//append the rest of the query code
 		    	for(i=0;i<kommuneNr.length;i++){
 		    		if(i==0){
@@ -482,8 +480,10 @@ function dataNorgeFlomvarsel(map) {
 		    		sqlString = sqlString.concat(appendString);
 		    	}
 
+		    	//lag URL
 		    	var url = 'https://mats.maplytic.no/sql/' + encodeURIComponent(sqlString) + '/out.geojson';
 
+		    	//Hent data
 				$.getJSON(url, function(data) {
 
 					for(i=0;i<data.features.length;i++){
@@ -515,6 +515,124 @@ function dataNorgeFlomvarsel(map) {
 	return flomGeoLayer;
 
 }
+
+function dataNorgeJordkredVarsel(map) {
+
+	var skredGeoLayer = L.geoJson(null, {
+	    style: function (feature) {
+	        return {color: feature.properties.color};
+	    },
+	    onEachFeature: function (feature, layer) {
+	        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
+	    }
+	});
+
+
+
+	//test data for storm dag 5.12-15
+	$.ajax({
+	    type: 'GET',
+	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/landslide/v1.0.3/api/CountyOverview/1/2015-12-5/2015-12-5",
+	    success: function(data) { 	
+	    	console.log('Flomvarsel success'); 
+	    	flomTest = data;
+	    	var kommuneNr = [];
+	    	var kommuneInfo = [];
+
+	    	//går gjennom alle komuner
+	    	for(i=0;i<flomTest.length;i++){
+	    		//hvis fylke har høy nok aktivitets nivå
+	    		if( flomTest[i].HighestActivityLevel > 1){
+	    			//gå gjennom kommuner i det fylke
+	    			for(j=0;j<flomTest[i].MunicipalityList.length;j++){
+	    				//hvis kommunen høyt nok aktivitets nivå --> process
+	    				if( flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel > 1){
+
+	    					//kommune nr
+	    					kommuneNr[kommuneNr.length] = flomTest[i].MunicipalityList[j].Id;
+	    					//aktivitets nivå
+	    					aNivaa = flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel;
+	    					//farge
+	    					if(aNivaa==2){
+	    						color = '#FFFF00';
+	    					}
+	    					else if(aNivaa==3){
+	    						color = '#ffa500';
+	    					}
+	    					else{
+	    						color = '#FF0000';
+	    					}
+	    					//beskrivelse
+	    					varselTekst = flomTest[i].MunicipalityList[j].WarningList[0].MainText;
+
+
+	    					//lagrer data i en 2d array for bruk i getJSON nedenfor
+	    					kommuneInfo[kommuneNr[kommuneNr.length-1]] = [];
+	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["aNivaa"] = aNivaa;
+	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["color"] = color;
+	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["varselTekst"] = varselTekst;
+	    				}
+	    			}
+	    		}
+	    	}
+
+	    	//hvis flomvarsel
+	    	if(kommuneNr.length > 0){
+
+
+		    	//toleranse i ST_Simplify
+				tolerance = 0.01;
+
+				//sql query code
+		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom,' + tolerance + ') as geom FROM kommuner WHERE';
+
+		    	//append the rest of the query code
+		    	for(i=0;i<kommuneNr.length;i++){
+		    		if(i==0){
+		    			appendString = ' komm = ' + kommuneNr[i];
+		    		}
+		    		else{
+		    			appendString = ' OR komm = ' + kommuneNr[i];
+		    		}
+
+		    		sqlString = sqlString.concat(appendString);
+		    	}
+
+		    	//lag URL
+		    	var url = 'https://mats.maplytic.no/sql/' + encodeURIComponent(sqlString) + '/out.geojson';
+
+		    	//Hent data
+				$.getJSON(url, function(data) {
+
+					for(i=0;i<data.features.length;i++){
+						//dårlig quick fix
+						if(data.features[i].properties.komm < 1000){
+							kNr = '0' + data.features[i].properties.komm;
+						}
+						else{
+							kNr = data.features[i].properties.komm;
+						}
+
+				        data.features[i].properties.beskrivelse = kommuneInfo[kNr]["varselTekst"];
+					   	data.features[i].properties.color = kommuneInfo[kNr]["color"];
+					}
+
+					//add it to the layer
+				    skredGeoLayer.addData(data).addTo(map);
+
+
+			  	});	
+			}
+
+	    },
+	    contentType: "application/json",
+	    dataType: 'json'
+	});
+
+
+	return skredGeoLayer;
+
+}
 //-------------------------------------------
 
 
@@ -523,61 +641,4 @@ function dataNorgeFlomvarsel(map) {
 ///////////////////////
 /////Test/bug ting////
 /////////////////////
-
-
-//bug: legges ikke inn i myGeoLayer
-function buggyPopuptest(map) {
-	//creates and empty GeoJSON Layer
-	var testGeolayer = L.geoJson();
-	//url til GeoJSON data
-	var url = 'https://mats.maplytic.no/table/test.geojson';
-	//henter data 
-	$.get(url, function(data) {
-
-		testGeolayer = L.geoJson(data, {
-
-	    	onEachFeature: function (feature, layer) {
-	    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);  
-		    }
-
-		});
-
-		testGeolayer.addTo(map);
-
-	});	
-
-	return testGeolayer;
-}
-
-
-//bug: får ikke opp popup med informasjon om feature
-function buggyPopuptest2(map) {
-	//creates and empty GeoJSON Layer
-	var testGeolayer2 = L.geoJson(null, {
-    style: function (feature) {
-        return {color: '#FF00FF'};
-    },
-    onEachFeature: function (feature, layer) {
-        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
-    }
-});
-
-	//url til GeoJSON data 
-	var url = 'https://mats.maplytic.no/table/test.geojson';
-	//henter data 
-
-	$.getJSON(url, function(data) {
-
-	    // function onEachFeature(feature, layer) {
-	  
-	    //     layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
-	    // } 
-
-	    testGeolayer2.addData(data).addTo(map);
-
-  });	
-
-
-	return testGeolayer2;
-}
 
