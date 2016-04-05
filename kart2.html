@@ -69,30 +69,48 @@
 		var fylkeQuery = L.geoJson();
 
 		//NVE Flom data:
-		var flomDataQuery = L.geoJson(null, {
-		    style: function (feature) {
-		        return {color: feature.properties.color};
-		    },
-		    onEachFeature: function (feature, layer) {
-		        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
-		    }
-		});
-		var sqlFlomKommuner;
+		if(useFloodData){
+			var flomDataQuery = L.geoJson(null, {
+			    style: function (feature) {
+			        return {color: feature.properties.color};
+			    },
+			    onEachFeature: function (feature, layer) {
+			        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
+			    }
+			});
+			var sqlFlomKommuner = null;
+			var flomKommuneInfo = [];
+		}
 
 		//NVE Skred data:
-		var skredDataQuery = L.geoJson(null, {
-		    style: function (feature) {
-		        return {color: feature.properties.color};
-		    },
-		    onEachFeature: function (feature, layer) {
-		        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
-		    }
-		});
-		var sqlSkredKommuner;
-
+		if(useLandslideData){
+			var skredDataQuery = L.geoJson(null, {
+			    style: function (feature) {
+			        return {color: feature.properties.color};
+			    },
+			    onEachFeature: function (feature, layer) {
+			        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
+			    }
+			});
+			var sqlSkredKommuner = null;
+			var skredKommuneInfo = [];
+		}
 
 		//END GLOBAL VARIABLES
 		//-----------------------------
+
+
+/*
+setup a check, in updateDynLayers if flom and skred setup have completed.
+	-test could be if(sqlFlomKommuner != null)
+
+
+
+*/
+
+
+
+
 
 
 

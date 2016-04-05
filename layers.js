@@ -104,12 +104,12 @@ function setupOverlayLayers(map) {
 
 	//NVE
 	if(useFloodData){
-		/*flomDataQuery = */dataNorgeFlomVarsel(map);
+		setupFlomVarsel(map);
 		overlayMaps["Flom Varsel"] = flomDataQuery;
 	}
 
 	if(useLandslideData){
-		skredDataQuery = dataNorgeJordkredVarsel(map);
+		setupJordskredVarsel(map);
 		overlayMaps["Jordskred Varsel"] = skredDataQuery;
 	}
 
@@ -396,18 +396,7 @@ function difiBomstasjon(map) {
 
 //-------------------------------------------
 //NVE
-function dataNorgeFlomVarsel(map) {
-
-	var flomGeoLayer = L.geoJson(null, {
-	    style: function (feature) {
-	        return {color: feature.properties.color};
-	    },
-	    onEachFeature: function (feature, layer) {
-	        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
-	    }
-	});
-
-
+function setupFlomVarsel(map) {
 
 	//test data for storm dag 5.12-15
 	$.ajax({
@@ -416,7 +405,6 @@ function dataNorgeFlomVarsel(map) {
 	    success: function(data) { 	
 	    	flomTest = data;
 	    	var kommuneNr = [];
-	    	var kommuneInfo = [];
 
 	    	//går gjennom alle komuner
 	    	for(i=0;i<flomTest.length;i++){
@@ -471,7 +459,7 @@ function dataNorgeFlomVarsel(map) {
 				//sql query code
 		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom, ' + tolerance + ') AS geom FROM kommuner ';
 
-		    	var sqlFlomKommuner = 'WHERE komm IN (';
+		    	var sqlFlomKommunerTemp = 'WHERE komm IN (';
 		    	//append the rest of the query code
 		    	for(i=0;i<kommuneNr.length;i++){
 
@@ -482,13 +470,13 @@ function dataNorgeFlomVarsel(map) {
 		    			appendString = ',' + kommuneNr[i];
 		    		}
 
-		    		sqlFlomKommuner = sqlFlomKommuner.concat(appendString);
+		    		sqlFlomKommunerTemp = sqlFlomKommunerTemp.concat(appendString);
 		    	}
 		    	//close kommune array
-		    	sqlFlomKommuner = sqlFlomKommuner.concat( ')');
+		    	sqlFlomKommunerTemp = sqlFlomKommunerTemp.concat( ')');
 
 		    	//close sql statement
-		    	sqlString = sqlString.concat( sqlFlomKommuner );
+		    	sqlString = sqlString.concat( sqlFlomKommunerTemp );
 		    	sqlString = sqlString.concat( ' AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')' );
 
 		    	//lag URL
@@ -516,30 +504,17 @@ function dataNorgeFlomVarsel(map) {
 
 
 			  	});	
+			  	//denne settes på slutten sånn at den kan brukes som
+				//en sjekk for å se om setup av dynamisk lag er ferdig.
+				sqlFlomKommuner = sqlFlomKommunerTemp;
 			}
-
 	    },
 	    contentType: "application/json",
 	    dataType: 'json'
 	});
-
-
-	return flomGeoLayer;
-
 }
 
-function dataNorgeJordkredVarsel(map) {
-
-	var skredGeoLayer = L.geoJson(null, {
-	    style: function (feature) {
-	        return {color: feature.properties.color};
-	    },
-	    onEachFeature: function (feature, layer) {
-	        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
-	    }
-	});
-
-
+function setupJordskredVarsel(map) {
 
 	//test data for storm dag 5.12-15
 	$.ajax({
@@ -548,7 +523,6 @@ function dataNorgeJordkredVarsel(map) {
 	    success: function(data) { 	
 	    	flomTest = data;
 	    	var kommuneNr = [];
-	    	var kommuneInfo = [];
 
 	    	//går gjennom alle komuner
 	    	for(i=0;i<flomTest.length;i++){
@@ -578,10 +552,10 @@ function dataNorgeJordkredVarsel(map) {
 
 
 	    					//lagrer data i en 2d array for bruk i getJSON nedenfor
-	    					kommuneInfo[kommuneNr[kommuneNr.length-1]] = [];
-	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["aNivaa"] = aNivaa;
-	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["color"] = color;
-	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["varselTekst"] = varselTekst;
+	    					skredKommuneInfo[kommuneNr[kommuneNr.length-1]] = [];
+	    					skredKommuneInfo[kommuneNr[kommuneNr.length-1]]["aNivaa"] = aNivaa;
+	    					skredKommuneInfo[kommuneNr[kommuneNr.length-1]]["color"] = color;
+	    					skredKommuneInfo[kommuneNr[kommuneNr.length-1]]["varselTekst"] = varselTekst;
 	    				}
 	    			}
 	    		}
@@ -601,8 +575,9 @@ function dataNorgeJordkredVarsel(map) {
 				swLng = initialBounds.getWest();
 
 				//sql query code
-		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom, '+ tolerance + ') AS geom FROM kommuner WHERE komm IN (';
+		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom, ' + tolerance + ') AS geom FROM kommuner ';
 
+		    	var sqlSkredKommunerTemp = 'WHERE komm IN (';
 		    	//append the rest of the query code
 		    	for(i=0;i<kommuneNr.length;i++){
 
@@ -613,11 +588,14 @@ function dataNorgeJordkredVarsel(map) {
 		    			appendString = ',' + kommuneNr[i];
 		    		}
 
-		    		sqlString = sqlString.concat(appendString);
+		    		sqlSkredKommunerTemp = sqlSkredKommunerTemp.concat(appendString);
 		    	}
+		    	//close kommune array
+		    	sqlSkredKommunerTemp = sqlSkredKommunerTemp.concat( ')');
 
 		    	//close sql statement
-		    	sqlString = sqlString.concat( ') AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')' );
+		    	sqlString = sqlString.concat( sqlSkredKommunerTemp );
+		    	sqlString = sqlString.concat( ' AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')' );
 
 		    	//lag URL
 		    	var url = 'https://mats.maplytic.no/sql/' + encodeURIComponent(sqlString) + '/out.geojson';
@@ -634,8 +612,8 @@ function dataNorgeJordkredVarsel(map) {
 							kNr = data.features[i].properties.komm;
 						}
 
-				        data.features[i].properties.beskrivelse = kommuneInfo[kNr]["varselTekst"];
-					   	data.features[i].properties.color = kommuneInfo[kNr]["color"];
+				        data.features[i].properties.beskrivelse = skredKommuneInfo[kNr]["varselTekst"];
+					   	data.features[i].properties.color = skredKommuneInfo[kNr]["color"];
 					}
 
 					//add it to the layer
@@ -643,16 +621,14 @@ function dataNorgeJordkredVarsel(map) {
 
 
 			  	});	
+			  	//denne settes på slutten sånn at den kan brukes som
+				//en sjekk for å se om setup av dynamisk lag er ferdig.
+				sqlSkredKommuner = sqlSkredKommunerTemp;
 			}
-
 	    },
 	    contentType: "application/json",
 	    dataType: 'json'
 	});
-
-
-	return skredGeoLayer;
-
 }
 //-------------------------------------------
 
