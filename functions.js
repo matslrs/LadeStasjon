@@ -113,8 +113,8 @@ function updateDynamicLayers(map){
 			}
 
 			//add it to the layer
-		    flomGeoLayer.clearLayers();
-		    flomGeoLayer.addData(data);
+		    flomDataQuery.clearLayers();
+		    flomDataQuery.addData(data);
 
 	  	});	
 	}
