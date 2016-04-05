@@ -617,7 +617,7 @@ function setupJordskredVarsel(map) {
 					}
 
 					//add it to the layer
-				    skredGeoLayer.addData(data);
+				    skredDataQuery.addData(data);
 
 
 			  	});	
