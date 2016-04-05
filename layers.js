@@ -73,30 +73,30 @@ function setupOverlayLayers(map) {
 	//gets JSON data from difi
 	if(useHelseStasjonData) {
 		var helseStasjonDifi = difiHelsestasjon(map);
-		overlayMaps["Helsestasjon"] = helseStasjonDifi;
+		overlayMaps["Helsestasjon Stavanger"] = helseStasjonDifi;
 	}
 	if(useBarnehageData) {
 		var barnehageDifi = difiBarnehage(map);
-		overlayMaps["Barnehage"] = barnehageDifi;
+		overlayMaps["Barnehage Stavanger"] = barnehageDifi;
 	}
 	if(useToalett) {
 		var toalettDifi = difiToalett(map);
-		overlayMaps["Offentlig Toalett"] = toalettDifi;
+		overlayMaps["Offentlig Toalett Stavanger"] = toalettDifi;
 	}
 	if(useBomstasjon) {
 		var bomstasjonDifi = difiBomstasjon(map);
-		overlayMaps["Bomstasjoner"] = bomstasjonDifi;
+		overlayMaps["Bomstasjoner Norge"] = bomstasjonDifi;
 	}
 
 	//NVE
 	if(useFloodData){
 		setupFlomVarsel(map);
-		overlayMaps["Flom Varsel"] = flomDataQuery;
+		overlayMaps["Flom Varsel 5.12-15"] = flomDataQuery;
 	}
 
 	if(useLandslideData){
 		setupJordskredVarsel(map);
-		overlayMaps["Jordskred Varsel"] = skredDataQuery;
+		overlayMaps["Jordskred Varsel 5.12-15"] = skredDataQuery;
 	}
 
 

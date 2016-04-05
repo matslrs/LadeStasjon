@@ -45,7 +45,9 @@ function eventUpdateDynamicLayers(map){
 	function updateLayers(e) {
 		updateDynamicLayers(map);
 	}
+	
 	map.on('moveend', updateLayers);
+	map.on('overlayadd', updateLayers);
 }
 
 function drawEvents(map, drawnItems){
