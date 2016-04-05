@@ -385,7 +385,7 @@ function setupNobilLayer(map){
 
 	jQuery.ajax({
 		type: 'POST',
-		url: 'http://nobil.no/api/server/datadump.php',
+		url: ' https://mats.maplytic.no/proxy/nobil.no/api/server/datadump.php',
 		data: {
 			'apikey': nobilApiKey,
 			'countrycode': 'NOR',
