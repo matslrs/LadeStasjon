@@ -434,10 +434,10 @@ function setupFlomVarsel(map) {
 
 
 	    					//lagrer data i en 2d array for bruk i getJSON nedenfor
-	    					kommuneInfo[kommuneNr[kommuneNr.length-1]] = [];
-	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["aNivaa"] = aNivaa;
-	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["color"] = color;
-	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["varselTekst"] = varselTekst;
+	    					flomKommuneInfo[kommuneNr[kommuneNr.length-1]] = [];
+	    					flomKommuneInfo[kommuneNr[kommuneNr.length-1]]["aNivaa"] = aNivaa;
+	    					flomKommuneInfo[kommuneNr[kommuneNr.length-1]]["color"] = color;
+	    					flomKommuneInfo[kommuneNr[kommuneNr.length-1]]["varselTekst"] = varselTekst;
 	    				}
 	    			}
 	    		}
@@ -495,8 +495,8 @@ function setupFlomVarsel(map) {
 							kNr = data.features[i].properties.komm;
 						}
 
-				        data.features[i].properties.beskrivelse = kommuneInfo[kNr]["varselTekst"];
-					   	data.features[i].properties.color = kommuneInfo[kNr]["color"];
+				        data.features[i].properties.beskrivelse = flomKommuneInfo[kNr]["varselTekst"];
+					   	data.features[i].properties.color = flomKommuneInfo[kNr]["color"];
 					}
 
 					//add it to the layer
