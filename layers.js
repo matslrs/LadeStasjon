@@ -436,7 +436,7 @@ function dataNorgeFlomvarsel(map) {
 	    				if( flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel > 1){
 
 	    					//kommune nr
-	    					kommuneNr[kommuneNr.legnth] = flomTest[i].MunicipalityList[j].Id;
+	    					kommuneNr[kommuneNr.length] = flomTest[i].MunicipalityList[j].Id;
 
 	    					//DATA SOM TRENGS TIL LAYER
 	    					//aktivitets nivå
@@ -515,70 +515,6 @@ function dataNorgeFlomvarsel(map) {
 	    contentType: "application/json",
 	    dataType: 'json'
 	});
-
-
-	// //CountySummary
-	// $.ajax({
-	//     type: 'GET',
-	//     url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountySummary/1",
-	//     success: function(data) { 	
-	//     	console.log('Flomvarsel success'); 
-	//     	countySummary = data;
-	//     },
-	//     contentType: "application/json",
-	//     dataType: 'json'
-	// });
-
-	//CountyOverview
-	$.ajax({
-	    type: 'GET',
-	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.2/api/CountyOverview/1",
-	    success: function(data) { 	
-	    	console.log('Flomvarsel success'); 
-	    	countyOverview = data;
-	    },
-	    contentType: "application/json",
-	    dataType: 'json'
-	});
-
-	// //EmergencyWarning
-	// $.ajax({
-	//     type: 'GET',
-	//     url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.2/api/EmergencyWarning/1",
-	//     success: function(data) { 	
-	//     	console.log('Flomvarsel success'); 
-	//     	emergencyWarning = data;
-	//     },
-	//     contentType: "application/json",
-	//     dataType: 'json'
-	// });
-
-	// //MapComments
-	// $.ajax({
-	//     type: 'GET',
-	//     url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.2/api/MapComments/1",
-	//     success: function(data) { 	
-	//     	console.log('Flomvarsel success'); 
-	//     	mapComments = data;
-	//     },
-	//     contentType: "application/json",
-	//     dataType: 'json'
-	// });
-
-
-
-
-	// //EmergencyWarning
-	// $.ajax({
-	//     type: 'GET',
-	//     url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.2/api/EmergencyWarning/1",
-	//     success: function(data) { 	
-	//     	console.log('Flomvarsel success'); 
-	//     	emergencyWarning2 = data;
-	//     },
-	//     contentType: "application/json",
-	//     dataType: 'json'
-	// });
 
 
 	return flomGeoLayer;
