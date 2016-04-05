@@ -17,9 +17,19 @@
 	<script src="leafletsearch/leaflet-search.src.js"></script>
 	
 	<script>
+		//-----------------------------
+		//SELECT BASE START MAP!
+		var startMap = "Topografisk Norgeskart";	//check the function setupBaseLayers(map) in layers.js to see names on maps
+		//-----------------------------
+
+
+		//-----------------------------
+		//SETTINGS
 
 		//Enable search function?
 		var enableSearching = true;
+		//Enable dynamic layers?
+		var enableDynLayers = true;
 
 		//Base layers
 		var useOsmLayer = false;
@@ -46,11 +56,45 @@
 		var useFloodData = true;
 		var useLandslideData = true;
 
+		//END SETTINGS
+		//-----------------------------
 
-		//check the function setupBaseLayers(map) in layers.js to see names on maps
-		var startMap = "Topografisk Norgeskart";
 
-		var dbQueryLayer = L.geoJson();
+
+
+		//-----------------------------
+		//GLOBAL VARIABLES
+
+		//dynamic layers
+		var fylkeQuery = L.geoJson();
+
+		//NVE Flom data:
+		var flomDataQuery = L.geoJson(null, {
+		    style: function (feature) {
+		        return {color: feature.properties.color};
+		    },
+		    onEachFeature: function (feature, layer) {
+		        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
+		    }
+		});
+		var sqlFlomKommuner;
+
+		//NVE Skred data:
+		var skredDataQuery = L.geoJson(null, {
+		    style: function (feature) {
+		        return {color: feature.properties.color};
+		    },
+		    onEachFeature: function (feature, layer) {
+		        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
+		    }
+		});
+		var sqlSkredKommuner;
+
+
+		//END GLOBAL VARIABLES
+		//-----------------------------
+
+
 
 	</script>	
 	
@@ -68,9 +112,6 @@
 			zoom: 8
 		});
 
-		var layerControl = L.control;
-
-		var awesomeData;	//hører til ufullstendig NVE funksjon....data blir hentet, men ikke kode for behandling og vis på kart enda.
 
 		//sets up base map layers
 		var baseMaps = setupBaseLayers(mymap);
@@ -81,10 +122,13 @@
 		baseMaps[startMap].addTo(mymap);
 
 		 //Layer control
-		layerControl.layers(baseMaps, overlayMaps).addTo(mymap);		
+		var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(mymap);
 
 		if( enableSearching ){
 			setupSearch(mymap);
+		}	
+		if( enableDynLayers ){
+			eventUpdateDynamicLayers(mymap);
 		}	
 
 		//find location and set view and zoom

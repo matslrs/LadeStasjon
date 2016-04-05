@@ -62,8 +62,8 @@ function setupOverlayLayers(map) {
 	//data som hentes fra mats.maplytic.no
 	if(useMaplyticQuery){
 		//defined i html2 head i forsøk på å få styr på 
-		dbQueryLayer = setupDbLayer(map);
-		overlayMaps["Query test"] = dbQueryLayer;
+		fylkeQuery = setupDbLayer(map);
+		overlayMaps["Query test"] = fylkeQuery;
 	}
 	if(useFylkeGeoJsonData) {
 		var FylkeGeoJLayer = loadFylkeGeoJSONs(map);
@@ -104,13 +104,13 @@ function setupOverlayLayers(map) {
 
 	//NVE
 	if(useFloodData){
-		var flomData = dataNorgeFlomVarsel(map);
-		overlayMaps["Flom Varsel"] = flomData;
+		flomDataQuery = dataNorgeFlomVarsel(map);
+		overlayMaps["Flom Varsel"] = flomDataQuery;
 	}
 
 	if(useLandslideData){
-		var skredData = dataNorgeJordkredVarsel(map);
-		overlayMaps["Jordskred Varsel"] = skredData;
+		skredDataQuery = dataNorgeJordkredVarsel(map);
+		overlayMaps["Jordskred Varsel"] = skredDataQuery;
 	}
 
 
@@ -226,16 +226,14 @@ function setupDbLayer(map) {
 	    } 
 
 
-	    dbQueryLayer.addData(data, {
+	    fylkeQuery.addData(data, {
 	      onEachFeature: onEachFeature
 	    });
 
-	    //dbQueryLayer.addTo(map);
+	    //fylkeQuery.addTo(map);
   	});	
 
-	eventDbQueryUpdates(map);
-
-	return dbQueryLayer;
+	return fylkeQuery;
 }
 
 //-------------------------------------------
@@ -471,8 +469,9 @@ function dataNorgeFlomVarsel(map) {
 				swLng = initialBounds.getWest();
 
 				//sql query code
-		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom, '+ tolerance + ') AS geom FROM kommuner WHERE komm IN (';
+		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom, ' + tolerance + ') AS geom FROM kommuner ';
 
+		    	var sqlFlomKommuner = 'WHERE komm IN (';
 		    	//append the rest of the query code
 		    	for(i=0;i<kommuneNr.length;i++){
 
@@ -483,11 +482,14 @@ function dataNorgeFlomVarsel(map) {
 		    			appendString = ',' + kommuneNr[i];
 		    		}
 
-		    		sqlString = sqlString.concat(appendString);
+		    		sqlFlomKommuner = sqlFlomKommuner.concat(appendString);
 		    	}
+		    	//close kommune array
+		    	sqlFlomKommuner = sqlFlomKommuner.concat( ')');
 
 		    	//close sql statement
-		    	sqlString = sqlString.concat( ') AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')' );
+		    	sqlString = sqlString.concat( sqlFlomKommuner );
+		    	sqlString = sqlString.concat( ' AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')' );
 
 		    	//lag URL
 		    	var url = 'https://mats.maplytic.no/sql/' + encodeURIComponent(sqlString) + '/out.geojson';
@@ -616,7 +618,7 @@ function dataNorgeJordkredVarsel(map) {
 
 		    	//close sql statement
 		    	sqlString = sqlString.concat( ') AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')' );
-		    	
+
 		    	//lag URL
 		    	var url = 'https://mats.maplytic.no/sql/' + encodeURIComponent(sqlString) + '/out.geojson';
 

@@ -56,7 +56,7 @@ function initiateLeafletsDraw(map) {
 
 }
 
-function updateDbQueryLayer(map){
+function updateDynamicLayers(map){
 	//creates and empty GeoJSON Layer
 
 	newBounds = map.getBounds();
@@ -81,11 +81,41 @@ function updateDbQueryLayer(map){
 	        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
 	    } 
 
-	    dbQueryLayer.clearLayers();
+	    fylkeQuery.clearLayers();
 
-	    dbQueryLayer.addData(data, {
+	    fylkeQuery.addData(data, {
 	      onEachFeature: onEachFeature
 	    });
   	});	
+
+
+	// //sql query code
+	// var sqlString = 'SELECT navn, komm, ST_Simplify(geom, ' + tolerance + ') AS geom FROM kommuner ' + sqlFlomKommuner +  ' AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')';
+	// //lag URL
+	// var url = 'https://mats.maplytic.no/sql/' + encodeURIComponent(sqlString) + '/out.geojson';
+
+	// //Hent data
+	// $.getJSON(url, function(data) {
+
+	// 	for(i=0;i<data.features.length;i++){
+
+	// 		//dårlig quick fix?
+	// 		if(data.features[i].properties.komm < 1000){
+	// 			kNr = '0' + data.features[i].properties.komm;
+	// 		}
+	// 		else{
+	// 			kNr = data.features[i].properties.komm;
+	// 		}
+
+	//         data.features[i].properties.beskrivelse = kommuneInfo[kNr]["varselTekst"];
+	// 	   	data.features[i].properties.color = kommuneInfo[kNr]["color"];
+	// 	}
+
+	// 	//add it to the layer
+	//     flomGeoLayer.addData(data).addTo(map);
+
+
+ //  	});	
+
 
 }

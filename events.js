@@ -40,12 +40,12 @@ function events(map) {
 
 }
 
-function eventDbQueryUpdates(map){
+function eventUpdateDynamicLayers(map){
 
-	function updateQuery(e) {
-		updateDbQueryLayer(map);
+	function updateLayers(e) {
+		updateDynamicLayers(map);
 	}
-	map.on('moveend', updateQuery);
+	map.on('moveend', updateLayers);
 }
 
 function drawEvents(map, drawnItems){
