@@ -40,11 +40,10 @@
 		//Overlay layers
 		var useDrawAndMaplyticDB = false;	//draw and DB combined	OR	
 		var useLeafletDraw = false;			//separete draw and/or
-		var useMaplyticData = false;		//seperate DB
 		//maplytic data
 		var useFylkeGeoJsonData = false;
 		var useKommuneGeoJsonData = false;
-		var useMaplyticQuery = true;
+		var useFylkerDbQ = true;
 		var useMaplyticTile = true;
 		var useGrunnkretsTile = true;
 		//DIFI
@@ -66,8 +65,10 @@
 		//GLOBAL VARIABLES
 
 		//dynamic layers
-		var fylkeQuery = L.geoJson();
-
+		//DB maplytic
+		if(useFylkerDbQ){
+			var fylkeQuery = L.geoJson();
+		}
 		//NVE Flom data:
 		if(useFloodData){
 			var flomDataQuery = L.geoJson(null, {

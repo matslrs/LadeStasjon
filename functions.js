@@ -70,26 +70,28 @@ function updateDynamicLayers(map){
 	var tolerance = 0.001*7/map.getZoom();
 	
 	console.log('New tolerance: ' + tolerance)
-	//url til GeoJSON data 
-	var url = 'https://mats.maplytic.no/sql/select%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%2C%20navn%2C%20fylkesnr%0Afrom%20fylker%0AWHERE%20fylker.geom%20%26%26%20ST_MakeEnvelope(' + swLng + '%2C%20' + swLat + '%2C%20' + neLng + '%2C%20' + neLat +')%3B/out.geojson';
-	//henter data 
 
-	$.getJSON(url, function(data) {
+	if(useFylkerDbQ && map.hasLayer(fylkeQuery)){
+		//url til GeoJSON data 
+		var url = 'https://mats.maplytic.no/sql/select%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%2C%20navn%2C%20fylkesnr%0Afrom%20fylker%0AWHERE%20fylker.geom%20%26%26%20ST_MakeEnvelope(' + swLng + '%2C%20' + swLat + '%2C%20' + neLng + '%2C%20' + neLat +')%3B/out.geojson';
+		//henter data 
 
-	    function onEachFeature(feature, layer) {
-	  
-	        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
-	    } 
+		$.getJSON(url, function(data) {
 
-	    fylkeQuery.clearLayers();
+		    function onEachFeature(feature, layer) {
+		  
+		        layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);
+		    } 
 
-	    fylkeQuery.addData(data, {
-	      onEachFeature: onEachFeature
-	    });
-  	});	
+		    fylkeQuery.clearLayers();
 
+		    fylkeQuery.addData(data, {
+		      onEachFeature: onEachFeature
+		    });
+	  	});	
+	}
 
-	if(useFloodData && sqlFlomKommuner != null){
+	if(useFloodData && sqlFlomKommuner != null && map.hasLayer(flomDataQuery)){
 		//sql query code
 		var sqlString = 'SELECT navn, komm, ST_Simplify(geom, ' + tolerance + ') AS geom FROM kommuner ' + sqlFlomKommuner +  ' AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')';
 		//lag URL
@@ -119,7 +121,7 @@ function updateDynamicLayers(map){
 	  	});	
 	}
 
-	if(useLandslideData && sqlSkredKommuner != null){
+	if(useLandslideData && sqlSkredKommuner != null && map.hasLayer(skredDataQuery)){
 		//sql query code
 		var sqlString = 'SELECT navn, komm, ST_Simplify(geom, ' + tolerance + ') AS geom FROM kommuner ' + sqlSkredKommuner +  ' AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')';
 		//lag URL

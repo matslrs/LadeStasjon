@@ -38,51 +38,37 @@ function setupOverlayLayers(map) {
 
 	var overlayMaps = [];
 
-
+	//Draw & MpltcDB OR Draw
 	if(useDrawAndMaplyticDB) {
 		var drawnItems = loadDrawAndMaplyticDB(map);
 		overlayMaps["Draw"] = drawnItems;
 	}
-	else
-	{
-		//leaflet.draw
-		if(useLeafletDraw ) {
-			//var drawnItems = initiateLeafletsDraw(map);
-			var drawnItems = initiateLeafletsDraw(map);
-			overlayMaps["Draw"] = drawnItems;
-		}
-		//gets GeoJSON data from mats.maplytic.no
-		if(useMaplyticData ) {
-			var myGeoJLayer = initiateAndGetGeojsonData2(map);
-			overlayMaps["GeoJSON database"] = myGeoJLayer;
-		}
+	else if(useLeafletDraw ) {
+		var drawnItems = initiateLeafletsDraw(map);
+		overlayMaps["Draw"] = drawnItems;
 	}
 	
-
 	//data som hentes fra mats.maplytic.no
-	if(useMaplyticQuery){
-		//defined i html2 head i forsøk på å få styr på 
+	if(useFylkerDbQ){
 		fylkeQuery = setupDbLayer(map);
-		overlayMaps["Query test"] = fylkeQuery;
+		overlayMaps["Fylker Mpltc SQL"] = fylkeQuery;
 	}
 	if(useFylkeGeoJsonData) {
 		var FylkeGeoJLayer = loadFylkeGeoJSONs(map);
-		overlayMaps["Fylker"] = FylkeGeoJLayer;
+		overlayMaps["Fylker Mpltc GSN"] = FylkeGeoJLayer;
 	}
 	if(useKommuneGeoJsonData) {
 		var KommuneGeoJLayer = loadKommuneGeoJSONs(map);
-		overlayMaps["Komuner"] = KommuneGeoJLayer;
+		overlayMaps["Komuner Mpltc GSN"] = KommuneGeoJLayer;
 	}
 	if(useMaplyticTile) {
 		var maplyticTiles = maplyticTileApi(map);
-		overlayMaps["Tile test"] = maplyticTiles;
+		overlayMaps["Fylker Mpltc TL"] = maplyticTiles;
 	}
 	if(useGrunnkretsTile) {
 		var GrunnkretsTile = loadGrunnkretsTile(map);
-		overlayMaps["Grunnkrets Tile"] = GrunnkretsTile;
+		overlayMaps["Grunnkrets Mpltc TL"] = GrunnkretsTile;
 	}
-
-
 
 	//gets JSON data from difi
 	if(useHelseStasjonData) {
