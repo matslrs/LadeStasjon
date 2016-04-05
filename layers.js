@@ -471,7 +471,6 @@ function dataNorgeFlomVarsel(map) {
 				swLng = initialBounds.getWest();
 
 				//sql query code
-		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom,' + tolerance + ') as geom FROM kommuner WHERE komm IN (';
 		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom, '+ tolerance + ') AS geom FROM kommuner WHERE komm IN (';
 
 		    	//append the rest of the query code
@@ -592,22 +591,32 @@ function dataNorgeJordkredVarsel(map) {
 
 		    	//toleranse i ST_Simplify
 				var tolerance = 0.01*7/map.getZoom();
+				//gets the bound of the initial zoom and position
+				initialBounds = map.getBounds();
+				neLat = initialBounds.getNorth();
+				neLng = initialBounds.getEast();
+				swLat = initialBounds.getSouth();
+				swLng = initialBounds.getWest();
 
 				//sql query code
-		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom,' + tolerance + ') as geom FROM kommuner WHERE';
+		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom, '+ tolerance + ') AS geom FROM kommuner WHERE komm IN (';
 
 		    	//append the rest of the query code
 		    	for(i=0;i<kommuneNr.length;i++){
+
 		    		if(i==0){
-		    			appendString = ' komm = ' + kommuneNr[i];
+		    			appendString = kommuneNr[i];
 		    		}
 		    		else{
-		    			appendString = ' OR komm = ' + kommuneNr[i];
+		    			appendString = ',' + kommuneNr[i];
 		    		}
 
 		    		sqlString = sqlString.concat(appendString);
 		    	}
 
+		    	//close sql statement
+		    	sqlString = sqlString.concat( ') AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')' );
+		    	
 		    	//lag URL
 		    	var url = 'https://mats.maplytic.no/sql/' + encodeURIComponent(sqlString) + '/out.geojson';
 
