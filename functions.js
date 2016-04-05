@@ -67,7 +67,7 @@ function updateDynamicLayers(map){
 	
 	//tolerance in ST_Simplify(postgis)
 	//funksjonen for tolerance kan finjusteres mye bedre men mer enn ok for nå
-	var tolerance = 0.01*7/map.getZoom();
+	var tolerance = 0.001*7/map.getZoom();
 	
 	console.log('New tolerance: ' + tolerance)
 	//url til GeoJSON data 
@@ -115,6 +115,36 @@ function updateDynamicLayers(map){
 			//add it to the layer
 		    flomDataQuery.clearLayers();
 		    flomDataQuery.addData(data);
+
+	  	});	
+	}
+
+	if(useLandslideData && sqlSkredKommuner != null){
+		//sql query code
+		var sqlString = 'SELECT navn, komm, ST_Simplify(geom, ' + tolerance + ') AS geom FROM kommuner ' + sqlFlomKommuner +  ' AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')';
+		//lag URL
+		var url = 'https://mats.maplytic.no/sql/' + encodeURIComponent(sqlString) + '/out.geojson';
+
+		//Hent data
+		$.getJSON(url, function(data) {
+
+			for(i=0;i<data.features.length;i++){
+
+				//dårlig quick fix?
+				if(data.features[i].properties.komm < 1000){
+					kNr = '0' + data.features[i].properties.komm;
+				}
+				else{
+					kNr = data.features[i].properties.komm;
+				}
+
+		        data.features[i].properties.beskrivelse = skredKommuneInfo[kNr]["varselTekst"];
+			   	data.features[i].properties.color = skredKommuneInfo[kNr]["color"];
+			}
+
+			//add it to the layer
+		    skredDataQuery.clearLayers();
+		    skredDataQuery.addData(data);
 
 	  	});	
 	}
