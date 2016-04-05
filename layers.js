@@ -500,8 +500,16 @@ function dataNorgeFlomvarsel(map) {
 				$.getJSON(url, function(data) {
 
 					for(i=0;i<data.features.length;i++){
-				        data.features[i].properties.beskrivelse = kommuneInfo[data.features[i].properties.komm]["varselTekst"];
-					   	data.features[i].properties.color = kommuneInfo[data.features[i].properties.komm]["color"];
+						//dårlig quick fix
+						if(data.features[i].properties.komm < 1000){
+							kNr = '0' + data.features[i].properties.komm;
+						}
+						else{
+							kNr = data.features[i].properties.komm;
+						}
+						
+				        data.features[i].properties.beskrivelse = kommuneInfo[kNr]["varselTekst"];
+					   	data.features[i].properties.color = kommuneInfo[kNr]["color"];
 					}
 
 					//add it to the layer
