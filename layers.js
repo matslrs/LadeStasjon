@@ -410,7 +410,7 @@ function dataNorgeFlomvarsel(map) {
         return {color: feature.properties.color};
     },
     onEachFeature: function (feature, layer) {
-        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.geometry.beskrivelse);
+        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
     }
 });
 
@@ -423,6 +423,8 @@ function dataNorgeFlomvarsel(map) {
 	    success: function(data) { 	
 	    	console.log('Flomvarsel success'); 
 	    	flomTest = data;
+	    	var kommuneNr = [];
+
 
 	    	//går gjennom alle komuner
 	    	for(i=0;i<flomTest.length;i++){
@@ -476,6 +478,22 @@ function dataNorgeFlomvarsel(map) {
 	    			}
 	    		}
 	    	}
+
+	  //   	if(kommuneNr.length > 0){
+		 //    	//gjør DB query her
+		 //    	var url = 'https://mats.maplytic.no/sql/select%20navn%2C%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%0Afrom%20kommuner%20%0Awhere%20komm%20%3D%20' + komm + '/out.geojson';
+
+			// 	$.getJSON(url, function(data) {
+
+			//         data.features[0].properties.beskrivelse = varselTekst;
+			// 	   	data.features[0].properties.color = color;
+
+			// 	    flomGeoLayer.addData(data);
+
+
+			//   	});	
+			// }
+
 	    },
 	    contentType: "application/json",
 	    dataType: 'json'
