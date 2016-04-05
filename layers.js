@@ -455,9 +455,9 @@ function dataNorgeFlomvarsel(map) {
 	    					varselTekst = flomTest[i].MunicipalityList[j].WarningList[0].MainText;
 
 
-	    					kommuneInfo[kommuneNr[kommuneNr.legnth-1]]["aNivaa"] = aNivaa;
-	    					kommuneInfo[kommuneNr[kommuneNr.legnth-1]]["color"] = color;
-	    					kommuneInfo[kommuneNr[kommuneNr.legnth-1]]["varselTekst"] = varselTekst;
+	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["aNivaa"] = aNivaa;
+	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["color"] = color;
+	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["varselTekst"] = varselTekst;
 
 	    				// 	var url = 'https://mats.maplytic.no/sql/select%20navn%2C%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%0Afrom%20kommuner%20%0Awhere%20komm%20%3D%20' + komm + '/out.geojson';
 
