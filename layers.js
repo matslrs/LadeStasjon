@@ -416,7 +416,6 @@ function dataNorgeFlomVarsel(map) {
 	    type: 'GET',
 	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.3/api/CountyOverview/1/2015-12-5/2015-12-5",
 	    success: function(data) { 	
-	    	console.log('Flomvarsel success'); 
 	    	flomTest = data;
 	    	var kommuneNr = [];
 	    	var kommuneInfo = [];
@@ -463,22 +462,33 @@ function dataNorgeFlomVarsel(map) {
 
 
 		    	//toleranse i ST_Simplify
-				tolerance = 0.01;
+				var tolerance = 0.01*7/map.getZoom();
+				//gets the bound of the initial zoom and position
+				initialBounds = map.getBounds();
+				neLat = initialBounds.getNorth();
+				neLng = initialBounds.getEast();
+				swLat = initialBounds.getSouth();
+				swLng = initialBounds.getWest();
 
 				//sql query code
-		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom,' + tolerance + ') as geom FROM kommuner WHERE';
+		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom,' + tolerance + ') as geom FROM kommuner WHERE komm IN (';
+		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom, '+ tolerance + ') AS geom FROM kommuner WHERE komm IN (';
 
 		    	//append the rest of the query code
 		    	for(i=0;i<kommuneNr.length;i++){
+
 		    		if(i==0){
-		    			appendString = ' komm = ' + kommuneNr[i];
+		    			appendString = kommuneNr[i];
 		    		}
 		    		else{
-		    			appendString = ' OR komm = ' + kommuneNr[i];
+		    			appendString = ',' + kommuneNr[i];
 		    		}
 
 		    		sqlString = sqlString.concat(appendString);
 		    	}
+
+		    	//close sql statement
+		    	sqlString = sqlString.concat( ') AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')' );
 
 		    	//lag URL
 		    	var url = 'https://mats.maplytic.no/sql/' + encodeURIComponent(sqlString) + '/out.geojson';
@@ -487,7 +497,8 @@ function dataNorgeFlomVarsel(map) {
 				$.getJSON(url, function(data) {
 
 					for(i=0;i<data.features.length;i++){
-						//dårlig quick fix
+
+						//dårlig quick fix?
 						if(data.features[i].properties.komm < 1000){
 							kNr = '0' + data.features[i].properties.komm;
 						}
@@ -534,7 +545,6 @@ function dataNorgeJordkredVarsel(map) {
 	    type: 'GET',
 	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/landslide/v1.0.3/api/CountyOverview/1/2015-12-5/2015-12-5",
 	    success: function(data) { 	
-	    	console.log('Flomvarsel success'); 
 	    	flomTest = data;
 	    	var kommuneNr = [];
 	    	var kommuneInfo = [];
@@ -581,7 +591,7 @@ function dataNorgeJordkredVarsel(map) {
 
 
 		    	//toleranse i ST_Simplify
-				tolerance = 0.01;
+				var tolerance = 0.01*7/map.getZoom();
 
 				//sql query code
 		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom,' + tolerance + ') as geom FROM kommuner WHERE';
@@ -618,7 +628,7 @@ function dataNorgeJordkredVarsel(map) {
 					}
 
 					//add it to the layer
-				    skredGeoLayer.addData(data).addTo(map);
+				    skredGeoLayer.addData(data);
 
 
 			  	});	
