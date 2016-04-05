@@ -424,7 +424,7 @@ function dataNorgeFlomvarsel(map) {
 	    	console.log('Flomvarsel success'); 
 	    	flomTest = data;
 	    	var kommuneNr = [];
-	    	var kommuneInfo = [][];
+	    	var kommuneInfo = [];
 
 	    	//går gjennom alle komuner
 	    	for(i=0;i<flomTest.length;i++){
@@ -454,7 +454,7 @@ function dataNorgeFlomvarsel(map) {
 	    					//beskrivelse
 	    					varselTekst = flomTest[i].MunicipalityList[j].WarningList[0].MainText;
 
-
+	    					kommuneInfo[kommuneNr[kommuneNr.length-1]] = [];
 	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["aNivaa"] = aNivaa;
 	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["color"] = color;
 	    					kommuneInfo[kommuneNr[kommuneNr.length-1]]["varselTekst"] = varselTekst;
