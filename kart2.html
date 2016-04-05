@@ -100,21 +100,6 @@
 		//END GLOBAL VARIABLES
 		//-----------------------------
 
-
-/*
-setup a check, in updateDynLayers if flom and skred setup have completed.
-	-test could be if(sqlFlomKommuner != null)
-
-
-
-*/
-
-
-
-
-
-
-
 	</script>	
 	
 	
@@ -125,9 +110,16 @@ setup a check, in updateDynLayers if flom and skred setup have completed.
 	
 	<script>
 
+		//bounds of the map
+		var southWest = L.latLng(52, -21),
+	    northEast = L.latLng(79, 46),
+	    bounds = L.latLngBounds(southWest, northEast);
+
 		//Creates MAP
 		var mymap = L.map('mapid', { 
 			center: [58.8534, 5.7317],
+			maxBounds: bounds,
+			minZoom: 4,
 			zoom: 8
 		});
 
