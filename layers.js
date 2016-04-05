@@ -378,7 +378,42 @@ function difiBomstasjon(map) {
 }
 //-------------------------------------------
 
+function setupNobilLayer(map){
 
+	var testNobil = L.geoJson();
+	nobilApiKey = '8a3fd5aedf9a815606f7b8ff9bdbb0d5'
+
+	jQuery.ajax({
+		type: 'POST',
+		url: 'https://nobil.no/api/server/datadump.php',
+		data: {
+			'apikey': nobilApiKey,
+			'countrycode': 'NOR',
+			'fromdate': '2012-06-02',
+			'format': 'JSON',
+			'file': 'false'
+			},
+		success: function(data){
+			testNobil.addData(data);
+			nobilDataCopy = data;
+		},
+		dataType: 'json'
+	});
+
+
+	// //Hent data
+	// 			url = 'http://nobil.no/api/server/datadump.php?apikey=' + apiKey + '&;
+	// 			$.getJSON(url, function(data) {
+
+	// 		  	});
+
+	// var url = 'http://nobil.no/api/server/datadump.php?apikey=8a3fd5aedf9a815606f7b8ff9bdbb0d5&countrycode=NOR&fromdate=2012-06-02&format=JSON&file=false';
+	// //henter data 
+	// $.get(url, function(data) {
+	// 	nobilDataCopy = data;
+	// });	
+
+}
 
 //-------------------------------------------
 //NVE
