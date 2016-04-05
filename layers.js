@@ -384,7 +384,7 @@ function setupNobilLayer(map){
 	nobilApiKey = '8a3fd5aedf9a815606f7b8ff9bdbb0d5'
 
 	jQuery.ajax({
-		type: 'POST',
+		type: 'GET',
 		url: ' https://mats.maplytic.no/proxy/nobil.no/api/server/datadump.php',
 		data: {
 			'apikey': nobilApiKey,
