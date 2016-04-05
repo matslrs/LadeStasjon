@@ -424,7 +424,7 @@ function dataNorgeFlomvarsel(map) {
 	    	console.log('Flomvarsel success'); 
 	    	flomTest = data;
 	    	var kommuneNr = [];
-	    	var kommuneInfo = [];
+	    	var kommuneInfo = [][];
 
 	    	//går gjennom alle komuner
 	    	for(i=0;i<flomTest.length;i++){
