@@ -424,7 +424,7 @@ function dataNorgeFlomvarsel(map) {
 	    	console.log('Flomvarsel success'); 
 	    	flomTest = data;
 	    	var kommuneNr = [];
-
+	    	var kommuneInfo = [];
 
 	    	//går gjennom alle komuner
 	    	for(i=0;i<flomTest.length;i++){
@@ -435,15 +435,8 @@ function dataNorgeFlomvarsel(map) {
 	    				//hvis kommunen høyt nok aktivitets nivå --> process
 	    				if( flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel > 1){
 
-
-	    					//seksjon for å laga url
-	    					//---------------temp for nå
 	    					//kommune nr
-	    					komm = flomTest[i].MunicipalityList[j].Id;
-	    					//toleranse i ST_Simplify
-	    					tolerance = 0.01;
-	    					//----------------------------------------
-
+	    					kommuneNr[kommuneNr.legnth] = flomTest[i].MunicipalityList[j].Id;
 
 	    					//DATA SOM TRENGS TIL LAYER
 	    					//aktivitets nivå
@@ -453,46 +446,70 @@ function dataNorgeFlomvarsel(map) {
 	    						color = '#FFFF00';
 	    					}
 	    					else if(aNivaa==3){
-	    						color = '#FF0000';
+	    						color = '#ffa500';
 	    					}
 	    					else{
-	    						color = '#000000';
+	    						color = '#FF0000';
 	    					}
 	    					//beskrivelse
 	    					varselTekst = flomTest[i].MunicipalityList[j].WarningList[0].MainText;
 
 
-	    					var url = 'https://mats.maplytic.no/sql/select%20navn%2C%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%0Afrom%20kommuner%20%0Awhere%20komm%20%3D%20' + komm + '/out.geojson';
+	    					kommuneInfo[kommuneNr[kommuneNr.legnth-1]]["aNivaa"] = aNivaa;
+	    					kommuneInfo[kommuneNr[kommuneNr.legnth-1]]["color"] = color;
+	    					kommuneInfo[kommuneNr[kommuneNr.legnth-1]]["varselTekst"] = varselTekst;
 
-	    					$.getJSON(url, function(data) {
+	    				// 	var url = 'https://mats.maplytic.no/sql/select%20navn%2C%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%0Afrom%20kommuner%20%0Awhere%20komm%20%3D%20' + komm + '/out.geojson';
 
-						        data.features[0].properties.beskrivelse = varselTekst;
-							   	data.features[0].properties.color = color;
+	    				// 	$.getJSON(url, function(data) {
 
-							    flomGeoLayer.addData(data);
+						   //      data.features[0].properties.beskrivelse = varselTekst;
+							  //  	data.features[0].properties.color = color;
+
+							  //   flomGeoLayer.addData(data);
 
 
-						  	});	
+						  	// });	
 
 	    				}
 	    			}
 	    		}
 	    	}
 
-	  //   	if(kommuneNr.length > 0){
-		 //    	//gjør DB query her
-		 //    	var url = 'https://mats.maplytic.no/sql/select%20navn%2C%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%0Afrom%20kommuner%20%0Awhere%20komm%20%3D%20' + komm + '/out.geojson';
+	    	if(kommuneNr.length > 0){
+		    	//gjør DB query her
 
-			// 	$.getJSON(url, function(data) {
+		    	//toleranse i ST_Simplify
+				tolerance = 0.01;
+				//sql query code
+		    	var sqlString = 'SELECT navn, komm, ST_Simplify(geom,' + tolerance + ') as geom FROM kommuner WHERE';
+		    	//append the rest of the query code
+		    	for(i=0;i<kommuneNr.length;i++){
+		    		if(i==0){
+		    			appendString = ' komm = ' + kommuneNr[i];
+		    		}
+		    		else{
+		    			appendString = ' OR komm = ' + kommuneNr[i];
+		    		}
 
-			//         data.features[0].properties.beskrivelse = varselTekst;
-			// 	   	data.features[0].properties.color = color;
+		    		sqlString = sqlString.concat(appendString);
+		    	}
 
-			// 	    flomGeoLayer.addData(data);
+		    	var url = 'https://mats.maplytic.no/sql/' + encodeURIComponent(sqlString) + '/out.geojson';
+
+				$.getJSON(url, function(data) {
+
+					for(i=0;i<data.features.length;i++){
+				        data.features[i].properties.beskrivelse = kommuneInfo[data.features[i].properties.komm]["varselTekst"];
+					   	data.features[i].properties.color = kommuneInfo[data.features[i].properties.komm]["color"];
+					}
+
+					//add it to the layer
+				    flomGeoLayer.addData(data);
 
 
-			//   	});	
-			// }
+			  	});	
+			}
 
 	    },
 	    contentType: "application/json",
