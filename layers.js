@@ -185,7 +185,7 @@ function loadGrunnkretsTile(map) {
 	return GrunnkretsTile;
 
 }
-//må fiksa på layers å layer control her...bugs
+
 function setupDbLayer(map) {
 
 	//gets the bound of the initial zoom and position
@@ -388,8 +388,8 @@ function setupNobilLayer(map){
 		url: ' https://mats.maplytic.no/proxy/nobil.no/api/server/datadump.php',
 		data: {
 			'apikey': nobilApiKey,
-			'countrycode': 'NOR',
-			'fromdate': '2012-06-02',
+			//'countrycode': 'NOR',
+			//'fromdate': '2012-06-02',
 			'format': 'JSON',
 			'file': 'false'
 			},
@@ -399,19 +399,6 @@ function setupNobilLayer(map){
 		},
 		dataType: 'json'
 	});
-
-
-	// //Hent data
-	// 			url = 'http://nobil.no/api/server/datadump.php?apikey=' + apiKey + '&;
-	// 			$.getJSON(url, function(data) {
-
-	// 		  	});
-
-	// var url = 'http://nobil.no/api/server/datadump.php?apikey=8a3fd5aedf9a815606f7b8ff9bdbb0d5&countrycode=NOR&fromdate=2012-06-02&format=JSON&file=false';
-	// //henter data 
-	// $.get(url, function(data) {
-	// 	nobilDataCopy = data;
-	// });	
 
 }
 
