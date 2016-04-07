@@ -56,6 +56,11 @@ function initiateLeafletsDraw(map) {
 
 }
 
+
+//----
+//Funksjon som tar seg av dynamiske layers
+//----
+//den tar oppdaterer fordi om layers ikke er tegnet på kartet igjen. uncomment map.hasLayer i if statement hvis det skal tilbake
 function updateDynamicLayers(map){
 	//creates and empty GeoJSON Layer
 
@@ -71,7 +76,7 @@ function updateDynamicLayers(map){
 	
 	console.log('New tolerance: ' + tolerance)
 
-	if(useFylkerDbQ && map.hasLayer(fylkeQuery)){
+	if(useFylkerDbQ /*&& map.hasLayer(fylkeQuery)*/){
 		//url til GeoJSON data 
 		var url = 'https://mats.maplytic.no/sql/select%20ST_Simplify(geom%2C%20' + tolerance + ')%20as%20geom%2C%20navn%2C%20fylkesnr%0Afrom%20fylker%0AWHERE%20fylker.geom%20%26%26%20ST_MakeEnvelope(' + swLng + '%2C%20' + swLat + '%2C%20' + neLng + '%2C%20' + neLat +')%3B/out.geojson';
 		//henter data 
@@ -91,7 +96,7 @@ function updateDynamicLayers(map){
 	  	});	
 	}
 
-	if(useFloodData && sqlFlomKommuner != null && map.hasLayer(flomDataQuery)){
+	if(useFloodData && sqlFlomKommuner != null /*&& map.hasLayer(flomDataQuery)*/){
 		//sql query code
 		var sqlString = 'SELECT navn, komm, ST_Simplify(geom, ' + tolerance + ') AS geom FROM kommuner ' + sqlFlomKommuner +  ' AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')';
 		//lag URL
@@ -121,7 +126,7 @@ function updateDynamicLayers(map){
 	  	});	
 	}
 
-	if(useLandslideData && sqlSkredKommuner != null && map.hasLayer(skredDataQuery)){
+	if(useLandslideData && sqlSkredKommuner != null /*&& map.hasLayer(skredDataQuery)*/){
 		//sql query code
 		var sqlString = 'SELECT navn, komm, ST_Simplify(geom, ' + tolerance + ') AS geom FROM kommuner ' + sqlSkredKommuner +  ' AND kommuner.geom && ST_MakeEnvelope(' + swLng + ', ' + swLat + ', ' + neLng + ', ' + neLat + ')';
 		//lag URL
