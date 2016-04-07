@@ -2,9 +2,9 @@ function setupIcons(map){
 	var LeafIcon = L.Icon.extend({
 	    options: {
 	        shadowUrl: 'leaflet/images/leaf-shadow.png',
-	        iconSize:     [38, 38],
+	        iconSize:     [34, 34],
 	        shadowSize:   [0, 0],
-	        iconAnchor:   [19, 38],
+	        iconAnchor:   [17, 34],
 	        shadowAnchor: [4, 62],
 	        popupAnchor:  [-3, -76]
 	    }
@@ -16,7 +16,7 @@ function setupIcons(map){
 	kinderGarten2 = new LeafIcon({iconUrl: 'images/flaticon/schoolkid.png'}),
 	learning = new LeafIcon({iconUrl: 'images/flaticon/letters.png'}),
 	restRoom = new LeafIcon({iconUrl: 'images/flaticon/man.png'}),
-	health = new LeafIcon({iconUrl: 'images/flaticon/health.png'}),
+	health = new LeafIcon({iconUrl: 'images/flaticon/health.png', iconSize:[30,30], iconAnchor:[15, 30]}),
 	greenIcon = new LeafIcon({iconUrl: 'leaflet/images/leaf-green.png'}),
     redIcon = new LeafIcon({iconUrl: 'leaflet/images/leaf-red.png'}),
     orangeIcon = new LeafIcon({iconUrl: 'leaflet/images/leaf-orange.png'});

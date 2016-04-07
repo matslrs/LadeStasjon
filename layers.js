@@ -270,7 +270,9 @@ function difiBarnehage(map) {
 	var barnehageGroup = L.layerGroup();
 	
 	//var difiData = null;
-	var barnehager = [];	
+	var barnehager = new L.MarkerClusterGroup({
+		showCoverageOnHover: false
+	});	
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/barnehager?';
 	//henter data 
@@ -281,19 +283,24 @@ function difiBarnehage(map) {
 		for (i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
-			lengdeGrad = difiData.entries[i].lengdegrad;
-			breddeGrad = difiData.entries[i].breddegrad;
-			tittel = difiData.entries[i].barnehagens_navn;
-			alt = difiData.entries[i].adresse;
-			
+			var lengdeGrad = difiData.entries[i].lengdegrad;
+			var breddeGrad = difiData.entries[i].breddegrad;
+			var tittel = difiData.entries[i].barnehagens_navn;
+			var alt = difiData.entries[i].adresse;
+
+
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: kinderGarten2});
+			marker.bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
 			//Lager marker for feature
-			barnehager[i] = L.marker([breddeGrad, lengdeGrad], {icon: kinderGarten2});
-			barnehager[i].title = tittel;
-			barnehager[i].alt = alt;
+			//barnehager[i] = L.markerClusterGroup([breddeGrad, lengdeGrad], {icon: kinderGarten2});
+			//barnehager[i] = L.marker([breddeGrad, lengdeGrad], {icon: kinderGarten2});
+			//barnehager[i].title = tittel;
+			//barnehager[i].alt = alt;
+			 barnehager.addLayer(marker);
 			
-			barnehager[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
+			// barnehager[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
 			
-			barnehageGroup.addLayer( barnehager[i] );
+			barnehageGroup.addLayer( barnehager );
 		}
 	});
 
