@@ -58,6 +58,10 @@
 		var useFloodData = true;
 		var useLandslideData = true;
 
+
+		//Marker Clustering
+		var clusterRadius = 30;	//lower number --> smaller but more cluster points
+
 		//END SETTINGS
 		//-----------------------------
 
@@ -156,7 +160,11 @@
 	 
 		events(mymap); 
 
-	 	 
+
+		//ATTRIBUTIONS:
+   		mymap.attributionControl.addAttribution('FlatIcon');
+
+
 	</script>	
 </body>
 </html>

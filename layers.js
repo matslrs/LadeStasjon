@@ -234,7 +234,10 @@ function difiHelsestasjon(map) {
 	var helsestasjonGroup = L.layerGroup();
 	
 	//var difiData = null;
-	var helsestasjoner = [];	
+	var helsestasjoner = new L.MarkerClusterGroup({
+		showCoverageOnHover: false,
+		maxClusterRadius: clusterRadius
+	});	
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/helsestasjoner?';
 	//henter data 
@@ -250,14 +253,20 @@ function difiHelsestasjon(map) {
 			tittel = difiData.entries[i].navn;
 			alt = difiData.entries[i].adresse;
 			
-			//Lager marker for feature
-			helsestasjoner[i] = L.marker([breddeGrad, lengdeGrad], {icon: health});
-			helsestasjoner[i].title = tittel;
-			helsestasjoner[i].alt = alt;
+			// //Lager marker for feature
+			// helsestasjoner[i] = L.marker([breddeGrad, lengdeGrad], {icon: health});
+			// helsestasjoner[i].title = tittel;
+			// helsestasjoner[i].alt = alt;
 			
-			helsestasjoner[i].bindPopup("<strong>" + tittel +  "</strong> <br> Adresse:"+ alt);
+			// helsestasjoner[i].bindPopup("<strong>" + tittel +  "</strong> <br> Adresse:"+ alt);
 			
-			helsestasjonGroup.addLayer( helsestasjoner[i] );
+			// helsestasjonGroup.addLayer( helsestasjoner[i] );
+
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: health});
+			marker.bindPopup("<strong>" + tittel +  "</strong> <br> Adresse:"+ alt);
+			helsestasjoner.addLayer(marker);
+			
+			helsestasjonGroup.addLayer( helsestasjoner );
 		}
 	});
 
@@ -271,7 +280,8 @@ function difiBarnehage(map) {
 	
 	//var difiData = null;
 	var barnehager = new L.MarkerClusterGroup({
-		showCoverageOnHover: false
+		showCoverageOnHover: false,
+		maxClusterRadius: clusterRadius
 	});	
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/barnehager?';
@@ -313,7 +323,14 @@ function difiToalett(map) {
 	var toalettGroup = L.layerGroup();
 	
 	//var difiData = null;
-	var offentligToalett = [];	
+	//var offentligToalett = [];	
+
+	var offentligToalett = new L.MarkerClusterGroup({
+		showCoverageOnHover: false,
+		maxClusterRadius: clusterRadius
+	});	
+
+
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/offentligetoalett?';
 	//henter data 
@@ -335,13 +352,21 @@ function difiToalett(map) {
 			}
 
 			//Lager marker for feature
-			offentligToalett[i] = L.marker([breddeGrad, lengdeGrad], {icon: restRoom} );
-			offentligToalett[i].title = tittel;
-			offentligToalett[i].alt = alt;
+			// offentligToalett[i] = L.marker([breddeGrad, lengdeGrad], {icon: restRoom} );
+			// offentligToalett[i].title = tittel;
+			// offentligToalett[i].alt = alt;
 			
-			offentligToalett[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt + "<br> Pris: " + pris);
+			// offentligToalett[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt + "<br> Pris: " + pris);
 			
-			toalettGroup.addLayer( offentligToalett[i] );
+			// toalettGroup.addLayer( offentligToalett[i] );
+
+
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: restRoom});
+			marker.bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt + "<br> Pris: " + pris);
+			offentligToalett.addLayer(marker);
+			
+			toalettGroup.addLayer( offentligToalett );
+
 		}
 	});
 
@@ -355,7 +380,11 @@ function difiBomstasjon(map) {
 	var bomstasjonGroup = L.layerGroup().addTo(map);
 	
 	//var difiData = null;
-	var bomstasjon = [];	
+	//var bomstasjon = [];
+	var bomstasjon = new L.MarkerClusterGroup({
+		showCoverageOnHover: false,
+		maxClusterRadius: clusterRadius
+	});		
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/vegvesen/bomstasjoner?';
 	//henter data 
@@ -371,14 +400,21 @@ function difiBomstasjon(map) {
 			tittel = "Bomstasjon: " + difiData.entries[i].navn;
 			alt = difiData.entries[i].autopass_beskrivelse;
 			
-			//Lager marker for feature
-			bomstasjon[i] = L.marker([breddeGrad, lengdeGrad], {icon: payBooth});
-			bomstasjon[i].title = tittel;
-			bomstasjon[i].alt = alt;
+			// //Lager marker for feature
+			// bomstasjon[i] = L.marker([breddeGrad, lengdeGrad], {icon: payBooth});
+			// bomstasjon[i].title = tittel;
+			// bomstasjon[i].alt = alt;
 			
-			bomstasjon[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
+			// bomstasjon[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
 			
-			bomstasjonGroup.addLayer( bomstasjon[i] );
+			// bomstasjonGroup.addLayer( bomstasjon[i] );
+
+
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: payBooth});
+			marker.bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
+			bomstasjon.addLayer(marker);
+			
+			bomstasjonGroup.addLayer( bomstasjon );
 		}
 	});
 
