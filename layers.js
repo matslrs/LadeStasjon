@@ -255,7 +255,7 @@ function difiHelsestasjon(map) {
 			helsestasjoner[i].title = tittel;
 			helsestasjoner[i].alt = alt;
 			
-			helsestasjoner[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
+			helsestasjoner[i].bindPopup("<strong>" + tittel +  "</strong> <br> Adresse:"+ alt);
 			
 			helsestasjonGroup.addLayer( helsestasjoner[i] );
 		}
@@ -290,7 +290,7 @@ function difiBarnehage(map) {
 
 
 			var marker = L.marker([breddeGrad, lengdeGrad], {icon: kinderGarten2});
-			marker.bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
+			marker.bindPopup("<strong> Barnehage: </strong><br>" + tittel + "<br> <strong>Adresse:</strong><br> " + alt);
 			//Lager marker for feature
 			//barnehager[i] = L.markerClusterGroup([breddeGrad, lengdeGrad], {icon: kinderGarten2});
 			//barnehager[i] = L.marker([breddeGrad, lengdeGrad], {icon: kinderGarten2});
@@ -328,6 +328,7 @@ function difiToalett(map) {
 			breddeGrad = difiData.entries[i].latitude;
 			tittel = difiData.entries[i].plassering + " Toalett";
 			alt = difiData.entries[i].adresse;
+			pris = difiData.entries[i].pris;
 			
 			if(lengdeGrad == "" || breddeGrad == ""){
 				continue;
@@ -338,7 +339,7 @@ function difiToalett(map) {
 			offentligToalett[i].title = tittel;
 			offentligToalett[i].alt = alt;
 			
-			offentligToalett[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
+			offentligToalett[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt + "<br> Pris: " + pris);
 			
 			toalettGroup.addLayer( offentligToalett[i] );
 		}
