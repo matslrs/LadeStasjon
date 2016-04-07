@@ -251,7 +251,7 @@ function difiHelsestasjon(map) {
 			alt = difiData.entries[i].adresse;
 			
 			//Lager marker for feature
-			helsestasjoner[i] = L.marker([breddeGrad, lengdeGrad]);
+			helsestasjoner[i] = L.marker([breddeGrad, lengdeGrad], {icon: health});
 			helsestasjoner[i].title = tittel;
 			helsestasjoner[i].alt = alt;
 			
@@ -287,7 +287,7 @@ function difiBarnehage(map) {
 			alt = difiData.entries[i].adresse;
 			
 			//Lager marker for feature
-			barnehager[i] = L.marker([breddeGrad, lengdeGrad]);
+			barnehager[i] = L.marker([breddeGrad, lengdeGrad], {icon: kinderGarten2});
 			barnehager[i].title = tittel;
 			barnehager[i].alt = alt;
 			
@@ -327,7 +327,7 @@ function difiToalett(map) {
 			}
 
 			//Lager marker for feature
-			offentligToalett[i] = L.marker([breddeGrad, lengdeGrad]);
+			offentligToalett[i] = L.marker([breddeGrad, lengdeGrad], {icon: restRoom} );
 			offentligToalett[i].title = tittel;
 			offentligToalett[i].alt = alt;
 			
@@ -364,7 +364,7 @@ function difiBomstasjon(map) {
 			alt = difiData.entries[i].autopass_beskrivelse;
 			
 			//Lager marker for feature
-			bomstasjon[i] = L.marker([breddeGrad, lengdeGrad]);
+			bomstasjon[i] = L.marker([breddeGrad, lengdeGrad], {icon: payBooth});
 			bomstasjon[i].title = tittel;
 			bomstasjon[i].alt = alt;
 			
