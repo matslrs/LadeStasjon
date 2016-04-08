@@ -252,17 +252,8 @@ function difiHelsestasjon(map) {
 			breddeGrad = difiData.entries[i].breddegrad;
 			tittel = difiData.entries[i].navn;
 			alt = difiData.entries[i].adresse;
-			
-			// //Lager marker for feature
-			// helsestasjoner[i] = L.marker([breddeGrad, lengdeGrad], {icon: health});
-			// helsestasjoner[i].title = tittel;
-			// helsestasjoner[i].alt = alt;
-			
-			// helsestasjoner[i].bindPopup("<strong>" + tittel +  "</strong> <br> Adresse:"+ alt);
-			
-			// helsestasjonGroup.addLayer( helsestasjoner[i] );
 
-			var marker = L.marker([breddeGrad, lengdeGrad], {icon: health});
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: medicineMarker});
 			marker.bindPopup("<strong>" + tittel +  "</strong> <br> Adresse:"+ alt);
 			helsestasjoner.addLayer(marker);
 			
@@ -299,16 +290,9 @@ function difiBarnehage(map) {
 			var alt = difiData.entries[i].adresse;
 
 
-			var marker = L.marker([breddeGrad, lengdeGrad], {icon: kinderGarten2});
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: kindergartenMarker});
 			marker.bindPopup("<strong> Barnehage: </strong><br>" + tittel + "<br> <strong>Adresse:</strong><br> " + alt);
-			//Lager marker for feature
-			//barnehager[i] = L.markerClusterGroup([breddeGrad, lengdeGrad], {icon: kinderGarten2});
-			//barnehager[i] = L.marker([breddeGrad, lengdeGrad], {icon: kinderGarten2});
-			//barnehager[i].title = tittel;
-			//barnehager[i].alt = alt;
-			 barnehager.addLayer(marker);
-			
-			// barnehager[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
+			barnehager.addLayer(marker);
 			
 			barnehageGroup.addLayer( barnehager );
 		}
@@ -351,17 +335,7 @@ function difiToalett(map) {
 				continue;
 			}
 
-			//Lager marker for feature
-			// offentligToalett[i] = L.marker([breddeGrad, lengdeGrad], {icon: restRoom} );
-			// offentligToalett[i].title = tittel;
-			// offentligToalett[i].alt = alt;
-			
-			// offentligToalett[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt + "<br> Pris: " + pris);
-			
-			// toalettGroup.addLayer( offentligToalett[i] );
-
-
-			var marker = L.marker([breddeGrad, lengdeGrad], {icon: restRoom});
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: restRoomFA});
 			marker.bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt + "<br> Pris: " + pris);
 			offentligToalett.addLayer(marker);
 			
@@ -372,7 +346,6 @@ function difiToalett(map) {
 
 	return toalettGroup;
 }
-
 
 function difiBomstasjon(map) {
 	
@@ -400,16 +373,6 @@ function difiBomstasjon(map) {
 			tittel = "Bomstasjon: " + difiData.entries[i].navn;
 			alt = difiData.entries[i].autopass_beskrivelse;
 			
-			// //Lager marker for feature
-			// bomstasjon[i] = L.marker([breddeGrad, lengdeGrad], {icon: payBooth});
-			// bomstasjon[i].title = tittel;
-			// bomstasjon[i].alt = alt;
-			
-			// bomstasjon[i].bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
-			
-			// bomstasjonGroup.addLayer( bomstasjon[i] );
-
-
 			var marker = L.marker([breddeGrad, lengdeGrad], {icon: payBooth});
 			marker.bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
 			bomstasjon.addLayer(marker);

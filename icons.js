@@ -25,4 +25,40 @@ function setupIcons(map){
  	// L.marker([59, 8], {icon: greenIcon}).addTo(map).bindPopup("I am a green leaf.");
 	// L.marker([59.5, 6.5], {icon: redIcon}).addTo(map).bindPopup("I am a red leaf.");
 	// L.marker([60, 5], {icon: orangeIcon}).addTo(map).bindPopup("I am an orange leaf.");
+
+
+	
+	medicineMarker = L.AwesomeMarkers.icon({
+	    prefix: 'fa',
+	    icon: 'plus-square',
+	    markerColor: 'red'
+	});
+
+	kindergartenMarker = L.AwesomeMarkers.icon({
+	    prefix: 'fa',
+	    icon: 'fa-cubes',
+	    markerColor: 'blue'
+	});
+
+	payBooth = L.AwesomeMarkers.icon({
+	    prefix: 'fa',
+	    icon: 'fa-ticket ',
+	    markerColor: 'darkpurple'
+	});
+
+	restRoomFA = L.AwesomeMarkers.icon({
+	    prefix: 'fa',
+	    icon: 'fa-venus-mars ',
+	    markerColor: 'darkgreen'
+	});
+	  //L.marker([59.5,6.5], {icon: medicineMarker}).addTo(map);
+
+
+
+	// var myIcon = L.divIcon({className: 'my-div-icon'});
+	// // you can set .my-div-icon styles in CSS
+
+	// L.marker([59, 8], {icon: myIcon}).addTo(map);
+
+
 }
