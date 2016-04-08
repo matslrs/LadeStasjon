@@ -234,19 +234,21 @@ function difiHelsestasjon(map) {
 	
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/helsestasjoner?';
+	
 	//henter data 
 	$.get(url, function(data) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
-			
+		for (i = 0; i < difiData.entries.length; i++) {	
+
 			//Finner data som skal brukes
 			lengdeGrad = difiData.entries[i].lengdegrad;
 			breddeGrad = difiData.entries[i].breddegrad;
 			tittel = difiData.entries[i].navn;
 			alt = difiData.entries[i].adresse;
 
+			//creates the marker
 			var marker = L.marker([breddeGrad, lengdeGrad], {icon: medicineMarker});
 			marker.bindPopup("<strong>" + tittel +  "</strong> <br> Adresse:"+ alt);
 

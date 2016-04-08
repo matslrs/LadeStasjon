@@ -64,7 +64,7 @@
 
 
 		//Marker Clustering
-		var clusterRadius = 30;	//lower number --> smaller but more cluster points
+		var clusterRadius = 80;	//lower number --> smaller but more cluster points
 
 		//END SETTINGS
 		//-----------------------------
@@ -110,7 +110,8 @@
 
 
 		var parentCluster = new L.MarkerClusterGroup({
-			showCoverageOnHover: false,
+			showCoverageOnHover: true,
+			animateAddingMarkers: true,
 			maxClusterRadius: clusterRadius
 		});	
 
