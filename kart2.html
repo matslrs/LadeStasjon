@@ -20,6 +20,7 @@
 	<script src="jquery/jquery-1.12.1.js"></script>
 	<script src="leafletsearch/leaflet-search.src.js"></script>
 	<script src="markercluster/leaflet.markercluster-src.js"></script>
+	<script src="markercluster/leaflet.featuregroup.subgroup-src.js"></script>
 	<script src="awesome-markers/leaflet.awesome-markers.js"></script>
 	
 	<script>
@@ -107,6 +108,12 @@
 			var skredKommuneInfo = [];
 		}
 
+
+		var parentCluster = new L.MarkerClusterGroup({
+			showCoverageOnHover: false,
+			maxClusterRadius: clusterRadius
+		});	
+
 		//END GLOBAL VARIABLES
 		//-----------------------------
 
@@ -130,8 +137,11 @@
 			center: [58.8534, 5.7317],
 			maxBounds: bounds,
 			minZoom: 4,
+			maxZoom: 18,
 			zoom: 8
 		});
+
+		parentCluster.addTo(mymap);
 
 		//Set up icons to be used
 		setupIcons(mymap);

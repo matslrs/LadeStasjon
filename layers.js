@@ -135,7 +135,7 @@ function loadDrawAndMaplyticDB(map) {
 	    		layer.bindPopup("Gid: " + feature.properties.gid + "<br>" + "Geometry Type: " + feature.geometry.type);  
 	    		drawnItems.addLayer(layer);
 		    }
-		}).addTo(map);	
+		});	
 	});	
 
 
@@ -216,7 +216,6 @@ function setupDbLayer(map) {
 	      onEachFeature: onEachFeature
 	    });
 
-	    //fylkeQuery.addTo(map);
   	});	
 
 	return fylkeQuery;
@@ -230,14 +229,9 @@ function setupDbLayer(map) {
 //DIFI DATA
 function difiHelsestasjon(map) {
 	
-	//creates and empty GeoJSON Layer
-	var helsestasjonGroup = L.layerGroup();
+	//creates and empty subgroup
+	var helsestasjonGroup = L.featureGroup.subGroup(parentCluster, null);
 	
-	//var difiData = null;
-	var helsestasjoner = new L.MarkerClusterGroup({
-		showCoverageOnHover: false,
-		maxClusterRadius: clusterRadius
-	});	
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/helsestasjoner?';
 	//henter data 
@@ -255,9 +249,9 @@ function difiHelsestasjon(map) {
 
 			var marker = L.marker([breddeGrad, lengdeGrad], {icon: medicineMarker});
 			marker.bindPopup("<strong>" + tittel +  "</strong> <br> Adresse:"+ alt);
-			helsestasjoner.addLayer(marker);
-			
-			helsestasjonGroup.addLayer( helsestasjoner );
+
+			//adds marker to sub group
+			helsestasjonGroup.addLayer( marker );
 		}
 	});
 
@@ -266,14 +260,9 @@ function difiHelsestasjon(map) {
 
 function difiBarnehage(map) {
 	
-	//creates and empty GeoJSON Layer
-	var barnehageGroup = L.layerGroup();
+	//creates and empty subgroup
+	var barnehageGroup = L.featureGroup.subGroup(parentCluster, null);
 	
-	//var difiData = null;
-	var barnehager = new L.MarkerClusterGroup({
-		showCoverageOnHover: false,
-		maxClusterRadius: clusterRadius
-	});	
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/barnehager?';
 	//henter data 
@@ -292,9 +281,9 @@ function difiBarnehage(map) {
 
 			var marker = L.marker([breddeGrad, lengdeGrad], {icon: kindergartenMarker});
 			marker.bindPopup("<strong> Barnehage: </strong><br>" + tittel + "<br> <strong>Adresse:</strong><br> " + alt);
-			barnehager.addLayer(marker);
 			
-			barnehageGroup.addLayer( barnehager );
+			//adds marker to sub group
+			barnehageGroup.addLayer( marker );
 		}
 	});
 
@@ -303,17 +292,8 @@ function difiBarnehage(map) {
 
 function difiToalett(map) {
 	
-	//creates and empty GeoJSON Layer
-	var toalettGroup = L.layerGroup();
-	
-	//var difiData = null;
-	//var offentligToalett = [];	
-
-	var offentligToalett = new L.MarkerClusterGroup({
-		showCoverageOnHover: false,
-		maxClusterRadius: clusterRadius
-	});	
-
+	//creates and empty subgroup
+	var toalettGroup = L.featureGroup.subGroup(parentCluster, null);
 
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/offentligetoalett?';
@@ -327,7 +307,7 @@ function difiToalett(map) {
 			//Finner data som skal brukes
 			lengdeGrad = difiData.entries[i].longitude;
 			breddeGrad = difiData.entries[i].latitude;
-			tittel = difiData.entries[i].plassering + " Toalett";
+			tittel = difiData.entries[i].plassering;
 			alt = difiData.entries[i].adresse;
 			pris = difiData.entries[i].pris;
 			
@@ -336,11 +316,10 @@ function difiToalett(map) {
 			}
 
 			var marker = L.marker([breddeGrad, lengdeGrad], {icon: restRoomFA});
-			marker.bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt + "<br> Pris: " + pris);
-			offentligToalett.addLayer(marker);
-			
-			toalettGroup.addLayer( offentligToalett );
+			marker.bindPopup("<strong> Offentlig Toalett:</strong> "+ tittel +"<br>"+ alt + "<br> Pris: " + pris);
 
+			//adds marker to sub group
+			toalettGroup.addLayer(marker);
 		}
 	});
 
@@ -349,15 +328,10 @@ function difiToalett(map) {
 
 function difiBomstasjon(map) {
 	
-	//creates and empty GeoJSON Layer
-	var bomstasjonGroup = L.layerGroup().addTo(map);
-	
-	//var difiData = null;
-	//var bomstasjon = [];
-	var bomstasjon = new L.MarkerClusterGroup({
-		showCoverageOnHover: false,
-		maxClusterRadius: clusterRadius
-	});		
+	//creates and empty subgroup
+	var bomstasjonGroup = L.featureGroup.subGroup(parentCluster, null);
+
+
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/vegvesen/bomstasjoner?';
 	//henter data 
@@ -370,14 +344,14 @@ function difiBomstasjon(map) {
 			//Finner data som skal brukes
 			lengdeGrad = difiData.entries[i].long;
 			breddeGrad = difiData.entries[i].lat;
-			tittel = "Bomstasjon: " + difiData.entries[i].navn;
+			tittel = difiData.entries[i].navn;
 			alt = difiData.entries[i].autopass_beskrivelse;
 			
 			var marker = L.marker([breddeGrad, lengdeGrad], {icon: payBooth});
-			marker.bindPopup("<strong>" + tittel +  "</strong> <br>"+ alt);
-			bomstasjon.addLayer(marker);
-			
-			bomstasjonGroup.addLayer( bomstasjon );
+			marker.bindPopup("<strong>Bomstasjon:</strong> <br>" + tittel + "<br> Beskrivelse: " + alt);
+
+			//adds marker to sub group
+			bomstasjonGroup.addLayer(marker);
 		}
 	});
 
@@ -515,7 +489,7 @@ function setupFlomVarsel(map) {
 					}
 
 					//add it to the layer
-				    flomDataQuery.addData(data).addTo(map);
+				    flomDataQuery.addData(data);
 
 
 			  	});	
