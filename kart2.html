@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
 	<link rel="stylesheet" href="leafletdraw/leaflet.draw.css" />
 	<link rel="stylesheet" href="leafletsearch/leaflet-search.src.css" />
+	<link rel="stylesheet" href="markercluster/MarkerCluster.css" />
 	<link rel="stylesheet" href="markercluster/MarkerCluster.Default.css" />
 	<link rel="stylesheet" href="awesome-markers/leaflet.awesome-markers.css" />
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -64,12 +65,11 @@
 
 
 		//Marker Clustering
-		var clusterRadius = 50;	//lower number --> smaller but more cluster points
+		var clusterRadius = 80;	//lower number --> smaller but more cluster points
 
 		//END SETTINGS
 		//-----------------------------
 
-		var nobilDataCopy;
 
 
 		//-----------------------------
@@ -110,7 +110,7 @@
 
 
 		var parentCluster = new L.MarkerClusterGroup({
-			showCoverageOnHover: true,
+			showCoverageOnHover: false,
 			animateAddingMarkers: true,
 			maxClusterRadius: clusterRadius
 		});	
@@ -128,6 +128,9 @@
 	
 	<script>
 
+		//Set up icons to be used
+		setupIcons(mymap);
+
 		//bounds of the map
 		var southWest = L.latLng(52, -21),
 	    northEast = L.latLng(79, 46),
@@ -144,10 +147,6 @@
 
 		parentCluster.addTo(mymap);
 
-		//Set up icons to be used
-		setupIcons(mymap);
-
-
 		//sets up base map layers
 		var baseMaps = setupBaseLayers(mymap);
 		//sets up overlay layers
@@ -159,9 +158,11 @@
 		 //Layer control
 		var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(mymap);
 
+		//if search setting is turned on
 		if( enableSearching ){
 			setupSearch(mymap);
-		}	
+		}
+		//if dynamic layers setting is turned on	
 		if( enableDynLayers ){
 			eventUpdateDynamicLayers(mymap);
 		}	
@@ -171,7 +172,8 @@
 			setView: true,
 			maxZoom: 16
 		});
-	 
+	 	
+	 	//Setup event listeners
 		events(mymap); 
 
 
