@@ -230,7 +230,8 @@ function setupDbLayer(map) {
 function difiHelsestasjon(map) {
 	
 	//creates and empty subgroup
-	var helsestasjonGroup = L.featureGroup.subGroup(parentCluster, null);
+	var markerArray = [];
+	var helsestasjonGroup = L.featureGroup.subGroup(parentCluster, markerArray);
 	
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/helsestasjoner?';
@@ -263,7 +264,8 @@ function difiHelsestasjon(map) {
 function difiBarnehage(map) {
 	
 	//creates and empty subgroup
-	var barnehageGroup = L.featureGroup.subGroup(parentCluster, null);
+	var markerArray = [];
+	var barnehageGroup = L.featureGroup.subGroup(parentCluster, markerArray);
 	
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/barnehager?';
@@ -295,7 +297,8 @@ function difiBarnehage(map) {
 function difiToalett(map) {
 	
 	//creates and empty subgroup
-	var toalettGroup = L.featureGroup.subGroup(parentCluster, null);
+	var markerArray = [];
+	var toalettGroup = L.featureGroup.subGroup(parentCluster, markerArray);
 
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/offentligetoalett?';
@@ -331,7 +334,8 @@ function difiToalett(map) {
 function difiBomstasjon(map) {
 	
 	//creates and empty subgroup
-	var bomstasjonGroup = L.featureGroup.subGroup(parentCluster, null);
+	var markerArray = [];
+	var bomstasjonGroup = L.featureGroup.subGroup(parentCluster, markerArray);
 
 
 	//url til JSON data 
