@@ -73,19 +73,19 @@ function setupOverlayLayers(map) {
 	//gets JSON data from difi
 	if(useHelseStasjonData) {
 		var helseStasjonDifi = difiHelsestasjon(map);
-		overlayMaps["Helsestasjon Stavanger"] = helseStasjonDifi;
+		overlayMaps["<i class='fa fa-plus-square' aria-hidden='true'></i> Helsestasjon Stavanger"] = helseStasjonDifi;
 	}
 	if(useBarnehageData) {
 		var barnehageDifi = difiBarnehage(map);
-		overlayMaps["Barnehage Stavanger"] = barnehageDifi;
+		overlayMaps["<i class='fa fa-cubes' aria-hidden='true'></i> Barnehage Stavanger"] = barnehageDifi;
 	}
 	if(useToalett) {
 		var toalettDifi = difiToalett(map);
-		overlayMaps["Offentlig Toalett Stavanger"] = toalettDifi;
+		overlayMaps["<i class='fa fa-venus-mars' aria-hidden='true'></i> Offentlig Toalett Stavanger"] = toalettDifi;
 	}
 	if(useBomstasjon) {
 		var bomstasjonDifi = difiBomstasjon(map);
-		overlayMaps["Bomstasjoner Norge"] = bomstasjonDifi;
+		overlayMaps["<i class='fa fa-ticket' aria-hidden='true'></i> Bomstasjoner Norge"] = bomstasjonDifi;
 	}
 
 	//NVE
