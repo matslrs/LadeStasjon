@@ -32,10 +32,31 @@ function events(map) {
 		console.log('Zoom:' + map.getZoom());
 	}
 
-	map.on('click', onMapClick);
+	function addLayerToActive(e) {
+		activeOverlays.push(e.name);
+		updateLegend();
+	}
+
+	function removeLayerFromActive(e) {
+		var tempArray = [];
+		for(var i=0;i<activeOverlays.length;i++){
+			if(activeOverlays[i] != e.name){
+				tempArray.push(activeOverlays[i]);
+			}
+		}
+		activeOverlays = tempArray;
+
+		updateLegend();
+	}
+
+	if(latLongClick){
+		map.on('click', onMapClick);
+	}
 	map.on('locationfound', onLocationFound);
 	map.on('locationerror', onLocationError);
 	map.on('zoomend', zoomEnd);
+	map.on('overlayadd', addLayerToActive);
+	map.on('overlayremove', removeLayerFromActive);
 	//EVENTS END 
 
 }
