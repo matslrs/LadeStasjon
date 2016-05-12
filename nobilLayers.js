@@ -95,7 +95,7 @@ function setupNobilLayer(map){
 
 		dataType: 'json'
 
-	});
+	}});
 
 
 	// jQuery.ajax({
