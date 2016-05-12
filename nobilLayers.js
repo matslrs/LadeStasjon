@@ -83,7 +83,7 @@ function setupNobilLayer(map){
 
 	jQuery.ajax({
 
-		type: 'POST',
+		type: 'GET',
 
 		url: 'https://mats.maplytic.no/proxy/nobil.no/api/server/search.php',
 
