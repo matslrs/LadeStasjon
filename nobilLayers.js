@@ -81,23 +81,38 @@ function setupNobilLayer(map){
 	var testNobil = L.geoJson();
 	var nobilApiKey = '8a3fd5aedf9a815606f7b8ff9bdbb0d5';
 
-
-
 	jQuery.ajax({
-		type: 'GET',
-		url: ' https://mats.maplytic.no/proxy/nobil.no/api/server/datadump.php',
-		data: {
-			'apikey': nobilApiKey,
-			'countrycode': 'NOR',
-			'fromdate': '2012-06-02',
-			'format': 'JSON',
-			'file': 'false'
-			},
+
+		type: 'POST',
+
+		url: 'http://nobil.no/api/server/search.php',
+
+		data: { 
+
 		success: function(data){
 			testNobil.addData(data);
 		},
+
 		dataType: 'json'
+
 	});
+
+
+	// jQuery.ajax({
+	// 	type: 'GET',
+	// 	url: ' https://mats.maplytic.no/proxy/nobil.no/api/server/datadump.php',
+	// 	data: {
+	// 		'apikey': nobilApiKey,
+	// 		'countrycode': 'NOR',
+	// 		'fromdate': '2012-06-02',
+	// 		'format': 'JSON',
+	// 		'file': 'false'
+	// 		},
+	// 	success: function(data){
+	// 		testNobil.addData(data);
+	// 	},
+	// 	dataType: 'json'
+	// });
 
 }
 
