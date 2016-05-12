@@ -86,8 +86,8 @@ function setupNobilLayer(map){
 		url: ' https://mats.maplytic.no/proxy/nobil.no/api/server/datadump.php',
 		data: {
 			'apikey': nobilApiKey,
-			//'countrycode': 'NOR',
-			//'fromdate': '2012-06-02',
+			'countrycode': 'NOR',
+			'fromdate': '2012-06-02',
 			'format': 'JSON',
 			'file': 'false'
 			},
