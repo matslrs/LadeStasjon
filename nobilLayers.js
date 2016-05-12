@@ -88,14 +88,25 @@ function setupNobilLayer(map){
 		url: 'http://nobil.no/api/server/search.php',
 
 		data: { 
+			'apikey': nobilApiKey, 'apiversion': '3', 
+
+			'action': "search", 
+
+			'type':'stats_TotalsByCountyId',
+
+			'id': '11', 
+
+			'countrycode':'NO'
+
+		},
 
 		success: function(data){
-			testNobil.addData(data);
+				testNobil.addData(data);
 		},
 
 		dataType: 'json'
 
-	}});
+	});
 
 
 	// jQuery.ajax({
