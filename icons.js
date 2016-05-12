@@ -45,4 +45,10 @@ function setupIcons(map){
 	    icon: 'fa-venus-mars ',
 	    markerColor: 'darkgreen'
 	});
+
+	carCharge = L.AwesomeMarkers.icon({
+	    prefix: 'fa',
+	    icon: 'fa-car ',
+	    markerColor: 'yellow'
+	});
 }

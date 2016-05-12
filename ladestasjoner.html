@@ -49,6 +49,9 @@
 		//Get Lat/long on map click
 		var latLongClick = false;
 
+		var dataNobil;
+		var dataNobilStream = [];
+
 		//END SETTINGS
 		//-----------------------------
 
@@ -68,14 +71,17 @@
 
 		var activeOverlays = [];
 
+		var testNobil = L.featureGroup.subGroup(parentCluster);
+
 		//END GLOBAL VARIABLES
 		//-----------------------------
+
 	</script>	
-	
-	
+
 </head>
 
 <body>
+
 	<div id="mapid"></div>
 	
 	<script>
@@ -124,8 +130,8 @@
 		events(mymap); 
 
 
-		//ATTRIBUTIONS:
-   		mymap.attributionControl.addAttribution('Font Awesome');
+		//ATTRIBUTIONS: 
+   		mymap.attributionControl.addAttribution(' ');			///////////////////HUSK NOBIL LINK
 
 
 		var legend = L.control({position: 'bottomright'});
@@ -136,6 +142,23 @@
 		    return div;
 		};
 		legend.addTo(mymap);
+
+	
+        var connection = new WebSocket('ws://realtime.nobil.no/api/v1/stream?apikey=8a3fd5aedf9a815606f7b8ff9bdbb0d5');
+        connection.onmessage = function(e) {
+        	console.log('Message from the stream api');
+        	var x = JSON.parse(e.data);
+        	dataNobilStream[dataNobilStream.length] = x;
+        	console.log(x.type);
+        }
+        connection.onopen = function(){
+           console.log('Connected to the stream api');
+        }
+        connection.onclose = function(){
+           	var retry = setTimeout(connection, 6000);
+    		console.log('Connection to the stream api closed. Trying to reconnect in 10 seconds');
+        }
+	    
 
 	</script>	
 </body>

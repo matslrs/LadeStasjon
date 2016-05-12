@@ -37,7 +37,7 @@ function setupOverlayLayers(map) {
 	}
 
 	var ladeStasjonNobil = setupNobilLayer(map);
-	overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Bomstasjoner Norge"] = bomstasjonDifi;
+	overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> El-Bil Ladestasjoner"] = ladeStasjonNobil;
 
 
 	return overlayMaps;
@@ -77,53 +77,49 @@ function difiBomstasjon(map) {
 //-------------------------------------------
 
 function setupNobilLayer(map){
+	//var testNobil = L.featureGroup.subGroup(parentCluster);
 
-	var testNobil = L.geoJson();
-	var nobilApiKey = '8a3fd5aedf9a815606f7b8ff9bdbb0d5';
+	$.ajax({
+	   url: "http://nobil.no/api/server/datadump.php",
+	   jsonp: "callback",
+	   dataType: "jsonp",
+	   data: {
+		    apikey: "8a3fd5aedf9a815606f7b8ff9bdbb0d5",
+			fromdate: "2016-05-11",
+			file: false,
+		    format: "json"
+	   },
+	   success: function( response ) {
+	       console.log( 'antall ladestasjoner: ' + response.chargerstations.length );
+	       dataNobil = response;
 
-	jQuery.ajax({
+			for (i = 0; i < dataNobil.chargerstations.length; i++) {
+				
+				var position = dataNobil.chargerstations[i].csmd.Position;
+				position = position.replace("(", "");
+				position = position.replace(")", "");
+				position = position.split(",");
 
-		type: 'GET',
+				var lengdeGrad = position[1];
+				var breddeGrad = position[0];
 
-		url: 'https://mats.maplytic.no/proxy/nobil.no/api/server/search.php',
+				var tittel = dataNobil.chargerstations[i].csmd.name;
+				var alt = dataNobil.chargerstations[i].csmd.Description_of_location;
+				
+				var marker = L.marker([breddeGrad, lengdeGrad], {icon: carCharge});
+				marker.bindPopup("<strong>Charger Station:</strong> <br>" + tittel + "<br> Beskrivelse: " + alt);
 
-		data: { 
-			'apikey': nobilApiKey, 'apiversion': '3', 
-
-			'action': "search", 
-
-			'type':'stats_TotalsByCountyId',
-
-			'id': '11', 
-
-			'countrycode':'NO'
-
-		},
-
-		success: function(data){
-				testNobil.addData(data);
-		},
-
-		dataType: 'json'
-
+				//adds marker to sub group
+				testNobil.addLayer(marker);
+			}
+	   }
 	});
-
-
-	// jQuery.ajax({
-	// 	type: 'GET',
-	// 	url: ' https://mats.maplytic.no/proxy/nobil.no/api/server/datadump.php',
-	// 	data: {
-	// 		'apikey': nobilApiKey,
-	// 		'countrycode': 'NOR',
-	// 		'fromdate': '2012-06-02',
-	// 		'format': 'JSON',
-	// 		'file': 'false'
-	// 		},
-	// 	success: function(data){
-	// 		testNobil.addData(data);
-	// 	},
-	// 	dataType: 'json'
-	// });
-
+	return testNobil;
 }
+
+function addJsonpData(data){
+	dataJsonP = data;
+}
+
+
 
