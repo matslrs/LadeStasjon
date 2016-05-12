@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<link rel="stylesheet" href="style-custom.css" />
+	<link rel="stylesheet" href="leaflet/leaflet.css" />
+	<link rel="stylesheet" href="leafletdraw/leaflet.draw.css" />
+	<link rel="stylesheet" href="leafletsearch/leaflet-search.src.css" />
+	<link rel="stylesheet" href="markercluster/MarkerCluster.css" />
+	<link rel="stylesheet" href="markercluster/MarkerCluster.Default.css" />
+	<link rel="stylesheet" href="awesome-markers/leaflet.awesome-markers.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	
+	<script src="nobilLayers.js"></script>
+	<script src="events.js"></script>
+	<script src="functions.js"></script>
+	<script src="icons.js"></script>
+	<script src="leaflet/leaflet-src.js"></script>
+	<script src="leafletdraw/leaflet.draw-src.js"></script>
+	<script src="jquery/jquery-1.12.1.js"></script>
+	<script src="leafletsearch/leaflet-search.src.js"></script>
+	<script src="markercluster/leaflet.markercluster-src.js"></script>
+	<script src="markercluster/leaflet.featuregroup.subgroup-src.js"></script>
+	<script src="awesome-markers/leaflet.awesome-markers.js"></script>
+	
+	<script>
+
+		//-----------------------------
+		//SETTINGS
+
+
+		//SELECT BASE START MAP!
+		var startMap = "OpenStreetMap";	//check the function setupBaseLayers(map) in layers.js to see names on maps
+
+		//Enable search function?
+		var enableSearching = true;
+
+		//Base layers
+		var useOsmLayer = true;
+		var useKartverkTopo2Layer = true;
+		var useKartverkTopo3Layer = true;
+
+		//difi
+		var useBomstasjon = true;
+
+		//Marker Clustering
+		var clusterRadius = 80;	//lower number --> smaller but more cluster points
+		//Get Lat/long on map click
+		var latLongClick = false;
+
+		//END SETTINGS
+		//-----------------------------
+
+
+
+		//-----------------------------
+		//GLOBAL VARIABLES
+
+		//dynamic layers
+
+
+		var parentCluster = new L.MarkerClusterGroup({
+			showCoverageOnHover: false,
+			animateAddingMarkers: true,
+			maxClusterRadius: clusterRadius
+		});	
+
+		var activeOverlays = [];
+
+		//END GLOBAL VARIABLES
+		//-----------------------------
+	</script>	
+	
+	
+</head>
+
+<body>
+	<div id="mapid"></div>
+	
+	<script>
+
+		//Set up icons to be used
+		setupIcons(mymap);
+
+		//bounds of the map
+		var southWest = L.latLng(48, -21),
+	    northEast = L.latLng(75, 46),
+	    bounds = L.latLngBounds(southWest, northEast);
+
+		//Creates MAP
+		var mymap = L.map('mapid', { 
+			center: [58.8534, 5.7317],
+			maxBounds: bounds,
+			minZoom: 4,
+			maxZoom: 18,
+			zoom: 8
+		});
+
+		parentCluster.addTo(mymap);
+
+		//sets up base map layers
+		var baseMaps = setupBaseLayers(mymap);
+		//sets up overlay layers
+		var overlayMaps = setupOverlayLayers(mymap);	
+
+		//Set initial base map here:
+		baseMaps[startMap].addTo(mymap);
+
+		 //Layer control
+		var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(mymap);
+
+		//if search setting is turned on
+		if( enableSearching ){
+			setupSearch(mymap);
+		}
+		
+		//find location and set view and zoom
+		mymap.locate({
+			setView: true,
+			maxZoom: 16
+		}); 	
+	 	//Setup event listeners
+		events(mymap); 
+
+
+		//ATTRIBUTIONS:
+   		mymap.attributionControl.addAttribution('Font Awesome');
+
+
+		var legend = L.control({position: 'bottomright'});
+		legend.onAdd = function (mymap) {
+
+		    var div = L.DomUtil.create('div', 'info legend'),
+		        labels = [];
+		    return div;
+		};
+		legend.addTo(mymap);
+
+	</script>	
+</body>
+</html>
