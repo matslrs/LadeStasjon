@@ -85,7 +85,7 @@ function setupNobilLayer(map){
 
 		type: 'POST',
 
-		url: 'http://nobil.no/api/server/search.php',
+		url: 'https://mats.maplytic.no/proxy/nobil.no/api/server/search.php',
 
 		data: { 
 			'apikey': nobilApiKey, 'apiversion': '3', 
