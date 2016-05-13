@@ -91,6 +91,7 @@ function addJsonpData(data){
 }
 
 function setupStreamNobilLayer(streamData){
+
 	console.log( 'antall real time ladestasjoner: ' + streamData.length );
 	//have to use both datasets to "build" real time layer b/c neither contains all needed info
 	for(var i = 0; i < chargingStations.length; i++) {
@@ -108,21 +109,29 @@ function setupStreamNobilLayer(streamData){
 
 				var tittel = chargingStations[i].csmd.name;
 				var alt = chargingStations[i].csmd.Description_of_location;
-				
 
 
+				var connectorUnknown = 0;
+				var connectorAvailable = 0;
+				var connectorOccupied = 0;
+				var connectorErrors = 0;
+				var oldestTime = 0;
 
 				//Create connectors array for charger station
 				var connectors = [];
 				for(var k=0;k<streamData[j].connectors.length;k++){
 					if(streamData[j].connectors[k].status == -1){
 						var statusConn = "Unknown";
+						connectorUnknown++;
 					} else if(streamData[j].connectors[k].status == 0){
 						var statusConn = "Available";
+						connectorAvailable++;
 					} else if(streamData[j].connectors[k].status == 1){
 						var statusConn = "Occupied";
+						connectorOccupied++;
 					} else if(streamData[j].connectors[k].status == 2){
 						var statusConn = "Error";
+						connectorErrors++;
 					}
 
 					var connector = {
@@ -134,8 +143,11 @@ function setupStreamNobilLayer(streamData){
 
 					connectors.push(connector);
 
-				}
+					if(oldestTime<streamData[j].connectors[k].timestamp){
+						oldestTime = streamData[j].connectors[k].timestamp;
+					}
 
+				}
 
 
 				//get statusRead fro charger station
@@ -156,7 +168,8 @@ function setupStreamNobilLayer(streamData){
 					description:"",
 					coords: [-1,-1],
 					status: streamData[j].status,
-					statusRead:statusRead,
+					statusRead:"",
+					updateTime:new Date(oldestTime),
 					connectors: connectors
 				};
 
@@ -171,7 +184,18 @@ function setupStreamNobilLayer(streamData){
 
 				//create and add marker to layer
 				var marker = L.marker([latitude, longitude], {icon: carCharge});
-				marker.bindPopup("<strong>Charger Station (RT):</strong> <br>" + tittel + "<br> Beskrivelse: " + alt + "<br> Status: " + status);
+				tmpStr = "<strong>Charger Station " + streamData[j].uuid.replace("NOR_", "")  + ": </strong> <br>" + tittel;
+				tmpStr += "<br> Status: " + statusRead;
+				tmpStr += "<br> --------- ";
+				tmpStr += "<br> Connectors: ";
+				tmpStr += "<br> Available: " + connectorAvailable + "/" + connectors.length;
+				tmpStr += "<br> Occupied: " + connectorOccupied + "/" + connectors.length;
+				tmpStr += "<br> Error: " + connectorErrors + "/" + connectors.length;
+				tmpStr += "<br> Unknown: " + connectorUnknown + "/" + connectors.length;
+				tmpStr += "<br> --------- ";
+				tmpStr += "<br> <i>Last update: " + new Date(oldestTime) + "</i>";
+
+				marker.bindPopup(tmpStr);
 				ladeStasjonNobilStreamLayer.addLayer(marker);
 
 				break;
@@ -283,8 +307,8 @@ function updateStreamData(streamChargerUpdate){
 			rtChargingStationsArray[i].statusRead = statusRead;
 			rtChargingStationsArray[i].connectors = connectorsUpdate;
 
-			mymap.panTo(rtChargingStationsArray[i].coords);
-			mymap.setZoom(14);
+			// mymap.panTo(rtChargingStationsArray[i].coords);
+			// mymap.setZoom(14);
 
 
 			break;
