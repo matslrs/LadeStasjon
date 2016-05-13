@@ -32,26 +32,18 @@
 
 		//SELECT BASE START MAP!
 		var startMap = "OpenStreetMap";	//check the function setupBaseLayers(map) in layers.js to see names on maps
-
 		//Enable search function?
 		var enableSearching = true;
-
 		//Base layers
 		var useOsmLayer = true;
 		var useKartverkTopo2Layer = true;
 		var useKartverkTopo3Layer = true;
-
-		//difi
-		var useBomstasjon = true;
-
+		//only norway
+		var useOnlyNor = true;
 		//Marker Clustering
 		var clusterRadius = 80;	//lower number --> smaller but more cluster points
 		//Get Lat/long on map click
 		var latLongClick = false;
-
-		var dataNobil;
-		var dataNobilStream = [];
-
 		//END SETTINGS
 		//-----------------------------
 
@@ -59,10 +51,6 @@
 
 		//-----------------------------
 		//GLOBAL VARIABLES
-
-		//dynamic layers
-
-
 		var parentCluster = new L.MarkerClusterGroup({
 			showCoverageOnHover: false,
 			animateAddingMarkers: true,
@@ -71,10 +59,32 @@
 
 		var activeOverlays = [];
 
-		var testNobil = L.featureGroup.subGroup(parentCluster);
-
+		var chargingStations = [];
+		var rtChargingStationsArray = [];
+		var ladeStasjonNobilStreamLayer = L.featureGroup.subGroup(parentCluster);
 		//END GLOBAL VARIABLES
 		//-----------------------------
+
+		function initSocketConnection(){
+			var connection = new WebSocket('ws://realtime.nobil.no/api/v1/stream?apikey=8a3fd5aedf9a815606f7b8ff9bdbb0d5');
+	        connection.onmessage = function(e) {
+	        	//console.log('Message from the stream api');
+	        	var message = JSON.parse(e.data);
+	        	//console.log(message.type);
+	        	if(message.type == "snapshot:init"){
+	        		setupStreamNobilLayer(message.data);
+	        	} else if(message.type == "status:update"){
+	        		updateStreamData(message.data);
+	        	}
+	        }
+	        connection.onopen = function(){
+	           console.log('Connected to the stream api');
+	        }
+	        connection.onclose = function(){
+	           	var retry = setTimeout(connection, 6000);
+	    		console.log('Connection to the stream api closed. Trying to reconnect in 10 seconds');
+	        }
+		}
 
 	</script>	
 
@@ -98,7 +108,7 @@
 		var mymap = L.map('mapid', { 
 			center: [58.8534, 5.7317],
 			maxBounds: bounds,
-			minZoom: 4,
+			minZoom: 6,
 			maxZoom: 18,
 			zoom: 8
 		});
@@ -112,6 +122,7 @@
 
 		//Set initial base map here:
 		baseMaps[startMap].addTo(mymap);
+		overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner Real Time"].addTo(mymap);
 
 		 //Layer control
 		var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(mymap);
@@ -141,24 +152,7 @@
 		        labels = [];
 		    return div;
 		};
-		legend.addTo(mymap);
-
-	
-        var connection = new WebSocket('ws://realtime.nobil.no/api/v1/stream?apikey=8a3fd5aedf9a815606f7b8ff9bdbb0d5');
-        connection.onmessage = function(e) {
-        	console.log('Message from the stream api');
-        	var x = JSON.parse(e.data);
-        	dataNobilStream[dataNobilStream.length] = x;
-        	console.log(x.type);
-        }
-        connection.onopen = function(){
-           console.log('Connected to the stream api');
-        }
-        connection.onclose = function(){
-           	var retry = setTimeout(connection, 6000);
-    		console.log('Connection to the stream api closed. Trying to reconnect in 10 seconds');
-        }
-	    
+		legend.addTo(mymap); 
 
 	</script>	
 </body>

@@ -54,7 +54,7 @@ function events(map) {
 	}
 	map.on('locationfound', onLocationFound);
 	map.on('locationerror', onLocationError);
-	map.on('zoomend', zoomEnd);
+	//map.on('zoomend', zoomEnd);
 	map.on('overlayadd', addLayerToActive);
 	map.on('overlayremove', removeLayerFromActive);
 	//EVENTS END 
