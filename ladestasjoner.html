@@ -10,12 +10,12 @@
 	<link rel="stylesheet" href="markercluster/MarkerCluster.Default.css" />
 	<link rel="stylesheet" href="awesome-markers/leaflet.awesome-markers.css" />
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
-	<script src="nobilLayers.js"></script>
+	<script src="nobilUtils.js"></script>
 	<script src="events.js"></script>
 	<script src="functions.js"></script>
-	<script src="icons.js"></script>
 	<script src="leaflet/leaflet-src.js"></script>
 	<script src="leafletdraw/leaflet.draw-src.js"></script>
 	<script src="jquery/jquery-1.12.1.js"></script>
@@ -41,7 +41,7 @@
 		//only norway
 		var useOnlyNor = true;
 		//Marker Clustering
-		var clusterRadius = 40;	//lower number --> smaller but more cluster points
+		var clusterRadius = 1;	//lower number --> smaller but more cluster points
 		//Get Lat/long on map click
 		var latLongClick = false;
 		//END SETTINGS
@@ -60,8 +60,9 @@
 		var activeOverlays = [];
 
 		var chargingStations = [];
-		var rtChargingStationsArray = [];
+		var rtChargingStationsArray = {};
 		var ladeStasjonNobilStreamLayer = L.featureGroup.subGroup(parentCluster);
+		var dynamicMarkers = {};
 		//END GLOBAL VARIABLES
 		//-----------------------------
 
@@ -75,10 +76,11 @@
 	        		setupStreamNobilLayer(message.data);
 	        	} else if(message.type == "status:update"){
 	        		updateStreamData(message.data);
+	        		
 	        	}
 	        }
 	        connection.onopen = function(){
-	           console.log('Connected to the stream api');
+	           console.log('Connected to the real time api');
 	        }
 	        connection.onclose = function(){
 	           	var retry = setTimeout(connection, 6000);

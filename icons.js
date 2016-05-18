@@ -22,6 +22,30 @@ function setupIcons(map){
     orangeIcon = new LeafIcon({iconUrl: 'leaflet/images/leaf-orange.png'});
 
 	
+	chargerError = L.AwesomeMarkers.icon({
+	    prefix: 'ion',
+	    icon: 'ion-model-s',
+	    markerColor: 'red'
+	});
+
+	chargerAvailable = L.AwesomeMarkers.icon({
+	    prefix: 'ion',
+	    icon: 'ion-model-s',
+	    markerColor: 'green'
+	});
+
+	chargerOccupied = L.AwesomeMarkers.icon({
+	    prefix: 'ion',
+	    icon: 'ion-model-s',
+	    markerColor: 'orange'
+	});
+
+	chargerUnknown = L.AwesomeMarkers.icon({
+	    prefix: 'ion',
+	    icon: 'ion-model-s',
+	    markerColor: 'darkpuple'
+	});
+
 	medicineMarker = L.AwesomeMarkers.icon({
 	    prefix: 'fa',
 	    icon: 'plus-square',
