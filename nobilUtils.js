@@ -89,8 +89,8 @@ function setupStaticNobilLayer(map){
 	var staticNobil = L.featureGroup.subGroup(parentCluster);
 
 	$.ajax({
-	   //url: "https://mats.maplytic.no/proxy/nobil.no/api/server/datadump.php",
-	   url: "http://nobil.no/api/server/datadump.php",
+	   url: "https://mats.maplytic.no/proxy/nobil.no/api/server/datadump.php",
+	   //url: "http://nobil.no/api/server/datadump.php",
 	   jsonp: "callback",
 	   dataType: "jsonp",
 	   data: {
