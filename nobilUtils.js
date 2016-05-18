@@ -136,6 +136,8 @@ function addJsonpData(data){
 
 function setupStreamNobilLayer(streamData){
 
+	var tempDebugArray = [];
+
 	console.log( 'antall real time ladestasjoner: ' + streamData.length );
 	//have to use both datasets to "build" real time layer b/c neither contains all needed info
 	for(var i = 0; i < chargingStations.length; i++) {
@@ -224,7 +226,7 @@ function setupStreamNobilLayer(streamData){
 					connectors: connectors
 				};
 
-				//add charger to stream array
+				//"build" charger station
 				chargerStation.name = tittel;
 				chargerStation.description = alt;
 				chargerStation.coords = [latitude, longitude];
@@ -233,6 +235,14 @@ function setupStreamNobilLayer(streamData){
 				chargerStation.connectorAvailable = connectorAvailable;
 				chargerStation.connectorOccupied = connectorOccupied;
 				chargerStation.connectorErrors = connectorErrors;
+
+				var imageName = chargingStations[i].csmd.Image;
+				if(typeof chargingStations[i].csmd.Image !== 'undefined' && imageName.includes(".jpg") || imageName.includes(".jpeg") || imageName.includes(".png") ){
+					chargerStation.imageName = imageName;
+				} else{
+					chargerStation.imageName = "coming";
+					tempDebugArray.push(chargingStations[i].csmd.Image);
+				}
 
 				//create and add marker to layer
 				var marker = L.marker([latitude, longitude], {icon: statusIcon});
@@ -245,6 +255,14 @@ function setupStreamNobilLayer(streamData){
 				}
 				tmpStr = "<strong>Charger Station " + id  + ": </strong> <br>" + tittel;
 				tmpStr += "<br>" + preStatusRead + statusRead + "</div>";
+
+				
+				if( chargerStation.imageName != "coming" ){
+					tmpStr += "<br> <img src='http://www.nobil.no/img/ladestasjonbilder/" + imageName + "' alt='some text'/>";
+				} else{
+					tmpStr += "<br> Image Coming Later.";
+				}
+				
 				tmpStr += "<br> --------- ";
 
 				tmpStr += '<div class="container" style="height: ' + (Math.ceil(chargerStation.connectors.length/6)*30+10) + 'px;">';
@@ -284,6 +302,12 @@ function setupStreamNobilLayer(streamData){
 				break;
 			}
 		}
+	}
+
+	console.log( "images with 'wrong' name = " + tempDebugArray.length );
+
+	for(var i=0; i<tempDebugArray.length;i++){
+		console.log("image name: " + tempDebugArray[i]);
 	}
 }
 
@@ -392,7 +416,7 @@ function updateStreamData(streamChargerUpdate){
 
 function updateMarkerPopup(id){
 	//mymap.closePopup();
-	//dynamicMarkers[id].openPopup();
+	dynamicMarkers[id].openPopup();
 
 	if(rtChargingStationsArray[id].status == -1){
 		var preStatusRead = "<div class='text-muted'> Station Status: ";
@@ -417,9 +441,38 @@ function updateMarkerPopup(id){
 	else{
 		idShow = rtChargingStationsArray[id].uuid;
 	}
+
 	tmpStr = "<strong>Charger Station " + idShow  + ": </strong> <br>" + rtChargingStationsArray[id].name;
 	tmpStr += "<br>" + preStatusRead + rtChargingStationsArray[id].statusRead + "</div>";
+
+	if( rtChargingStationsArray[id].imageName != "coming" ){
+		tmpStr += "<br> <img src='http://www.nobil.no/img/ladestasjonbilder/" + rtChargingStationsArray[id].imageName + "' alt='some text'/>";
+	} else{
+		tmpStr += "<br> Image Coming Later.";
+	}
+	
 	tmpStr += "<br> --------- ";
+
+	tmpStr += '<div class="container" style="height: ' + (Math.ceil(rtChargingStationsArray[id].connectors.length/6)*30+10) + 'px;">';
+	tmpStr += "Connectors: ";
+
+	var ledStr = '';
+	for(var k=0;k<rtChargingStationsArray[id].connectorAvailable;k++){
+		ledStr += '<div class="led-box"><div class="led-green"></div></div>';
+	}
+	for(var k=0;k<rtChargingStationsArray[id].connectorOccupied;k++){
+		ledStr += '<div class="led-box"><div class="led-yellow"></div></div>';
+	}
+	for(var k=0;k<rtChargingStationsArray[id].connectorErrors;k++){
+		ledStr += '<div class="led-box"><div class="led-red"></div></div>';
+	}
+	for(var k=0;k<rtChargingStationsArray[id].connectorUnknown;k++){
+		ledStr += '<div class="led-box"><div class="led-grey"></div></div>';
+	}
+
+	tmpStr += ledStr;
+	tmpStr += '</div>';
+
 	tmpStr += "<br> Connectors: ";
 	tmpStr += "<br> Available: " + rtChargingStationsArray[id].connectorAvailable + "/" + nrOfConnectors;
 	tmpStr += "<br> Occupied: " + rtChargingStationsArray[id].connectorOccupied + "/" + nrOfConnectors;
