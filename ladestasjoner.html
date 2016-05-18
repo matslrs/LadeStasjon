@@ -67,7 +67,7 @@
 		//-----------------------------
 
 		function initSocketConnection(){
-			var connection = new WebSocket('wss://realtime.nobil.no/api/v1/stream?apikey=8a3fd5aedf9a815606f7b8ff9bdbb0d5');
+			var connection = new WebSocket('ws://realtime.nobil.no/api/v1/stream?apikey=8a3fd5aedf9a815606f7b8ff9bdbb0d5');
 	        connection.onmessage = function(e) {
 	        	//console.log('Message from the stream api');
 	        	var message = JSON.parse(e.data);
