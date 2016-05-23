@@ -4,11 +4,11 @@
 
 	<!-- bower:css -->
 	<link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css" />
+	<link rel="stylesheet" href="bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
+	<link rel="stylesheet" href="bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+	<link rel="stylesheet" href="bower_components/leaflet-search/dist/leaflet-search.src.css" />
 	<!-- endbower -->
 	
-	<link rel="stylesheet" href="leaflet/leaflet.css" />
-	<link rel="stylesheet" href="leafletdraw/leaflet.draw.css" />
-	<link rel="stylesheet" href="leafletsearch/leaflet-search.src.css" />
 	<link rel="stylesheet" href="markercluster/MarkerCluster.css" />
 	<link rel="stylesheet" href="markercluster/MarkerCluster.Default.css" />
 	<link rel="stylesheet" href="awesome-markers/leaflet.awesome-markers.css" />
@@ -17,30 +17,11 @@
 	<link rel="stylesheet" href="style-custom.css" />
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	<meta charset="UTF-8"> 
-
-	<!-- bower:js -->
-	<script src="bower_components/leaflet/dist/leaflet-src.js"></script>
-	<!-- endbower -->
-	
-	<script src="nobilUtils.js"></script>
-	<script src="functions.js"></script>
-	<script src="leaflet/leaflet-src.js"></script>
-	<script src="leafletdraw/leaflet.draw-src.js"></script>
-	<script src="jquery/jquery-1.12.1.js"></script>
-	<script src="leafletsearch/leaflet-search.src.js"></script>
-	<script src="markercluster/leaflet.markercluster-src.js"></script>
-	<script src="markercluster/leaflet.featuregroup.subgroup-src.js"></script>
-	<script src="awesome-markers/leaflet.awesome-markers.js"></script>
-	<script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-
-	
+	<meta charset="UTF-8"> 	
 	<script>
 			
 		//-----------------------------
-		//SETTINGS
-		
-		
+		//SETTINGS	
 		//SELECT BASE START MAP!
 		var startMap                    = "OpenStreetMap";	//check the function setupBaseLayers(map) in layers.js to see names on maps
 		//Enable search function?
@@ -58,23 +39,16 @@
 		//END SETTINGS
 		//-----------------------------
 		
-		
-		
 		//-----------------------------
 		//GLOBAL VARIABLES
-		var parentCluster               = new L.MarkerClusterGroup({
-		showCoverageOnHover: true,
-		animateAddingMarkers: true,
-		maxClusterRadius: clusterRadius
-		});	
-		
+		var mymap                       = {};	
+		var parentCluster               = {};	
 		var activeOverlays              = [];
 		var rtChargingStationsArray     = {};
-		var ladeStasjonNobilStreamLayer = L.featureGroup.subGroup(parentCluster);
+		var ladeStasjonNobilStreamLayer = {};
 		var dynamicMarkers              = {};
 		//END GLOBAL VARIABLES
 		//-----------------------------
-
 	</script>	
 
 </head>
@@ -84,8 +58,21 @@
 	<div id="mapid"></div>
 	<div class="descriptionBox"></div>
 	<div id="testdiv"></div>
-		
+
+	<script src="jquery/jquery-1.12.1.js"></script>	
+
 	<script>
+
+	$( document ).ready(function() {
+		//parent marker cluster
+		parentCluster               = new L.MarkerClusterGroup({
+		showCoverageOnHover: true,
+		animateAddingMarkers: true,
+		maxClusterRadius: clusterRadius
+		});
+		//a child marker cluster
+		ladeStasjonNobilStreamLayer = L.featureGroup.subGroup(parentCluster);
+
 		//Set up icons to be used
 		setupIcons(mymap);
 
@@ -130,8 +117,6 @@
 
 		//ATTRIBUTIONS: 
    		mymap.attributionControl.addAttribution('<a href="http://info.nobil.no/">Nobil</a>');
-
-
 		var legend = L.control({position: 'bottomright'});
 		legend.onAdd = function (mymap) {
 
@@ -143,6 +128,37 @@
 
 		events(mymap); 
 
-	</script>	
+	});
+
+	function setupSearch(map) {
+		map.addControl( new L.Control.Search({
+			url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
+			jsonpParam: 'json_callback',
+			propertyName: 'display_name',
+			propertyLoc: ['lat','lon'],
+			circleLocation: false,
+			markerLocation: false,			
+			autoType: false,
+			autoCollapse: true,
+			minLength: 2,
+			zoom:10
+		}) );
+	}
+
+	</script>
+
+	<!-- bower:js -->
+	<script src="bower_components/leaflet/dist/leaflet-src.js"></script>
+	<script src="bower_components/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+	<script src="bower_components/drmonty-leaflet-awesome-markers/js/leaflet.awesome-markers.js"></script>
+	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="bower_components/leaflet-search/dist/leaflet-search.src.js"></script>
+	<!-- endbower -->
+	
+	<script src="nobilUtils.js"></script>
+	<script src="functions.js"></script>
+	<script src="markerclusterSubGroup/leaflet.featuregroup.subgroup-src.js"></script>
+	<script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>	
 </body>
 </html>
