@@ -152,7 +152,7 @@ function initSocketConnection(chargingStations){
 }
 
 function setupStaticNobilLayer(map){
-	var staticNobil = L.featureGroup.subGroup(parentCluster);
+	staticNobil = L.featureGroup.subGroup(parentCluster);
 	var chargingStations = [];
 
 	$.ajax({
@@ -251,10 +251,10 @@ function setupStreamNobilLayer(streamData, chargingStations){
 					}
 					connectors.push(connector);
 					if (chargingStations[i].attr.conn[k+1] == null){
-						console.log(streamData[j].uuid + ":");
-						console.log("DATADUMP: " + chargingStations[i].attr.conn.length + " connectors.");
-						console.log("REAL TIME: " + streamData[j].connectors.length + " connectors.");
+						console.log(streamData[j].uuid + " missing connectors");
 					} else{
+						connector.connector = chargingStations[i].attr.conn[k+1][4].trans;
+						connector.capacity = chargingStations[i].attr.conn[k+1][5].trans;
 						tempDevArray.push(chargingStations[i].attr.conn[k+1][4].trans);
 					}
 				}
@@ -357,6 +357,8 @@ function setupStreamNobilLayer(streamData, chargingStations){
 
 				tmpStr += ledStr;
 				tmpStr += '</div>';
+
+				tmpStr += templateFunction( chargerStation.connectors );
 
 
 				tmpStr += "<br> --------- ";
