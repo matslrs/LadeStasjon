@@ -47,12 +47,14 @@ function events(map) {
 	}
 
 	map.on('popupopen', ledAddEventListener);
-	// map.on('popupopen', function(e) {ledAddEventListener();
-	// });
-	//map.on('popupclose', function(e) {});
 	map.on('locationfound', onLocationFound);
 	map.on('locationerror', onLocationError);
 	map.on('zoomend', zoomEnd);
+}
+
+function markerClick(e) {
+	e.target.closePopup();
+	$("#markerInfo")[0].innerHTML = e.target._popup.getContent();
 }
 
 function setupBaseLayers(map) {
@@ -157,7 +159,6 @@ function setupStaticNobilLayer(map){
 
 	$.ajax({
 	   url: "https://mats.maplytic.no/proxy/nobil.no/api/server/datadump.php",
-	   //url: "http://nobil.no/api/server/datadump.php",
 	   jsonp: "callback",
 	   dataType: "jsonp",
 	   data: {
@@ -337,7 +338,7 @@ function setupStreamNobilLayer(streamData, chargingStations){
 				} else{
 					tmpStr += "<br> Image Coming Later.";
 				}
-
+				tmpStr += '<div class="well">';
 				tmpStr += '<div class="containerCustom" style="height: ' + (Math.ceil(chargerStation.connectors.length/8 + 1)*30) + 'px;">';
 				tmpStr += "<div class='connectorText'>Connectors: </div>";
 
@@ -368,7 +369,7 @@ function setupStreamNobilLayer(streamData, chargingStations){
 				tmpStr += "<br>Tidsbegrensning: " + chargerStation.timeLimit;
 				tmpStr += "<br> --------- ";			
 
-				marker.bindPopup(tmpStr);
+				marker.bindPopup(tmpStr,{autoPan: false}).on('click', markerClick);
 				ladeStasjonNobilStreamLayer.addLayer(marker);
 
 				rtChargingStationsArray[streamData[j].uuid] = chargerStation;

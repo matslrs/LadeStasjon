@@ -21,6 +21,34 @@
     "jquery": "^2.2.4",
     "bootstrap": "^3.3.6",
     "leaflet-0": "https://github.com/ghybs/Leaflet.FeatureGroup.SubGroup/tree/leaflet-0.7",
-    "leaflet-search": "^1.9.7"
+    "leaflet-search": "^1.9.7",
+    "sidebar-v2": "^0.3.0",
+    "doT": "^1.0.1",
+    "font-awesome": "fontawesome#^4.6.3",
+    "leaflet-featuregroup-subgroup": "^0.1.1"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "dist/css/bootstrap.css",
+        "dist/js/bootstrap.js"
+      ]
+    },
+    "sidebar-v2": {
+      "main": [
+        "js/leaflet-sidebar.min.js",
+        "css/leaflet-sidebar.min.css"
+      ]
+    },
+    "font-awesome": {
+      "main": [
+        "css/font-awesome.min.css"
+      ]
+    },
+    "leaflet-featureGroup-subgroup": {
+      "main": [
+        "leaflet.featuregroup.subgroup-src.js"
+      ]
+    }
   }
 }

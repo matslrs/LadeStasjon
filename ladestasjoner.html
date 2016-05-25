@@ -8,6 +8,8 @@
 	<link rel="stylesheet" href="bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
 	<link rel="stylesheet" href="bower_components/leaflet-search/dist/leaflet-search.src.css" />
+	<link rel="stylesheet" href="bower_components/sidebar-v2/css/leaflet-sidebar.min.css" />
+	<link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
 	<!-- endbower -->
 	
 	<link rel="stylesheet" href="markercluster/MarkerCluster.css" />
@@ -60,14 +62,31 @@
 
 <body>
 
-	<div id="mapid"></div>
-	<div class="descriptionBox"></div>
-	<div id="testdiv"></div>
+	<div id="sidebar" class="sidebar collapsed">
+        <!-- Nav tabs -->
+        <div class="sidebar-tabs">
+            <ul role="tablist">
+                <li><a href="#home" role="tab"><i class="fa fa-map-marker"></i></a></li>
+            </ul>
+        </div>
 
+        <!-- Tab panes -->
+        <div class="sidebar-content">
+            <div class="sidebar-pane" id="home">
+                <h1 class="sidebar-header">
+                    Charging Station
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+                <p id="markerInfo">Click on a charger station to get information about that station.</p>
+            </div>
+        </div>
+    </div>
+
+	<div id="mapid" class="sidebar-map"></div>
+	<div class="descriptionBox"></div>
 	<script src="jquery/jquery-1.12.1.js"></script>	
 
 	<script>
-
 	$( document ).ready(function() {
 
 		var template = $("#tmpl-connector-table").html();
@@ -98,6 +117,8 @@
 			maxZoom: 18,
 			zoom: 8
 		});
+
+		events(mymap);
 
 		parentCluster.addTo(mymap);
 
@@ -135,7 +156,8 @@
 		};
 		legend.addTo(mymap);
 
-		events(mymap); 
+		//events(mymap); 
+		var sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(mymap);
 
 	});
 
@@ -153,7 +175,6 @@
 			zoom:10
 		}) );
 	}
-
 	</script>
 
 	<!-- bower:js -->
@@ -163,15 +184,15 @@
 	<script src="bower_components/jquery/dist/jquery.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 	<script src="bower_components/leaflet-search/dist/leaflet-search.src.js"></script>
+	<script src="bower_components/sidebar-v2/js/leaflet-sidebar.min.js"></script>
+	<script src="bower_components/doT/doT.js"></script>
+	<script src="bower_components/leaflet-featuregroup-subgroup/leaflet.featuregroup.subgroup-src.js"></script>
 	<!-- endbower -->
-	
+
 	<script src="nobilUtils.js"></script>
 	<script src="functions.js"></script>
-	<script src="node_modules/dot/doT.min.js"></script>
-	<script src="markerclusterSubGroup/leaflet.featuregroup.subgroup-src.js"></script>
-
+	
 	<script id="tmpl-connector-table" type="text/doT">
-		<div class="well">
 			<div class="h5"><i class="glyphicon glyphicon-tags"></i> Connector Info</div>
 			<table class="table table-striped">
 			    <thead>
