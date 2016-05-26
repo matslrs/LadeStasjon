@@ -44,6 +44,7 @@
 		
 		//-----------------------------
 		//GLOBAL VARIABLES
+		var activeSidebarStation        = "none";
 		var mymap                       = {};	
 		var parentCluster               = {};	
 		var activeOverlays              = [];
@@ -51,6 +52,7 @@
 		var staticNobil                 = {};
 		var ladeStasjonNobilStreamLayer = {};
 		var dynamicMarkers              = {};
+		var sidebar                     = {}
 		function templateFunction() {
 		    // ...
 		}
@@ -66,18 +68,18 @@
         <!-- Nav tabs -->
         <div class="sidebar-tabs">
             <ul role="tablist">
-                <li><a href="#home" role="tab"><i class="fa fa-map-marker"></i></a></li>
+                <li><a href="#stationInfo" role="tab"><i class="fa fa-map-marker"></i></a></li>
             </ul>
         </div>
 
         <!-- Tab panes -->
         <div class="sidebar-content">
-            <div class="sidebar-pane" id="home">
+            <div class="sidebar-pane" id="stationInfo">
                 <h1 class="sidebar-header">
                     Charging Station
                     <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
                 </h1>
-                <p id="markerInfo">Click on a charger station to get information about that station.</p>
+                <p id="stationDetails">Click on a charger station to get information about that station.</p>
             </div>
         </div>
     </div>
@@ -117,6 +119,7 @@
 			maxZoom: 18,
 			zoom: 8
 		});
+		sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(mymap);
 
 		events(mymap);
 
@@ -155,10 +158,6 @@
 		    return div;
 		};
 		legend.addTo(mymap);
-
-		//events(mymap); 
-		var sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(mymap);
-
 	});
 
 	function setupSearch(map) {
@@ -184,7 +183,7 @@
 	<script src="bower_components/jquery/dist/jquery.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 	<script src="bower_components/leaflet-search/dist/leaflet-search.src.js"></script>
-	<script src="bower_components/sidebar-v2/js/leaflet-sidebar.min.js"></script>
+	<script src="bower_components/sidebar-v2/js/leaflet-sidebar.js"></script>
 	<script src="bower_components/doT/doT.js"></script>
 	<script src="bower_components/leaflet-featuregroup-subgroup/leaflet.featuregroup.subgroup-src.js"></script>
 	<!-- endbower -->
@@ -193,24 +192,23 @@
 	<script src="functions.js"></script>
 	
 	<script id="tmpl-connector-table" type="text/doT">
-			<div class="h5"><i class="glyphicon glyphicon-tags"></i> Connector Info</div>
-			<table class="table table-striped">
-			    <thead>
-			      <tr>
-			        <th>Kontakt Type</th>
-			        <th>Kapasitet</th>
-			      </tr>
-			    </thead>
-			    <tbody>
-			    {{~ it :value:index}}
-			      <tr>
-			        <td>{{=value.connector}}</td>
-			        <td>{{=value.capacity}}</td>
-			      </tr>
-			      {{~}}
-			    </tbody>
-		  	</table>
-		</div>
+		<div class="h5"><i class="glyphicon glyphicon-tags"></i> Connector Info</div>
+		<table class="table table-striped">
+		    <thead>
+		      <tr>
+		        <th>Kontakt Type</th>
+		        <th>Kapasitet</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		    {{~ it :value:index}}
+		      <tr>
+		        <td>{{=value.connector}}</td>
+		        <td>{{=value.capacity}}</td>
+		      </tr>
+		      {{~}}
+		    </tbody>
+	  	</table>
 	</script>
 
 </body>

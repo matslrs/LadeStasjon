@@ -35,8 +35,8 @@
       ]
     },
     "sidebar-v2": {
-      "main": [
-        "js/leaflet-sidebar.min.js",
+      "main": [ 
+        "js/leaflet-sidebar.js",
         "css/leaflet-sidebar.min.css"
       ]
     },

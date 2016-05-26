@@ -46,15 +46,67 @@ function events(map) {
 		$(".descriptionBox").hide();
 	}
 
+	function closingSidebarTasks(e) {
+	}
+
 	map.on('popupopen', ledAddEventListener);
 	map.on('locationfound', onLocationFound);
 	map.on('locationerror', onLocationError);
 	map.on('zoomend', zoomEnd);
+	sidebar.on('closing', closingSidebarTasks);
 }
 
 function markerClick(e) {
-	e.target.closePopup();
-	$("#markerInfo")[0].innerHTML = e.target._popup.getContent();
+	html = updateSidebarContent(e.target.options.title);
+	activeSidebarStation = e.target.options.title;
+	sidebar.open("stationInfo");
+	$("#stationDetails").html(html);
+}
+
+function updateSidebarContent(id){
+	var chargerStation = rtChargingStationsArray[id];
+
+	var tmpStr = "<strong>Charger Station " + chargerStation.uuid  + ": </strong> <br>" + chargerStation.name + ".";
+	tmpStr += "<br>Adresse: " + chargerStation.address;
+	tmpStr += "<br>Beskrivelse: " + chargerStation.description;
+
+	if( chargerStation.imageName != "coming" ){
+		tmpStr += "<br> <img src='http://www.nobil.no/img/ladestasjonbilder/" + chargerStation.imageName + "' alt='some text'/>";
+	} else{
+		tmpStr += "<br> Image Coming Later.";
+	}
+	tmpStr += '<div class="well">';
+	tmpStr += '<div class="containerCustom" style="height: ' + (Math.ceil(chargerStation.connectors.length/8 + 1)*30) + 'px;">';
+	tmpStr += "<div class='connectorText'>Connectors: </div>";
+
+	var ledStr = '';
+	for(var k=0;k<chargerStation.connectorAvailable;k++){
+		ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-green"></div></div>';
+	}
+	for(var k=0;k<chargerStation.connectorOccupied;k++){
+		ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-yellow"></div></div>';
+	}
+	for(var k=0;k<chargerStation.connectorErrors;k++){
+		ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-red"></div></div>';
+	}
+	for(var k=0;k<chargerStation.connectorUnknown;k++){
+		ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-grey"></div></div>';
+	}
+
+	tmpStr += ledStr;
+	tmpStr += '</div>';
+	tmpStr += templateFunction( chargerStation.connectors );
+	tmpStr += '</div>'; 	//well
+
+
+	tmpStr += "<br> --------- ";
+	tmpStr += "<br>Offentlig: " + chargerStation.public;
+	tmpStr += "<br>Åpen: " + chargerStation.open;
+	tmpStr += "<br>Avgift: " + chargerStation.fee;
+	tmpStr += "<br>Tidsbegrensning: " + chargerStation.timeLimit;
+	tmpStr += "<br> --------- ";	
+
+	return tmpStr;		
 }
 
 function setupBaseLayers(map) {
@@ -262,19 +314,15 @@ function setupStreamNobilLayer(streamData, chargingStations){
 
 				//get statusRead from charger station
 				if(connectorAvailable > 0){
-					var preStatusRead = "<div class='text-success'> Station Status: </div>";
 					var statusRead = "Available";
 					var statusIcon = chargerAvailable;
 				} else if(connectorOccupied > 0){
-					var preStatusRead = "<div class='text-warning'> Station Status: </div>";
 					var statusRead = "Occupied";
 					var statusIcon = chargerOccupied;
 				} else if(connectorUnknown > 0){
-					var preStatusRead = "<div class='text-muted'> Station Status: </div>";
 					var statusRead = "Unknown";
 					var statusIcon = chargerUnknown;
 				} else if( connectorErrors > 0){
-					var preStatusRead = "<div class='text-danger'> Station Status: </div>";
 					var statusRead = "Error";
 					var statusIcon = chargerError;
 				}
@@ -321,55 +369,7 @@ function setupStreamNobilLayer(streamData, chargingStations){
 				}
 
 				//create and add marker to layer
-				var marker = L.marker([latitude, longitude], {icon: statusIcon});
-
-				if( useOnlyNor ){
-					id = streamData[j].uuid.replace("NOR_", "");
-				}
-				else{
-					id = streamData[j].uuid;
-				}
-				tmpStr = "<strong>Charger Station " + id  + ": </strong> <br>" + tittel + ".";
-				tmpStr += "<br>Adresse: " + chargerStation.address;
-				tmpStr += "<br>Beskrivelse: " + chargerStation.description;
-
-				if( chargerStation.imageName != "coming" ){
-					tmpStr += "<br> <img src='http://www.nobil.no/img/ladestasjonbilder/" + imageName + "' alt='some text'/>";
-				} else{
-					tmpStr += "<br> Image Coming Later.";
-				}
-				tmpStr += '<div class="well">';
-				tmpStr += '<div class="containerCustom" style="height: ' + (Math.ceil(chargerStation.connectors.length/8 + 1)*30) + 'px;">';
-				tmpStr += "<div class='connectorText'>Connectors: </div>";
-
-				var ledStr = '';
-				for(var k=0;k<connectorAvailable;k++){
-					ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-green"></div></div>';
-				}
-				for(var k=0;k<connectorOccupied;k++){
-					ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-yellow"></div></div>';
-				}
-				for(var k=0;k<connectorErrors;k++){
-					ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-red"></div></div>';
-				}
-				for(var k=0;k<connectorUnknown;k++){
-					ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-grey"></div></div>';
-				}
-
-				tmpStr += ledStr;
-				tmpStr += '</div>';
-
-				tmpStr += templateFunction( chargerStation.connectors );
-
-
-				tmpStr += "<br> --------- ";
-				tmpStr += "<br>Offentlig: " + chargerStation.public;
-				tmpStr += "<br>Åpen: " + chargerStation.open;
-				tmpStr += "<br>Avgift: " + chargerStation.fee;
-				tmpStr += "<br>Tidsbegrensning: " + chargerStation.timeLimit;
-				tmpStr += "<br> --------- ";			
-
-				marker.bindPopup(tmpStr,{autoPan: false}).on('click', markerClick);
+				var marker = L.marker([latitude, longitude], {icon: statusIcon, title: chargerStation.uuid}).on('click', markerClick);
 				ladeStasjonNobilStreamLayer.addLayer(marker);
 
 				rtChargingStationsArray[streamData[j].uuid] = chargerStation;
@@ -409,9 +409,13 @@ function isInChargerList(id, chargingArray){
 }
 
 function updateStreamData(streamChargerUpdate){
-
 	if(isInChargerList(streamChargerUpdate.uuid, rtChargingStationsArray)){
 		var connectorsUpdate = [];
+		var connectorUnknown = 0;
+		var connectorAvailable = 0;
+		var connectorOccupied = 0;
+		var connectorErrors = 0;
+		//"builds" updated connectors
 		for(var j=0;j<streamChargerUpdate.connectors.length;j++){
 			if(streamChargerUpdate.connectors.status == -1){
 				var statusConn = "Unknown";
@@ -430,14 +434,7 @@ function updateStreamData(streamChargerUpdate){
 				timestamp: streamChargerUpdate.connectors[j].timestamp
 			}
 			connectorsUpdate.push(connectorUpdate);
-		}
 
-		var connectorUnknown = 0;
-		var connectorAvailable = 0;
-		var connectorOccupied = 0;
-		var connectorErrors = 0;
-
-		for(var j=0;j<streamChargerUpdate.connectors.length;j++){
 			if(streamChargerUpdate.connectors[j].error == 1){
 				connectorErrors++;
 			} else if(streamChargerUpdate.connectors[j].status == -1){
@@ -449,7 +446,7 @@ function updateStreamData(streamChargerUpdate){
 			}
 		}
 
-		//get statusRead from charger station
+		//decide statusRead for charger station based on its connectors
 		if(connectorAvailable > 0){
 			var statusRead = "Available";
 		} else if(connectorOccupied > 0){
@@ -460,10 +457,13 @@ function updateStreamData(streamChargerUpdate){
 			var statusRead = "Error";
 		}
 
+		//remove
 		console.log("Charging Station '" + streamChargerUpdate.uuid + "':");
 		console.log("Station Status: " + rtChargingStationsArray[streamChargerUpdate.uuid].statusRead + " --> " + statusRead);
 		console.log("****************************************************");
+		//
 
+		//update station array
 		rtChargingStationsArray[streamChargerUpdate.uuid].status = streamChargerUpdate.status;
 		rtChargingStationsArray[streamChargerUpdate.uuid].statusRead = statusRead;
 		rtChargingStationsArray[streamChargerUpdate.uuid].connectorUnknown = connectorUnknown;
@@ -472,76 +472,11 @@ function updateStreamData(streamChargerUpdate){
 		rtChargingStationsArray[streamChargerUpdate.uuid].connectorErrors = connectorErrors;
 		rtChargingStationsArray[streamChargerUpdate.uuid].connectors = connectorsUpdate;
 
-		updateMarkerPopup(streamChargerUpdate.uuid);
+		if(activeSidebarStation == streamChargerUpdate.uuid){
+			html = updateSidebarContent(streamChargerUpdate.uuid);
+			$("#stationDetails").html(html);
+		}
 	}
-}
-
-function updateMarkerPopup(id){
-	var tmpStr = "";
-	var nrOfConnectors = rtChargingStationsArray[id].connectors.length;
-
-	if( useOnlyNor ){
-		idShow = rtChargingStationsArray[id].uuid.replace("NOR_", "");
-	}
-	else{
-		idShow = rtChargingStationsArray[id].uuid;
-	}
-
-	tmpStr = "<strong>Charger Station " + idShow  + ": </strong> <br>" + rtChargingStationsArray[id].name;
-	tmpStr += "<br>Adresse: " + rtChargingStationsArray[id].address;
-	tmpStr += "<br>Beskrivelse: " + rtChargingStationsArray[id].description;
-
-	if( rtChargingStationsArray[id].imageName != "coming" ){
-		tmpStr += "<br> <img src='http://www.nobil.no/img/ladestasjonbilder/" + rtChargingStationsArray[id].imageName + "' alt='some text'/>";
-	} else{
-		tmpStr += "<br> Image Coming Later.";
-	}
-	
-	tmpStr += "<br> --------- ";
-
-	tmpStr += '<div class="containerCustom" style="height: ' + (Math.ceil(rtChargingStationsArray[id].connectors.length/8 + 1)*30) + 'px;">';
-	tmpStr += "<div class='connectorText'>Connectors: </div>";
-
-	var ledStr = '';
-	for(var k=0;k<rtChargingStationsArray[id].connectorAvailable;k++){
-		ledStr += '<div class="led-box" data-chargeId="' + id + '" data-connector="' + k + '"><div class="led-green"></div></div>';
-	}
-	for(var k=0;k<rtChargingStationsArray[id].connectorOccupied;k++){
-		ledStr += '<div class="led-box" data-chargeId="' + id + '" data-connector="' + k + '"><div class="led-yellow"></div></div>';
-	}
-	for(var k=0;k<rtChargingStationsArray[id].connectorErrors;k++){
-		ledStr += '<div class="led-box" data-chargeId="' + id + '" data-connector="' + k + '"><div class="led-red"></div></div>';
-	}
-	for(var k=0;k<rtChargingStationsArray[id].connectorUnknown;k++){
-		ledStr += '<div class="led-box" data-chargeId="' + id + '" data-connector="' + k + '"><div class="led-grey"></div></div>';
-	}
-
-	tmpStr += ledStr;
-	tmpStr += '</div>';
-
-	tmpStr += "<br> --------- ";
-	tmpStr += "<br>Offentlig: " + rtChargingStationsArray[id].public;
-	tmpStr += "<br>Åpen: " + rtChargingStationsArray[id].open;
-	tmpStr += "<br>Avgift: " + rtChargingStationsArray[id].fee;
-	tmpStr += "<br>Tidsbegrensning: " + rtChargingStationsArray[id].timeLimit;
-	tmpStr += "<br> --------- ";	
-
-	//get statusRead from charger station
-	if(rtChargingStationsArray[id].statusRead == "Available"){
-		var statusIcon = chargerAvailable;
-	} else if(rtChargingStationsArray[id].statusRead == "Occupied"){
-		var statusIcon = chargerOccupied;
-	} else if(rtChargingStationsArray[id].statusRead == "Unknown"){
-		var statusIcon = chargerUnknown;
-	} else if(rtChargingStationsArray[id].statusRead == "Error"){
-		var statusIcon = chargerError;
-	}
-
-	dynamicMarkers[id]._popup.setContent(tmpStr);
-	dynamicMarkers[id].setIcon(statusIcon);
-
-	var coords = dynamicMarkers[id].getLatLng();
-	indicateUpdateOnMap(coords);
 }
 
 function indicateUpdateOnMap(coords){
