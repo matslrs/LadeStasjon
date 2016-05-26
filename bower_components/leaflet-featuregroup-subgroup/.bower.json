@@ -1,0 +1,38 @@
+{
+  "name": "leaflet-featureGroup-subgroup",
+  "homepage": "https://github.com/jes5e/Leaflet.FeatureGroup.SubGroup",
+  "description": "Creates a Leaflet Feature Group that adds its child layers into a parent group when added to a map (e.g. through L.Control.Layers).",
+  "main": [
+    "leaflet.featuregroup.subgroup-src.js",
+    "leaflet.featuregroup.subgroup.js"
+  ],
+  "moduleType": [],
+  "keywords": [
+    "leaflet",
+    "leaflet.makerClusters",
+    "plugins",
+    "maps",
+    "subgroup"
+  ],
+  "license": "https://raw.githubusercontent.com/ghybs/Leaflet.FeatureGroup.SubGroup/master/LICENSE",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    ".gitignore",
+    "src"
+  ],
+  "version": "0.1.0",
+  "_release": "0.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.0",
+    "commit": "2dfc8fa5fd2ed919a61153d30934114864dd507e"
+  },
+  "_source": "https://github.com/jes5e/Leaflet.FeatureGroup.SubGroup.git",
+  "_target": "^0.1.0",
+  "_originalSource": "leaflet-featuregroup-subgroup",
+  "_direct": true
+}
