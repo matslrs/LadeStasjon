@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<!-- bower:css -->
+	<link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css" />
+	<link rel="stylesheet" href="bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
+	<link rel="stylesheet" href="bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+	<link rel="stylesheet" href="bower_components/leaflet-search/dist/leaflet-search.src.css" />
+	<link rel="stylesheet" href="bower_components/sidebar-v2/css/leaflet-sidebar.min.css" />
+	<link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
+	<!-- endbower -->
+	
+	<link rel="stylesheet" href="markercluster/MarkerCluster.css" />
+	<link rel="stylesheet" href="markercluster/MarkerCluster.Default.css" />
+	<link rel="stylesheet" href="awesome-markers/leaflet.awesome-markers.css" />
+	<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css">
+	<link rel="stylesheet" href="style-custom.css" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta charset="UTF-8"> 	
+	<script>
+			
+		//-----------------------------
+		//SETTINGS	
+		//SELECT BASE START MAP!
+		var startMap                    = "OpenStreetMap";	//check the function setupBaseLayers(map) in layers.js to see names on maps
+		//Enable search function?
+		var enableSearching             = true;
+		//Base layers
+		var useOsmLayer                 = true;
+		var useKartverkTopo2Layer       = true;
+		var useKartverkTopo3Layer       = true;
+		//only norway
+		var useOnlyNor                  = true;
+		//Marker Clustering
+		var clusterRadius               = 80;	//lower number --> smaller but more cluster points
+		//Get Lat/long on map click
+		var latLongClick                = false;
+		//END SETTINGS
+		//-----------------------------
+		
+		//-----------------------------
+		//GLOBAL VARIABLES
+		var activeSidebarStation        = "none";
+		var mymap                       = {};	
+		var parentCluster               = {};	
+		var activeOverlays              = [];
+		var rtChargingStationsArray     = {};
+		var staticNobil                 = {};
+		var ladeStasjonNobilStreamLayer = {};
+		var dynamicMarkers              = {};
+		var sidebar                     = {}
+		function templateFunction() {
+		    // ...
+		}
+		//END GLOBAL VARIABLES
+		//-----------------------------
+	</script>	
+
+</head>
+
+<body>
+
+	<div id="sidebar" class="sidebar collapsed">
+        <!-- Nav tabs -->
+        <div class="sidebar-tabs">
+            <ul role="tablist">
+                <li><a href="#stationInfo" role="tab"><i class="fa fa-map-marker"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Tab panes -->
+        <div class="sidebar-content">
+            <div class="sidebar-pane" id="stationInfo">
+                <h1 class="sidebar-header">
+                    Charging Station
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+                <p id="stationDetails">Click on a charger station to get information about that station.</p>
+            </div>
+        </div>
+    </div>
+
+	<div id="mapid" class="sidebar-map"></div>
+	<div class="descriptionBox"></div>
+	<!-- <script src="jquery/jquery-1.12.1.js"></script>	 -->
+	<script src="bower_components/jquery/dist/jquery.js"></script>
+
+	<script>
+	$( document ).ready(function() {
+
+		var template = $("#tmpl-connector-table").html();
+		templateFunction = doT.template(template);
+
+		//parent marker cluster
+		parentCluster               = new L.MarkerClusterGroup({
+		showCoverageOnHover: true,
+		animateAddingMarkers: true,
+		maxClusterRadius: clusterRadius
+		});
+		//a child marker cluster
+		ladeStasjonNobilStreamLayer = L.featureGroup.subGroup(parentCluster);
+
+		//Set up icons to be used
+		setupIcons(mymap);
+
+		//bounds of the map
+		var southWest = L.latLng(48, -21),
+	    northEast = L.latLng(75, 46),
+	    bounds = L.latLngBounds(southWest, northEast);
+
+		//Creates MAP
+		mymap = L.map('mapid', { 
+			center: [58.8534, 5.7317],
+			maxBounds: bounds,
+			minZoom: 6,
+			maxZoom: 18,
+			zoom: 8
+		});
+		sidebar = L.control.sidebar('sidebar', {position: 'right'}).addTo(mymap);
+
+		events(mymap);
+
+		parentCluster.addTo(mymap);
+
+		//sets up base map layers
+		var baseMaps = setupBaseLayers(mymap);
+		//sets up overlay layers
+		var overlayMaps = setupOverlayLayers(mymap);	
+
+		//Set initial base map here:
+		baseMaps[startMap].addTo(mymap);
+		overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner Real Time"].addTo(mymap);
+
+		 //Layer control
+		var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(mymap);
+
+		//if search setting is turned on
+		if( enableSearching ){
+			setupSearch(mymap);
+		}
+		
+		//find location and set view and zoom
+		mymap.locate({
+			setView: true,
+			maxZoom: 16
+		}); 	
+
+		//ATTRIBUTIONS: 
+   		mymap.attributionControl.addAttribution('<a href="http://info.nobil.no/">Nobil</a>');
+		var legend = L.control({position: 'bottomright'});
+		legend.onAdd = function (mymap) {
+
+		    var div = L.DomUtil.create('div', 'info legend'),
+		        labels = [];
+		    return div;
+		};
+		legend.addTo(mymap);
+	});
+
+	function setupSearch(map) {
+		map.addControl( new L.Control.Search({
+			url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
+			jsonpParam: 'json_callback',
+			propertyName: 'display_name',
+			propertyLoc: ['lat','lon'],
+			circleLocation: false,
+			markerLocation: false,			
+			autoType: false,
+			autoCollapse: true,
+			minLength: 2,
+			zoom:10
+		}) );
+	}
+	</script>
+
+	<!-- bower:js -->
+	<script src="bower_components/leaflet/dist/leaflet-src.js"></script>
+	<script src="bower_components/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+	<script src="bower_components/drmonty-leaflet-awesome-markers/js/leaflet.awesome-markers.js"></script>
+	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="bower_components/leaflet-search/dist/leaflet-search.src.js"></script>
+	<script src="bower_components/sidebar-v2/js/leaflet-sidebar.js"></script>
+	<script src="bower_components/doT/doT.js"></script>
+	<script src="bower_components/leaflet-featuregroup-subgroup/leaflet.featuregroup.subgroup-src.js"></script>
+	<!-- endbower -->
+
+	<script src="nobilUtils.js"></script>
+	<script src="functions.js"></script>
+	
+	<script id="tmpl-connector-table" type="text/doT">
+		<div class="h5"><i class="glyphicon glyphicon-tags"></i> Connector Info</div>
+		<table class="table table-striped">
+		    <thead>
+		      <tr>
+		        <th>Kontakt Type</th>
+		        <th>Kapasitet</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		    {{~ it :value:index}}
+		      <tr>
+		        <td>{{=value.connector}}</td>
+		        <td>{{=value.capacity}}</td>
+		      </tr>
+		      {{~}}
+		    </tbody>
+	  	</table>
+	</script>
+
+</body>
+</html>
