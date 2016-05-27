@@ -18,6 +18,9 @@
 	<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css">
 	<link rel="stylesheet" href="style-custom.css" />
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<meta charset="UTF-8"> 	
@@ -92,8 +95,8 @@
 	<script>
 	$( document ).ready(function() {
 
-		var template = $("#tmpl-connector-table").html();
-		templateFunction = doT.template(template);
+		var templateSidebar = $("#tmpl-sidebar-info").html();
+		templateSidebarFunction = doT.template(templateSidebar);
 
 		//parent marker cluster
 		parentCluster               = new L.MarkerClusterGroup({
@@ -191,25 +194,82 @@
 
 	<script src="nobilUtils.js"></script>
 	<script src="functions.js"></script>
-	
-	<script id="tmpl-connector-table" type="text/doT">
-		<div class="h5"><i class="glyphicon glyphicon-tags"></i> Connector Info</div>
-		<table class="table table-striped">
-		    <thead>
-		      <tr>
-		        <th>Kontakt Type</th>
-		        <th>Kapasitet</th>
-		      </tr>
-		    </thead>
-		    <tbody>
-		    {{~ it :value:index}}
-		      <tr>
-		        <td>{{=value.connector}}</td>
-		        <td>{{=value.capacity}}</td>
-		      </tr>
-		      {{~}}
-		    </tbody>
-	  	</table>
+
+	<script id="tmpl-sidebar-info" type="text/doT">
+		<address>
+			<strong>Charger Station {{=it.uuid}}</strong><br>
+			{{=it.address}}<br>
+			{{=it.city}}, {{=it.zipcode}} <br>
+			<abbr title="contactInfo">Kontakt Info:</abbr> {{=it.contactInfo}}
+		</address>
+
+		{{? it.imageName == 'coming'}}
+		<br> Image Coming Later.<br><br>
+		{{??}}
+		<br> <img class="img-rounded" src=http://www.nobil.no/img/ladestasjonbilder/{{=it.imageName}} />
+		{{?}}
+		
+		<h5><i class="material-icons">ev_station</i> Charging Station Info</h5>
+		<table class="table table-hover">
+			<tbody>
+				<tr>
+					<td>Antall Ladere</td><td>{{=it.connectors.length || ''}}</td>
+				</tr>
+				<tr>
+					<td>Offentlig</td><td>{{=it.public || ''}}</td>
+				</tr>
+				<tr>
+					<td>Åpen</td><td>{{=it.open || ''}}</td>
+				</tr>
+				<tr>
+					<td>Avgift</td><td>{{=it.fee || ''}}</td>
+				</tr>
+				<tr>
+					<td>Tidsbegrensning</td><td>{{=it.timeLimit || ''}}</td>
+				</tr>
+				<tr>
+					<td>Contact Phone</td><td>{{=it.contactInfo || ''}}</td>
+				</tr>					
+			</tbody>
+		</table>
+
+		<h5><i class="material-icons">power</i> Connectors Info</h5>
+			{{ for(var i=0; i<it.connectorAvailable;i++){	}}
+			<div class="led-box" data-chargeId="{{=it.uuid}}" data-connector="{{=i}}">
+	     	 	<div class="led-green"></div>
+		    </div>
+			{{ } }}
+
+			{{ for(var i=0; i<it.connectorOccupied;i++){	}}
+			<div class="led-box" data-chargeId="{{=it.uuid}}" data-connector="{{=i}}">
+	     	 	<div class="led-yellow"></div>
+		    </div>
+			{{ } }}
+
+			{{ for(var i=0; i<it.connectorErrors;i++){	}}
+			<div class="led-box" data-chargeId="{{=it.uuid}}" data-connector="{{=i}}">
+	     	 	<div class="led-red"></div>
+		    </div>
+			{{ } }}
+
+			{{ for(var i=0; i<it.connectorUnknown;i++){	}}
+			<div class="led-box" data-chargeId="{{=it.uuid}}" data-connector="{{=i}}">
+	     	 	<div class="led-grey"></div>
+		    </div>
+			{{ } }}
+
+		<table class="table table-hover">
+			<tbody>
+				<tr>
+					<td>Kontakt Type</td><td>Kapasitet</td>
+				</tr>
+				{{~ it.connectors :value:index}}
+			      <tr>
+			        <td>{{=value.connector}}</td><td>{{=value.capacity}}</td>
+			      </tr>
+			    {{~}}					
+			</tbody>
+		</table>
 	</script>
 
 </body>

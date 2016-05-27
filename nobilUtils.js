@@ -66,45 +66,45 @@ function markerClick(e) {
 function updateSidebarContent(id){
 	var chargerStation = rtChargingStationsArray[id];
 
-	var tmpStr = "<strong>Charger Station " + chargerStation.uuid  + ": </strong> <br>" + chargerStation.name + ".";
-	tmpStr += "<br>Adresse: " + chargerStation.address;
-	tmpStr += "<br>Beskrivelse: " + chargerStation.description;
+	// var tmpStr = "<strong>Charger Station " + chargerStation.uuid  + ": </strong> <br>" + chargerStation.name + ".";
+	// tmpStr += "<br>Adresse: " + chargerStation.address;
+	// tmpStr += "<br>Beskrivelse: " + chargerStation.description;
 
-	if( chargerStation.imageName != "coming" ){
-		tmpStr += "<br> <img src='http://www.nobil.no/img/ladestasjonbilder/" + chargerStation.imageName + "' alt='some text'/>";
-	} else{
-		tmpStr += "<br> Image Coming Later.";
-	}
-	tmpStr += '<div class="well">';
-	tmpStr += '<div class="containerCustom" style="height: ' + (Math.ceil(chargerStation.connectors.length/8 + 1)*30) + 'px;">';
-	tmpStr += "<div class='connectorText'>Connectors: </div>";
+	// if( chargerStation.imageName != "coming" ){
+	// 	tmpStr += "<br> <img src='http://www.nobil.no/img/ladestasjonbilder/" + chargerStation.imageName + "' alt='some text'/>";
+	// } else{
+	// 	tmpStr += "<br> Image Coming Later.";
+	// }
+	// tmpStr += '<div class="well">';
+	// tmpStr += '<div class="containerCustom" style="height: ' + (Math.ceil(chargerStation.connectors.length/8 + 1)*30) + 'px;">';
+	// tmpStr += "<div class='connectorText'>Connectors: </div>";
 
-	var ledStr = '';
-	for(var k=0;k<chargerStation.connectorAvailable;k++){
-		ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-green"></div></div>';
-	}
-	for(var k=0;k<chargerStation.connectorOccupied;k++){
-		ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-yellow"></div></div>';
-	}
-	for(var k=0;k<chargerStation.connectorErrors;k++){
-		ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-red"></div></div>';
-	}
-	for(var k=0;k<chargerStation.connectorUnknown;k++){
-		ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-grey"></div></div>';
-	}
+	// var ledStr = '';
+	// for(var k=0;k<chargerStation.connectorAvailable;k++){
+	// 	ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-green"></div></div>';
+	// }
+	// for(var k=0;k<chargerStation.connectorOccupied;k++){
+	// 	ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-yellow"></div></div>';
+	// }
+	// for(var k=0;k<chargerStation.connectorErrors;k++){
+	// 	ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-red"></div></div>';
+	// }
+	// for(var k=0;k<chargerStation.connectorUnknown;k++){
+	// 	ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-grey"></div></div>';
+	// }
 
-	tmpStr += ledStr;
-	tmpStr += '</div>';
-	tmpStr += templateFunction( chargerStation.connectors );
-	tmpStr += '</div>'; 	//well
+	// tmpStr += ledStr;
+	// tmpStr += '</div>';
+	tmpStr = templateSidebarFunction( chargerStation );
+	// tmpStr += '</div>'; 	//well
 
 
-	tmpStr += "<br> --------- ";
-	tmpStr += "<br>Offentlig: " + chargerStation.public;
-	tmpStr += "<br>Åpen: " + chargerStation.open;
-	tmpStr += "<br>Avgift: " + chargerStation.fee;
-	tmpStr += "<br>Tidsbegrensning: " + chargerStation.timeLimit;
-	tmpStr += "<br> --------- ";	
+	// tmpStr += "<br> --------- ";
+	// tmpStr += "<br>Offentlig: " + chargerStation.public;
+	// tmpStr += "<br>Åpen: " + chargerStation.open;
+	// tmpStr += "<br>Avgift: " + chargerStation.fee;
+	// tmpStr += "<br>Tidsbegrensning: " + chargerStation.timeLimit;
+	// tmpStr += "<br> --------- ";	
 
 	return tmpStr;		
 }
@@ -342,6 +342,8 @@ function setupStreamNobilLayer(streamData, chargingStations){
 				chargerStation.name = tittel;
 				chargerStation.description = alt;
 				chargerStation.address = chargingStations[i].csmd.Street + " " + chargingStations[i].csmd.House_number;
+				chargerStation.city = chargingStations[i].csmd.City;
+				chargerStation.zipcode = chargingStations[i].csmd.Zipcode;
 				chargerStation.kommune = chargingStations[i].csmd.Municipality;
 				chargerStation.fylke = chargingStations[i].csmd.County;
 				chargerStation.owner = chargingStations[i].csmd.Owned_by;
