@@ -196,12 +196,12 @@
 	<script src="functions.js"></script>
 
 	<script id="tmpl-sidebar-info" type="text/doT">
-		<address>
+		<div>
 			<strong>Charger Station {{=it.uuid}}</strong><br>
-			{{=it.address}}<br>
-			{{=it.city}}, {{=it.zipcode}} <br>
-			<abbr title="contactInfo">Kontakt Info:</abbr> {{=it.contactInfo}}
-		</address>
+			Adresse: {{=it.address}}<br>
+			By: {{=it.city}}, {{=it.zipcode}} <br><br>
+			Bruker kommentar: {{=it.userComment || ''}}
+		</div>
 
 		{{? it.imageName == 'coming'}}
 		<br> Image Coming Later.<br><br>
@@ -210,7 +210,7 @@
 		{{?}}
 		
 		<h5><i class="material-icons">ev_station</i> Charging Station Info</h5>
-		<table class="table table-hover">
+		<table class="table table-hover table-condensed">
 			<tbody>
 				<tr>
 					<td>Antall Ladere</td><td>{{=it.connectors.length || ''}}</td>
@@ -234,35 +234,33 @@
 		</table>
 
 		<h5><i class="material-icons">power</i> Connectors Info</h5>
-			{{ for(var i=0; i<it.connectorAvailable;i++){	}}
-			<div class="led-box" data-chargeId="{{=it.uuid}}" data-connector="{{=i}}">
-	     	 	<div class="led-green"></div>
-		    </div>
-			{{ } }}
+		{{~ it.connectors :value:index}}  
 
-			{{ for(var i=0; i<it.connectorOccupied;i++){	}}
-			<div class="led-box" data-chargeId="{{=it.uuid}}" data-connector="{{=i}}">
-	     	 	<div class="led-yellow"></div>
-		    </div>
-			{{ } }}
-
-			{{ for(var i=0; i<it.connectorErrors;i++){	}}
-			<div class="led-box" data-chargeId="{{=it.uuid}}" data-connector="{{=i}}">
+	        {{? value.error == 1 }}
+			<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
 	     	 	<div class="led-red"></div>
 		    </div>
-			{{ } }}
-
-			{{ for(var i=0; i<it.connectorUnknown;i++){	}}
-			<div class="led-box" data-chargeId="{{=it.uuid}}" data-connector="{{=i}}">
+			{{?? value.status == -1 }}
+			<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
 	     	 	<div class="led-grey"></div>
 		    </div>
-			{{ } }}
+			{{?? value.status == 0 }}
+			<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
+	     	 	<div class="led-green"></div>
+		    </div>
+			{{?? value.status == 1 }}
+			<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
+	     	 	<div class="led-yellow"></div>
+		    </div>
+			{{?}}
+			
+		 {{~}}
 
-		<table class="table table-hover">
+		<table class="table table-hover table-condensed">
 			<tbody>
 				<tr>
 					<td>Kontakt Type</td><td>Kapasitet</td>
-				</tr>
+				</tr>	
 				{{~ it.connectors :value:index}}
 			      <tr>
 			        <td>{{=value.connector}}</td><td>{{=value.capacity}}</td>

@@ -1,5 +1,4 @@
 function events(map) {
-	
 	//when location found, show a popup where with accuracy
 	function onLocationFound(e) {
 		var radius = e.accuracy / 2;
@@ -9,7 +8,6 @@ function events(map) {
 
 		L.circle(e.latlng, radius).addTo(map);
 	}
-
 	//if finding location failed, display error message
 	function onLocationError(e) {
 		alert(e.message);
@@ -57,60 +55,18 @@ function events(map) {
 }
 
 function markerClick(e) {
-	html = updateSidebarContent(e.target.options.title);
-	activeSidebarStation = e.target.options.title;
+	updateSidebarContent(e.target.options.title);
 	sidebar.open("stationInfo");
-	$("#stationDetails").html(html);
+	$('[data-toggle="tooltip"]').tooltip({position: "fixed"});  
 }
 
 function updateSidebarContent(id){
-	var chargerStation = rtChargingStationsArray[id];
-
-	// var tmpStr = "<strong>Charger Station " + chargerStation.uuid  + ": </strong> <br>" + chargerStation.name + ".";
-	// tmpStr += "<br>Adresse: " + chargerStation.address;
-	// tmpStr += "<br>Beskrivelse: " + chargerStation.description;
-
-	// if( chargerStation.imageName != "coming" ){
-	// 	tmpStr += "<br> <img src='http://www.nobil.no/img/ladestasjonbilder/" + chargerStation.imageName + "' alt='some text'/>";
-	// } else{
-	// 	tmpStr += "<br> Image Coming Later.";
-	// }
-	// tmpStr += '<div class="well">';
-	// tmpStr += '<div class="containerCustom" style="height: ' + (Math.ceil(chargerStation.connectors.length/8 + 1)*30) + 'px;">';
-	// tmpStr += "<div class='connectorText'>Connectors: </div>";
-
-	// var ledStr = '';
-	// for(var k=0;k<chargerStation.connectorAvailable;k++){
-	// 	ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-green"></div></div>';
-	// }
-	// for(var k=0;k<chargerStation.connectorOccupied;k++){
-	// 	ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-yellow"></div></div>';
-	// }
-	// for(var k=0;k<chargerStation.connectorErrors;k++){
-	// 	ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-red"></div></div>';
-	// }
-	// for(var k=0;k<chargerStation.connectorUnknown;k++){
-	// 	ledStr += '<div class="led-box" data-chargeId="' + chargerStation.uuid + '" data-connector="' + k + '"><div class="led-grey"></div></div>';
-	// }
-
-	// tmpStr += ledStr;
-	// tmpStr += '</div>';
-	tmpStr = templateSidebarFunction( chargerStation );
-	// tmpStr += '</div>'; 	//well
-
-
-	// tmpStr += "<br> --------- ";
-	// tmpStr += "<br>Offentlig: " + chargerStation.public;
-	// tmpStr += "<br>Åpen: " + chargerStation.open;
-	// tmpStr += "<br>Avgift: " + chargerStation.fee;
-	// tmpStr += "<br>Tidsbegrensning: " + chargerStation.timeLimit;
-	// tmpStr += "<br> --------- ";	
-
-	return tmpStr;		
+	var chargerStation = rtChargingStationsArray[id];	
+	html = templateSidebarFunction( chargerStation );
+	$("#stationDetails").html(html);	
 }
 
 function setupBaseLayers(map) {
-
 	baseMaps =[];
 
 	//OpenStreetMap layer
@@ -139,14 +95,11 @@ function setupBaseLayers(map) {
 }
 
 function setupOverlayLayers(map) {
-
 	var overlayMaps = [];
-
 	var ladeStasjonNobil = setupStaticNobilLayer(map);
+
 	overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner"] = ladeStasjonNobil;
-
 	overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner Real Time"] = ladeStasjonNobilStreamLayer;
-
 
 	return overlayMaps;
 }
@@ -157,25 +110,21 @@ function setupIcons(map){
 	    icon: 'ion-model-s',
 	    markerColor: 'red'
 	});
-
 	chargerAvailable = L.AwesomeMarkers.icon({
 	    prefix: 'ion',
 	    icon: 'ion-model-s',
 	    markerColor: 'green'
 	});
-
 	chargerOccupied = L.AwesomeMarkers.icon({
 	    prefix: 'ion',
 	    icon: 'ion-model-s',
 	    markerColor: 'orange'
 	});
-
 	chargerUnknown = L.AwesomeMarkers.icon({
 	    prefix: 'ion',
 	    icon: 'ion-model-s',
 	    markerColor: 'gray'
 	});
-
 	staticChargerIcon = L.AwesomeMarkers.icon({
 	    prefix: 'ion',
 	    icon: 'ion-model-s',
@@ -255,7 +204,7 @@ function addJsonpData(data){
 }
 
 function setupStreamNobilLayer(streamData, chargingStations){
-	tempDevArray = [];
+	// tempDevArray = [];
 	//have to use both datasets to "build" real time layer b/c neither contains all needed info
 	for(var i = 0; i < chargingStations.length; i++) {
 		for(var j=0;j<streamData.length;j++){
@@ -308,7 +257,7 @@ function setupStreamNobilLayer(streamData, chargingStations){
 					} else{
 						connector.connector = chargingStations[i].attr.conn[k+1][4].trans;
 						connector.capacity = chargingStations[i].attr.conn[k+1][5].trans;
-						tempDevArray.push(chargingStations[i].attr.conn[k+1][4].trans);
+						//tempDevArray.push(chargingStations[i].attr.conn[k+1][4].trans);
 					}
 				}
 
@@ -356,6 +305,7 @@ function setupStreamNobilLayer(streamData, chargingStations){
 					chargerStation.open = chargingStations[i].attr.st[24].attrval;
 				}
 				chargerStation.contactInfo = chargingStations[i].csmd.Contact_info;
+				chargerStation.userComment = chargingStations[i].csmd.User_comment;
 				chargerStation.coords = [latitude, longitude];
 				chargerStation.statusRead = statusRead;
 				chargerStation.connectorUnknown = connectorUnknown;
@@ -381,26 +331,26 @@ function setupStreamNobilLayer(streamData, chargingStations){
 		}
 	}
 
-	var types = [];
-	var nrOfEachType = {};
-	for(var i=0;i<tempDevArray.length;i++){
-		var newType = true;
-		for(var j=0;j<types.length;j++){
-			if(tempDevArray[i] == types[j]){
-				newType = false;
-			}
-		}
-		if(newType){
-			types.push(tempDevArray[i])
-			nrOfEachType[tempDevArray[i]] = 1;
-		} else{
-			nrOfEachType[tempDevArray[i]]++;
-		}
-	}
+	// var types = [];
+	// var nrOfEachType = {};
+	// for(var i=0;i<tempDevArray.length;i++){
+	// 	var newType = true;
+	// 	for(var j=0;j<types.length;j++){
+	// 		if(tempDevArray[i] == types[j]){
+	// 			newType = false;
+	// 		}
+	// 	}
+	// 	if(newType){
+	// 		types.push(tempDevArray[i])
+	// 		nrOfEachType[tempDevArray[i]] = 1;
+	// 	} else{
+	// 		nrOfEachType[tempDevArray[i]]++;
+	// 	}
+	// }
 
-	for(var i=0;i<types.length;i++){
-		console.log("Nr of " + types[i] + ": " + nrOfEachType[types[i]]);
-	}
+	// for(var i=0;i<types.length;i++){
+	// 	console.log("Nr of " + types[i] + ": " + nrOfEachType[types[i]]);
+	// }
 }
 
 function isInChargerList(id, chargingArray){
@@ -497,7 +447,6 @@ function indicateUpdateOnMap(coords){
 	    fillColor: '#0080ff',
 	    fillOpacity: 0.5
 	}).addTo(mymap);
-
 
 	setTimeout(function(){mymap.removeLayer(circle)},timeIndicatingMs);
 	setTimeout(function(){mymap.removeLayer(circleSpot)},timeIndicatingMs);
