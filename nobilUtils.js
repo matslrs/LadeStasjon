@@ -57,13 +57,15 @@ function events(map) {
 function markerClick(e) {
 	updateSidebarContent(e.target.options.title);
 	sidebar.open("stationInfo");
-	$('[data-toggle="tooltip"]').tooltip({position: "fixed"});  
+	$('[data-toggle="tooltip"]').tooltip({container: "html"});  
 }
 
 function updateSidebarContent(id){
 	var chargerStation = rtChargingStationsArray[id];	
-	html = templateSidebarFunction( chargerStation );
-	$("#stationDetails").html(html);	
+	htmlName = templateSidebarName(chargerStation);
+	htmlContent = templateSidebarInfo(chargerStation);
+	$("#stationName").html(htmlName);	
+	$("#stationDetails").html(htmlContent);	
 }
 
 function setupBaseLayers(map) {
@@ -76,19 +78,12 @@ function setupBaseLayers(map) {
 		});
 		baseMaps["OpenStreetMap"] = osm_layer;
 	}
-	//kartverket topografisk kart
-	if(useKartverkTopo2Layer){
-		var kartverk_topo2_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}', {
+	//Norges Grunnkart Graatone
+	if(useKartverkGraatoneLayer){
+		var kartverk_graatone_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart_graatone&zoom={z}&x={x}&y={y}', {
 			attribution: 'Kartverket'
 		});
-		baseMaps["Topografisk Norgeskart"] = kartverk_topo2_layer;
-	}
-	//kartverket ionosphere
-	if(useKartverkTopo3Layer){			 
-		var kartverk_toporaster3_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=toporaster3&zoom={z}&x={x}&y={y}', {
-			attribution: 'Kartverket'
-		});
-		baseMaps["Topografisk3 Norgeskart"] = kartverk_toporaster3_layer;
+		baseMaps["Norgeskart"] = kartverk_graatone_layer;
 	}
 
 	return baseMaps;
@@ -98,9 +93,12 @@ function setupOverlayLayers(map) {
 	var overlayMaps = [];
 	var ladeStasjonNobil = setupStaticNobilLayer(map);
 
-	overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner"] = ladeStasjonNobil;
-	overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner Real Time"] = ladeStasjonNobilStreamLayer;
-
+	if(useStaticNobilLayer){
+		overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner"] = ladeStasjonNobil;
+	}
+	if(useRealTimeNobilLayer){
+		overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner Real Time"] = ladeStasjonNobilStreamLayer;
+	}
 	return overlayMaps;
 }
 
@@ -204,7 +202,6 @@ function addJsonpData(data){
 }
 
 function setupStreamNobilLayer(streamData, chargingStations){
-	// tempDevArray = [];
 	//have to use both datasets to "build" real time layer b/c neither contains all needed info
 	for(var i = 0; i < chargingStations.length; i++) {
 		for(var j=0;j<streamData.length;j++){
@@ -257,7 +254,6 @@ function setupStreamNobilLayer(streamData, chargingStations){
 					} else{
 						connector.connector = chargingStations[i].attr.conn[k+1][4].trans;
 						connector.capacity = chargingStations[i].attr.conn[k+1][5].trans;
-						//tempDevArray.push(chargingStations[i].attr.conn[k+1][4].trans);
 					}
 				}
 
@@ -330,27 +326,6 @@ function setupStreamNobilLayer(streamData, chargingStations){
 			}
 		}
 	}
-
-	// var types = [];
-	// var nrOfEachType = {};
-	// for(var i=0;i<tempDevArray.length;i++){
-	// 	var newType = true;
-	// 	for(var j=0;j<types.length;j++){
-	// 		if(tempDevArray[i] == types[j]){
-	// 			newType = false;
-	// 		}
-	// 	}
-	// 	if(newType){
-	// 		types.push(tempDevArray[i])
-	// 		nrOfEachType[tempDevArray[i]] = 1;
-	// 	} else{
-	// 		nrOfEachType[tempDevArray[i]]++;
-	// 	}
-	// }
-
-	// for(var i=0;i<types.length;i++){
-	// 	console.log("Nr of " + types[i] + ": " + nrOfEachType[types[i]]);
-	// }
 }
 
 function isInChargerList(id, chargingArray){
@@ -408,12 +383,6 @@ function updateStreamData(streamChargerUpdate){
 		} else if( connectorErrors > 0){
 			var statusRead = "Error";
 		}
-
-		//remove
-		console.log("Charging Station '" + streamChargerUpdate.uuid + "':");
-		console.log("Station Status: " + rtChargingStationsArray[streamChargerUpdate.uuid].statusRead + " --> " + statusRead);
-		console.log("****************************************************");
-		//
 
 		//update station array
 		rtChargingStationsArray[streamChargerUpdate.uuid].status = streamChargerUpdate.status;

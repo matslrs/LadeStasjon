@@ -18,8 +18,8 @@
 	<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css">
 	<link rel="stylesheet" href="style-custom.css" />
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="images/foundation-icons/foundation-icons.css" />
 
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -29,19 +29,21 @@
 		//-----------------------------
 		//SETTINGS	
 		//SELECT BASE START MAP!
-		var startMap                    = "OpenStreetMap";	//check the function setupBaseLayers(map) in layers.js to see names on maps
+		var startMap                 = "OpenStreetMap";	//check the function
 		//Enable search function?
-		var enableSearching             = true;
+		var enableSearching          = true;
 		//Base layers
-		var useOsmLayer                 = true;
-		var useKartverkTopo2Layer       = true;
-		var useKartverkTopo3Layer       = true;
+		var useOsmLayer              = true;
+		var useKartverkGraatoneLayer = true;
+		//Overlay layers
+		var useStaticNobilLayer      = false;
+		var useRealTimeNobilLayer    = true;
 		//only norway
-		var useOnlyNor                  = true;
+		var useOnlyNor               = true;
 		//Marker Clustering
-		var clusterRadius               = 80;	//lower number --> smaller but more cluster points
+		var clusterRadius            = 80;	//lower number --> smaller but more cluster points
 		//Get Lat/long on map click
-		var latLongClick                = false;
+		var latLongClick             = false;
 		//END SETTINGS
 		//-----------------------------
 		
@@ -78,29 +80,33 @@
         <!-- Tab panes -->
         <div class="sidebar-content">
             <div class="sidebar-pane" id="stationInfo">
-                <h1 class="sidebar-header">
+                <h1 id="stationName" class="sidebar-header">
                     Charging Station
-                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                    <span class="sidebar-close"><i class="fa fa-times"></i></span>
                 </h1>
-                <p id="stationDetails">Click on a charger station to get information about that station.</p>
+                <p id="stationDetails">
+                	Click on a charger station to get information about that station.
+                </p>
             </div>
         </div>
     </div>
 
 	<div id="mapid" class="sidebar-map"></div>
 	<div class="descriptionBox"></div>
-	<!-- <script src="jquery/jquery-1.12.1.js"></script>	 -->
 	<script src="bower_components/jquery/dist/jquery.js"></script>
 
 	<script>
 	$( document ).ready(function() {
 
-		var templateSidebar = $("#tmpl-sidebar-info").html();
-		templateSidebarFunction = doT.template(templateSidebar);
+		var templateSidebarNameHtml = $("#tmpl-sidebar-name").html();
+		templateSidebarName = doT.template(templateSidebarNameHtml);
+		var templateSidebarInfoHtml = $("#tmpl-sidebar-info").html();
+		templateSidebarInfo = doT.template(templateSidebarInfoHtml);
+
 
 		//parent marker cluster
 		parentCluster               = new L.MarkerClusterGroup({
-		showCoverageOnHover: true,
+		showCoverageOnHover: false,
 		animateAddingMarkers: true,
 		maxClusterRadius: clusterRadius
 		});
@@ -184,7 +190,6 @@
 	<script src="bower_components/leaflet/dist/leaflet-src.js"></script>
 	<script src="bower_components/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 	<script src="bower_components/drmonty-leaflet-awesome-markers/js/leaflet.awesome-markers.js"></script>
-	<script src="bower_components/jquery/dist/jquery.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 	<script src="bower_components/leaflet-search/dist/leaflet-search.src.js"></script>
 	<script src="bower_components/sidebar-v2/js/leaflet-sidebar.js"></script>
@@ -195,79 +200,123 @@
 	<script src="nobilUtils.js"></script>
 	<script src="functions.js"></script>
 
+	<script id="tmpl-sidebar-name" type="text/doT">
+		Charging Station {{=it.uuid}}
+        <span class="sidebar-close"><i class="fa fa-times"></i></span>
+	</script>
+
 	<script id="tmpl-sidebar-info" type="text/doT">
-		<div>
-			<strong>Charger Station {{=it.uuid}}</strong><br>
-			Adresse: {{=it.address}}<br>
-			By: {{=it.city}}, {{=it.zipcode}} <br><br>
-			Bruker kommentar: {{=it.userComment || ''}}
+		
+		<div class="panel-group panel-group-sm">
+		    <div class="panel panel-default panel-sm">
+		      <div class="panel-heading panel-heading-sm">
+		        <h5 class="panel-title">
+		          <a data-toggle="collapse" href="#collapse1"><i class="material-icons">power</i> Connectors Info</a>
+		        </h5>
+		      </div>
+
+				<div id="collapse1" class="panel-collapse collapse in">
+					<div class="panel-body">
+						{{~ it.connectors :value:index}}  
+					        {{? value.error == 1 }}
+							<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
+					     	 	<div class="led-red"></div>
+						    </div>
+							{{?? value.status == -1 }}
+							<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
+					     	 	<div class="led-grey"></div>
+						    </div>
+							{{?? value.status == 0 }}
+							<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
+					     	 	<div class="led-green"></div>
+						    </div>
+							{{?? value.status == 1 }}
+							<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
+					     	 	<div class="led-yellow"></div>
+						    </div>
+							{{?}}
+						{{~}}
+
+						<table class="table table-hover table-condensed">
+							<tbody>
+								<tr>
+									<td>Kontakt Type</td><td>Kapasitet</td>
+								</tr>	
+								{{~ it.connectors :value:index}}
+							      <tr>
+							        <td>{{=value.connector}}</td><td>{{=value.capacity}}</td>
+							      </tr>
+							    {{~}}					
+							</tbody>
+						</table>
+
+					</div>
+				</div>
+	    	</div>
 		</div>
 
-		{{? it.imageName == 'coming'}}
-		<br> Image Coming Later.<br><br>
-		{{??}}
-		<br> <img class="img-rounded" src=http://www.nobil.no/img/ladestasjonbilder/{{=it.imageName}} />
-		{{?}}
-		
-		<h5><i class="material-icons">ev_station</i> Charging Station Info</h5>
-		<table class="table table-hover table-condensed">
-			<tbody>
-				<tr>
-					<td>Antall Ladere</td><td>{{=it.connectors.length || ''}}</td>
-				</tr>
-				<tr>
-					<td>Offentlig</td><td>{{=it.public || ''}}</td>
-				</tr>
-				<tr>
-					<td>Åpen</td><td>{{=it.open || ''}}</td>
-				</tr>
-				<tr>
-					<td>Avgift</td><td>{{=it.fee || ''}}</td>
-				</tr>
-				<tr>
-					<td>Tidsbegrensning</td><td>{{=it.timeLimit || ''}}</td>
-				</tr>
-				<tr>
-					<td>Contact Phone</td><td>{{=it.contactInfo || ''}}</td>
-				</tr>					
-			</tbody>
-		</table>
-
-		<h5><i class="material-icons">power</i> Connectors Info</h5>
-		{{~ it.connectors :value:index}}  
-
-	        {{? value.error == 1 }}
-			<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
-	     	 	<div class="led-red"></div>
-		    </div>
-			{{?? value.status == -1 }}
-			<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
-	     	 	<div class="led-grey"></div>
-		    </div>
-			{{?? value.status == 0 }}
-			<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
-	     	 	<div class="led-green"></div>
-		    </div>
-			{{?? value.status == 1 }}
-			<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
-	     	 	<div class="led-yellow"></div>
-		    </div>
-			{{?}}
+		<div class="panel-group panel-group-sm">
+		    <div class="panel panel-default panel-sm">
+		      <div class="panel-heading panel-heading-sm">
+		        <h5 class="panel-title">
+		          <a data-toggle="collapse" href="#collapse2"><i class="material-icons">ev_station</i>Charging Station Info</a>
+		        </h5>
+		      </div>
+				<div id="collapse2" class="panel-collapse collapse">
+					<div class="panel-body">
 			
-		 {{~}}
+						<table class="table table-hover table-condensed">
+							<tbody>
+								<tr>
+									<td>Antall Ladere</td><td>{{=it.connectors.length || ''}}</td>
+								</tr>
+								<tr>
+									<td>Offentlig</td><td>{{=it.public || ''}}</td>
+								</tr>
+								<tr>
+									<td>Åpen</td><td>{{=it.open || ''}}</td>
+								</tr>
+								<tr>
+									<td>Avgift</td><td>{{=it.fee || ''}}</td>
+								</tr>
+								<tr>
+									<td>Tidsbegrensning</td><td>{{=it.timeLimit || ''}}</td>
+								</tr>
+								<tr>
+									<td>Contact Phone</td><td>{{=it.contactInfo || ''}}</td>
+								</tr>					
+							</tbody>
+						</table>
+					</div>
+				</div>
+	    	</div>
+		</div>
 
-		<table class="table table-hover table-condensed">
-			<tbody>
-				<tr>
-					<td>Kontakt Type</td><td>Kapasitet</td>
-				</tr>	
-				{{~ it.connectors :value:index}}
-			      <tr>
-			        <td>{{=value.connector}}</td><td>{{=value.capacity}}</td>
-			      </tr>
-			    {{~}}					
-			</tbody>
-		</table>
+		<div class="panel-group panel-group-sm">
+		    <div class="panel panel-default panel-sm">
+		      <div class="panel-heading panel-heading-sm">
+		        <h5 class="panel-title">
+		          <a data-toggle="collapse" href="#collapse3"><i class="fi-map"></i>Location</a>
+		        </h5>
+		      </div>
+				<div id="collapse3" class="panel-collapse collapse">
+					<div class="panel-body">
+						Id: {{=it.uuid}}	
+						Adresse: {{=it.address}}<br>
+						By: {{=it.city}}, {{=it.zipcode}} <br><br>
+						Bruker kommentar: {{=it.userComment || ''}}
+		
+						{{? it.imageName == 'coming'}}
+						<br><div><br> Image Coming Later.<br></div>
+						{{??}}
+						<br> <img class="img-rounded" src=http://www.nobil.no/img/ladestasjonbilder/{{=it.imageName}} />
+						{{?}}
+
+					</div>
+				</div>
+	    	</div>
+		</div>
+
 	</script>
 
 </body>
