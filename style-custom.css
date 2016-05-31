@@ -27,7 +27,7 @@ html, body, #mapid {
 .legend {
     line-height: 18px;
     color      : #555;
-    visibility : hidden;
+    /*visibility : hidden;*/
 }
 .legend i {
     width       : 18px;
