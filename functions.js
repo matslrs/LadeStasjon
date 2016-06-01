@@ -16,36 +16,36 @@ function setupSearch(map) {
 }
 
 function updateLegend() {
-		var tempHTML = "";
-		var tempEndHTML = "";
+	var tempHTML = "";
+	var tempEndHTML = "";
 
-		for(var i=0;i<activeOverlays.length;i++){
-			var pos = activeOverlays[i].search("<i class=");
-			if(pos != -1){
-				tempHTML += activeOverlays[i] + "<br>";
-			}
-			else{
-				pos = activeOverlays[i].search("Flom Varsel");
-				if(activeOverlays[i].search("Flom Varsel") != -1 || activeOverlays[i].search("Jordskred Varsel") != -1 ){
-					if(tempEndHTML == ""){
-						tempEndHTML += "<i style='background:red' aria-hidden='true'></i> Stor fare<br>";
-					    tempEndHTML += "<i style='background:orange' aria-hidden='true'></i> Middels fare<br>";
-					    tempEndHTML += "<i style='background:yellow' aria-hidden='true'></i> Lavere fare<br>";
-					}
+	for(var i=0;i<activeOverlays.length;i++){
+		var pos = activeOverlays[i].search("<i class=");
+		if(pos != -1){
+			tempHTML += activeOverlays[i] + "<br>";
+		}
+		else{
+			pos = activeOverlays[i].search("Flom Varsel");
+			if(activeOverlays[i].search("Flom Varsel") != -1 || activeOverlays[i].search("Jordskred Varsel") != -1 ){
+				if(tempEndHTML == ""){
+					tempEndHTML += "<i style='background:red' aria-hidden='true'></i> Stor fare<br>";
+				    tempEndHTML += "<i style='background:orange' aria-hidden='true'></i> Middels fare<br>";
+				    tempEndHTML += "<i style='background:yellow' aria-hidden='true'></i> Lavere fare<br>";
 				}
 			}
 		}
-		tempHTML += tempEndHTML;
-
-		if(tempHTML == ""){
-			$(".legend").css("visibility", "hidden");
-		}
-		else{
-			$(".legend").css("visibility", "visible");
-		}
-		
-		legend._container.innerHTML = tempHTML;
 	}
+	tempHTML += tempEndHTML;
+
+	if(tempHTML == ""){
+		$(".legend").css("visibility", "hidden");
+	}
+	else{
+		$(".legend").css("visibility", "visible");
+	}
+	
+	legend._container.innerHTML = tempHTML;
+}
 
 
 function initiateLeafletsDraw(map) {
