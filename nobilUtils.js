@@ -79,13 +79,18 @@ function setupBaseLayers(map) {
 
 function setupOverlayLayers(map) {
 	var overlayMaps = [];
-	var ladeStasjonNobil = setupStaticNobilLayer(map);
 
+	if(useRealTimeNobilLayer){
+		//overlayMaps[" <i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner Real Time"] = streamNobil;
+		overlayMaps[" <i style='background-color:rgb(97,190,30)'></i>Available"] 	= streamNobilAvailable;
+		overlayMaps[" <i style='background-color:rgb(240,131,0)'></i> Occupied"] 	= streamNobilOccupied;
+	}
 	if(useStaticNobilLayer){
-		overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner"] = ladeStasjonNobil;
+		overlayMaps["<i style='background-color:rgb(30,144,255)'></i> Statisk"] = staticNobil;
 	}
 	if(useRealTimeNobilLayer){
-		overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner Real Time"] = streamNobil;
+		overlayMaps[" <i style='background-color:rgb(256,32,32)'></i> Error"] 		= streamNobilError;
+		overlayMaps[" <i style='background-color:rgb(69,69,69)'></i> Unknown"] 	= streamNobilUnknown;
 	}
 	return overlayMaps;
 }
@@ -207,11 +212,6 @@ function getStationsToBeUsed(){
 	});
 }
 
-function setupStaticNobilLayer(map){
-	staticNobil = L.featureGroup.subGroup(parentCluster);
-	return staticNobil;
-}
-
 function addJsonpData(data){
 	dataJsonP = data;
 }
@@ -289,6 +289,7 @@ function setupNobilLayers(streamData, chargingStations){
 					connector.capacity = chargingStations[i].attr.conn[k+1][5].trans;
 				}
 			}
+
 			//get statusRead from charger station
 			if(connectorAvailable > 0){
 				var statusRead = "Available";
@@ -356,147 +357,25 @@ function setupNobilLayers(streamData, chargingStations){
 			realtimeNorStation++;
 			//create and add marker to layer
 			var marker = L.marker([latitude, longitude], {icon: statusIcon, title: chargerStation.uuid}).on('click', markerClick);
-			streamNobil.addLayer(marker);
-		} else{
-			staticNorStation++;
-			//create and add marker to layer
-			var marker = L.marker([latitude, longitude], {icon: statusIcon, title: chargerStation.uuid}).on('click', markerClick);
-			staticNobil.addLayer(marker);
-		}
-	}
-	console.log("antall sanntid ladestasjoner(post socket connect): " + realtimeNorStation);
-	console.log("antall statiske ladestasjoner(post socket connect): " + staticNorStation);
-}
-
-function setupNobilLayersOLD(streamData, chargingStations){
-	var realtimeNorStation = 0;
-	var staticNorStation = 0;
-	//have to use both datasets to "build" real time layer b/c neither contains all needed info
-	for(var i = 0; i < chargingStations.length; i++) {
-		var position = chargingStations[i].csmd.Position;
-		position = position.replace("(", "");
-		position = position.replace(")", "");
-		position = position.split(",");
-
-		var latitude = position[0];
-		var longitude = position[1];
-
-		var tittel = chargingStations[i].csmd.name;
-		var alt = chargingStations[i].csmd.Description_of_location;
-
-		var j = getStationIdxInArray(chargingStations[i].csmd.International_id, streamData)
-		if( j != -1 ){
-			realtimeNorStation++;
-
-			var connectorUnknown = 0;
-			var connectorAvailable = 0;
-			var connectorOccupied = 0;
-			var connectorErrors = 0;
-
-			//Create connectors array for charger station
-			var connectors = [];
-			for(var k=0;k<streamData[j].connectors.length;k++){
-				if(streamData[j].connectors[k].error == 1){
-					var statusConn = "Error";
-					connectorErrors++;
-				} else if(streamData[j].connectors[k].status == -1){
-					var statusConn = "Unknown";
-					connectorUnknown++;
-				} else if(streamData[j].connectors[k].status == 0){
-					var statusConn = "Available";
-					connectorAvailable++;
-				} else if(streamData[j].connectors[k].status == 1){
-					var statusConn = "Occupied";
-					connectorOccupied++;
-				}
-
-				var connector = {
-					status: streamData[j].connectors[k].status,
-					statusRead:statusConn,
-					error:streamData[j].connectors[k].error,
-					timestamp: streamData[j].connectors[k].timestamp
-				}
-				connectors.push(connector);
-				if (chargingStations[i].attr.conn[k+1] == null){
-					console.log(streamData[j].uuid + " missing connectors");
-				} else{
-					connector.connector = chargingStations[i].attr.conn[k+1][4].trans;
-					connector.capacity = chargingStations[i].attr.conn[k+1][5].trans;
-				}
-			}
-
+			//streamNobil.addLayer(marker);
 			//get statusRead from charger station
 			if(connectorAvailable > 0){
-				var statusRead = "Available";
-				var statusIcon = chargerAvailable;
+				//sub layer
+				streamNobilAvailable.addLayer(marker);
 			} else if(connectorOccupied > 0){
-				var statusRead = "Occupied";
-				var statusIcon = chargerOccupied;
+				//sub layer
+				streamNobilOccupied.addLayer(marker);
 			} else if(connectorUnknown > 0){
-				var statusRead = "Unknown";
-				var statusIcon = chargerUnknown;
+				//sub layer
+				streamNobilUnknown.addLayer(marker);
 			} else if( connectorErrors > 0){
-				var statusRead = "Error";
-				var statusIcon = chargerError;
+				streamNobilError.addLayer(marker);
 			}
-
-			//create charger station object
-			var chargerStation = {
-				uuid: streamData[j].uuid,
-				name: "",
-				description:"",
-				coords: [-1,-1],
-				status: streamData[j].status,
-				statusRead:"",
-				connectors: connectors
-			};
-
-			//"build" charger station
-			chargerStation.name = tittel;
-			chargerStation.description = alt;
-			chargerStation.address = chargingStations[i].csmd.Street + " " + chargingStations[i].csmd.House_number;
-			chargerStation.city = chargingStations[i].csmd.City;
-			chargerStation.zipcode = chargingStations[i].csmd.Zipcode;
-			chargerStation.kommune = chargingStations[i].csmd.Municipality;
-			chargerStation.fylke = chargingStations[i].csmd.County;
-			chargerStation.owner = chargingStations[i].csmd.Owned_by;
-			chargerStation.public = chargingStations[i].attr.st[2].trans;
-			chargerStation.fee = chargingStations[i].attr.st[7].trans;
-			chargerStation.timeLimit = chargingStations[i].attr.st[6].trans;
-			if(chargingStations[i].attr.st[24].attrvalid == 1){
-				chargerStation.open = chargingStations[i].attr.st[24].attrname;
-			} else{
-				chargerStation.open = chargingStations[i].attr.st[24].attrval;
-			}
-			chargerStation.contactInfo = chargingStations[i].csmd.Contact_info;
-			chargerStation.userComment = chargingStations[i].csmd.User_comment;
-			chargerStation.coords = [latitude, longitude];
-			chargerStation.statusRead = statusRead;
-			chargerStation.connectorUnknown = connectorUnknown;
-			chargerStation.connectorAvailable = connectorAvailable;
-			chargerStation.connectorOccupied = connectorOccupied;
-			chargerStation.connectorErrors = connectorErrors;
-
-			var imageName = chargingStations[i].csmd.Image;
-			if(typeof chargingStations[i].csmd.Image !== 'undefined' && imageName.includes(".jpg") || imageName.includes(".jpeg") || imageName.includes(".png") ){
-				chargerStation.imageName = imageName;
-			} else{
-				chargerStation.imageName = "coming";
-			}
-
-			//create and add marker to layer
-			var marker = L.marker([latitude, longitude], {icon: statusIcon, title: chargerStation.uuid}).on('click', markerClick);
-			streamNobil.addLayer(marker);
-
-			chargingStationsArray[streamData[j].uuid] = chargerStation;
-			dynamicMarkers[streamData[j].uuid] = marker;
 		} else{
 			staticNorStation++;
-			var marker = L.marker([latitude, longitude], {icon: staticChargerIcon});
-			marker.bindPopup("<strong>Charger Station:</strong> <br>" + tittel + "<br> Beskrivelse: " + alt );
-			//adds marker to static sub group
+			//create and add marker to layer
+			var marker = L.marker([latitude, longitude], {icon: statusIcon, title: chargerStation.uuid}).on('click', markerClick);
 			staticNobil.addLayer(marker);
-
 		}
 	}
 	console.log("antall sanntid ladestasjoner(post socket connect): " + realtimeNorStation);

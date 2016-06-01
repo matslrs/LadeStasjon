@@ -55,7 +55,11 @@
 		var activeOverlays        = [];
 		var chargingStationsArray = {};
 		var staticNobil           = {};
-		var streamNobil           = {};
+		//var streamNobil           = {};
+		var streamNobilAvailable  = {};
+		var streamNobilOccupied   = {};
+		var streamNobilUnknown    = {};
+		var streamNobilError      = {};
 		var sidebar               = {};
 		var preferredPanel        = [1,0,0];	//sets which panels to open by default in sidebar
 		function templateFunction() {
@@ -111,7 +115,12 @@
 		maxClusterRadius: clusterRadius
 		});
 		//a child marker cluster
-		streamNobil = L.featureGroup.subGroup(parentCluster);
+		//streamNobil = L.featureGroup.subGroup(parentCluster);
+		streamNobilAvailable = L.featureGroup.subGroup(parentCluster);
+		streamNobilOccupied  = L.featureGroup.subGroup(parentCluster);
+		staticNobil          = L.featureGroup.subGroup(parentCluster);
+		streamNobilUnknown   = L.featureGroup.subGroup(parentCluster);
+		streamNobilError     = L.featureGroup.subGroup(parentCluster);
 
 		//Set up icons to be used
 		setupIcons(mymap);
@@ -142,12 +151,14 @@
 
 		getStationsToBeUsed();
 
+		//Layer control
+		var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(mymap);
+
 		//Set initial base map here:
 		baseMaps[startMap].addTo(mymap);
-		overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner Real Time"].addTo(mymap);
-
-		 //Layer control
-		var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(mymap);
+		//overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner Real Time"].addTo(mymap);
+		overlayMaps[" <i style='background-color:rgb(97,190,30)'></i>Available"].addTo(mymap);
+		overlayMaps[" <i style='background-color:rgb(240,131,0)'></i> Occupied"].addTo(mymap);
 
 		//if search setting is turned on
 		if( enableSearching ){
@@ -168,6 +179,7 @@
 		    var div = L.DomUtil.create('div', 'info legend');
 	        div.innerHTML += '<i style="background-color:rgb(97,190,30)"></i> Kontakt(er) ledig <br>';
 	        div.innerHTML += '<i style="background-color:rgb(240,131,0)"></i> Kontakt(er) opptatt <br>';
+	        div.innerHTML += '<i style="background-color:rgb(30,144,255)"></i> Kontakt(er) statisk <br>';
 	        div.innerHTML += '<i style="background-color:rgb(256,32,32)"></i> Kontakt(er) feil <br>';
 	        div.innerHTML += '<i style="background-color:rgb(69,69,69)"></i> Kontakt(er) ukjent';
 		    return div;
