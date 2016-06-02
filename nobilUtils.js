@@ -1,4 +1,13 @@
 function events(map) {
+
+	function onMapClick(e) {
+		var popup = L.popup();
+		popup
+			.setLatLng(e.latlng)
+			.setContent("You clicked the map at " + e.latlng.toString())
+			.openOn(map);
+	}
+
 	//when location found, show a popup where with accuracy
 	function onLocationFound(e) {
 		var radius = e.accuracy / 2;
@@ -25,6 +34,7 @@ function events(map) {
 	function closingSidebarTasks(e) {
 	}
 
+	map.on('click', onMapClick);
 	map.on('locationfound', onLocationFound);
 	map.on('locationerror', onLocationError);
 	map.on('zoomend', zoomEnd);

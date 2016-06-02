@@ -23,6 +23,9 @@ html, body, #mapid {
     margin: 0 0 5px;
     color : #777;
 }
+.material-icons {
+  font-size: 18px;
+}
 
 .legend {
     line-height: 18px;
@@ -80,6 +83,10 @@ img {
 .connectorText {
     font  : 15px arial, sans-serif;
     margin: 5px 10px 0px 5px;
+}
+
+.sidebar-pane .sidebar-body{
+  margin-top:20px;
 }
 
 
