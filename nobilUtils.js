@@ -151,6 +151,7 @@ function initSocketConnection(chargingStations){
 	connection.onopen = function(e){
 	   console.log('Connected to the real time api');
 	   console.log(e);
+	   connection.send('connection')
 	}
 	connection.onclose = function(){
 	   	var retry = setTimeout(connection, 6000);
