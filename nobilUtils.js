@@ -126,9 +126,9 @@ function setupIcons(map){
 function initSocketConnection(chargingStations){
 	var connection = new WebSocket('ws://realtime.nobil.no/api/v1/stream?apikey=8a3fd5aedf9a815606f7b8ff9bdbb0d5');
 	connection.onmessage = function(e) {
-		//console.log('Message from the stream api');
+		console.log('Message from the stream api');
 		var message = JSON.parse(e.data);
-		//console.log(message.type);
+		console.log(message.type);
 		if(message.type == "snapshot:init"){
 			var realtimeSt = extractRealtimeStToBeUsed(message.data);
 			setupNobilLayers(realtimeSt, chargingStations);
