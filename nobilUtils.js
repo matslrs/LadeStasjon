@@ -289,8 +289,16 @@ function setupNobilLayers(streamData, chargingStations){
 				if (chargingStations[i].attr.conn[k+1] == null){
 					console.log(streamData[j].uuid + " missing connectors");
 				} else{
-					connector.connector = chargingStations[i].attr.conn[k+1][4].trans;
-					connector.capacity = chargingStations[i].attr.conn[k+1][5].trans;
+					if (chargingStations[i].attr.conn[k+1][4] == null){
+						console.log(streamData[j].uuid + " missing data [4]");
+					} else{
+						connector.connector = chargingStations[i].attr.conn[k+1][4].trans;
+					}
+					if (chargingStations[i].attr.conn[k+1][5] == null){
+						console.log(streamData[j].uuid + " missing data [4]");
+					} else{
+						connector.connector = chargingStations[i].attr.conn[k+1][5].trans;
+					}
 				}
 			}
 

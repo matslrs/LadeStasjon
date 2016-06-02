@@ -39,7 +39,7 @@
 		var useStaticNobilLayer      = true;
 		var useRealTimeNobilLayer    = true;
 		//only norway
-		var useOnlyNor               = true;
+		var useOnlyNor               = false;
 		//Marker Clustering
 		var clusterRadius            = 80;	//lower number --> smaller but more cluster points
 		//Get Lat/long on map click
@@ -134,7 +134,7 @@
 		mymap = L.map('mapid', { 
 			center: [58.8534, 5.7317],
 			maxBounds: bounds,
-			minZoom: 6,
+			minZoom: 4,
 			maxZoom: 18,
 			zoom: 8
 		});
