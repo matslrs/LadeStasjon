@@ -34,7 +34,7 @@ function events(map) {
 	function closingSidebarTasks(e) {
 	}
 
-	map.on('click', onMapClick);
+	//map.on('click', onMapClick);
 	map.on('locationfound', onLocationFound);
 	map.on('locationerror', onLocationError);
 	map.on('zoomend', zoomEnd);
