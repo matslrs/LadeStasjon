@@ -144,6 +144,10 @@ function initSocketConnection(chargingStations){
 	   	var retry = setTimeout(connection, 6000);
 		console.log('Connection to the stream api closed. Trying to reconnect in 10 seconds');
 	}
+	connection.onerror = function(e){
+		console.log('Error');
+		console.log(e);
+	}
 }
 
 function extractRealtimeStToBeUsed(realtimeStArray){
