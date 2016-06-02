@@ -134,6 +134,35 @@ function setupIcons(map){
 }
 
 function initSocketConnection(chargingStations){
+	var connection = new WebSocket('ws://realtime.nobil.no/api/v1/stream?apikey=8a3fd5aedf9a815606f7b8ff9bdbb0d5', 'connection');
+
+	connection.onmessage = function(e) {
+		console.log('Message from the stream api');
+		var message = JSON.parse(e.data);
+		console.log(message.type);
+		if(message.type == "snapshot:init"){
+			var realtimeSt = extractRealtimeStToBeUsed(message.data);
+			setupNobilLayers(realtimeSt, chargingStations);
+		} else if(message.type == "status:update"){
+			updateStreamData(message.data);
+			
+		}
+	}
+	connection.onopen = function(e){
+	   console.log('Connected to the real time api');
+	   console.log(e);
+	}
+	connection.onclose = function(){
+	   	var retry = setTimeout(connection, 6000);
+		console.log('Connection to the stream api closed. Trying to reconnect in 10 seconds');
+	}
+	connection.onerror = function(e){
+		console.log('Error');
+		console.log(e);
+	}
+}
+
+function initSocketConnectionOLD(chargingStations){
 	var connection = new WebSocket('ws://realtime.nobil.no/api/v1/stream?apikey=8a3fd5aedf9a815606f7b8ff9bdbb0d5');
 	connection.onmessage = function(e) {
 		console.log('Message from the stream api');
@@ -147,8 +176,9 @@ function initSocketConnection(chargingStations){
 			
 		}
 	}
-	connection.onopen = function(){
+	connection.onopen = function(e){
 	   console.log('Connected to the real time api');
+	   console.log(e);
 	}
 	connection.onclose = function(){
 	   	var retry = setTimeout(connection, 6000);
@@ -158,6 +188,7 @@ function initSocketConnection(chargingStations){
 		console.log('Error');
 		console.log(e);
 	}
+	
 }
 
 function extractRealtimeStToBeUsed(realtimeStArray){
