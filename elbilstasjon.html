@@ -90,7 +90,7 @@
                 </h1>
                 <div class="sidebar-body">
                 <p id="stationDetails">
-                	Click on a charger station to get information about that station.
+                	Click on a charging station to get information about that station.
                 </p>
                 </div>
             </div>
@@ -158,9 +158,10 @@
 
 		//Set initial base map here:
 		baseMaps[startMap].addTo(mymap);
-		//overlayMaps["<i class='fa fa-car' aria-hidden='true'></i> Ladestasjoner Real Time"].addTo(mymap);
 		overlayMaps[" <i style='background-color:rgb(97,190,30)'></i>Available"].addTo(mymap);
 		overlayMaps[" <i style='background-color:rgb(240,131,0)'></i> Occupied"].addTo(mymap);
+		overlayMaps[" <i style='background-color:rgb(256,32,32)'></i> Error"].addTo(mymap);
+		overlayMaps[" <i style='background-color:rgb(69,69,69)'></i> Unknown"].addTo(mymap);
 
 		//if search setting is turned on
 		if( enableSearching ){
