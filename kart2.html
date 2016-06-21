@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="awesome-markers/leaflet.awesome-markers.css" />
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta charset="UTF-8">
 	
 	<script src="layers.js"></script>
 	<script src="events.js"></script>
@@ -55,8 +56,18 @@
 		var useGrunnkretsTile = true;
 		//DIFI
 		var useHelseStasjonData = true;
+		var useHelseByggData = true;
 		var useBarnehageData = true;
 		var useToalett = true;
+		var useUtsiktsPunkt = true;
+		var useGravlunder = true;
+		var useTrosBygning = true;
+		var useBadeplass = true;
+		var useLekeplass = true;
+		var useUtleielokal = true;
+		var useBarnehageGjesdal = true;
+		var useGrunnskoleGjesdal = true;
+		
 		var useBomstasjon = true;
 		//NVE
 		var useFloodData = true;
@@ -117,6 +128,9 @@
 		});	
 
 		var activeOverlays = [];
+
+		// //ATTRIBUTIONS: 
+  //  		mymap.attributionControl.addAttribution('<div>Icons made by <a href="http://www.flaticon.com/authors/picol" title="Picol">Picol</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>');
 
 		//END GLOBAL VARIABLES
 		//-----------------------------

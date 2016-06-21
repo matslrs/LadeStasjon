@@ -75,6 +75,10 @@ function setupOverlayLayers(map) {
 		var helseStasjonDifi = difiHelsestasjon(map);
 		overlayMaps["<i class='fa fa-plus-square' aria-hidden='true'></i> Helsestasjon Stavanger"] = helseStasjonDifi;
 	}
+	if(useHelseByggData) {
+		var helseByggDifi = difiHelseBygg(map);
+		overlayMaps["<i class='fa fa-hospital-o' aria-hidden='true'></i> Helsestasjon Stavanger"] = helseByggDifi;
+	}
 	if(useBarnehageData) {
 		var barnehageDifi = difiBarnehage(map);
 		overlayMaps["<i class='fa fa-cubes' aria-hidden='true'></i> Barnehage Stavanger"] = barnehageDifi;
@@ -83,6 +87,39 @@ function setupOverlayLayers(map) {
 		var toalettDifi = difiToalett(map);
 		overlayMaps["<i class='fa fa-venus-mars' aria-hidden='true'></i> Offentlig Toalett Stavanger"] = toalettDifi;
 	}
+	if(useUtsiktsPunkt) {
+		var utsiktDifi = difiUtsiktsPunkt(map);
+		overlayMaps["<i class='fa fa-eye' aria-hidden='true'></i> Utsiktspunkt Stavanger"] = utsiktDifi;
+	}
+	if(useGravlunder) {
+		var gravlundDifi = difiGravlunder(map);
+		overlayMaps["<i class='fa fa-square' aria-hidden='true'></i> Gravlunder Stavanger"] = gravlundDifi;
+	}
+	if(useTrosBygning) {	
+		var trosBygningDifi = difiTrosBygning(map);
+		overlayMaps["<i class='fa fa-bell' aria-hidden='true'></i> Kirke, Kapell og Moskeer Stavanger"] = trosBygningDifi;
+	}
+	if(useBadeplass) {
+		var badePlassDifi = difiBadePlass(map);
+		overlayMaps["<i class='fa fa-tint' aria-hidden='true'></i> Badeplasser Stavanger"] = badePlassDifi;
+	}
+	if(useLekeplass) {
+		var lekePlassDifi = difiLekeplass(map);
+		overlayMaps["<i class='fa fa-cubes' aria-hidden='true'></i> Lekeplasser Stavanger"] = lekePlassDifi;
+	}
+	if(useUtleielokal) {
+		var utleieLokal = difiUtleielokaler(map);
+		overlayMaps["<i class='fa fa-building' aria-hidden='true'></i> Utleielokal Gjesdal"] = utleieLokal;
+	}
+	if(useBarnehageGjesdal) {
+		var barnehageGjesdal = difiBarnehageGjesdal(map);
+		overlayMaps["<i class='fa fa-kindergartenMarker' aria-hidden='true'></i> Barnehage Gjesdal"] = barnehageGjesdal;
+	}
+	if(useGrunnskoleGjesdal) {
+		var grunnskoleGjesdal = difiSkoleGjesdal(map);
+		overlayMaps["<i class='fa fa-bookIcon' aria-hidden='true'></i> Grunnskole Gjesdal"] = grunnskoleGjesdal;
+	}
+
 	if(useBomstasjon) {
 		var bomstasjonDifi = difiBomstasjon(map);
 		overlayMaps["<i class='fa fa-ticket' aria-hidden='true'></i> Bomstasjoner Norge"] = bomstasjonDifi;
@@ -243,10 +280,10 @@ function difiHelsestasjon(map) {
 		for (i = 0; i < difiData.entries.length; i++) {	
 
 			//Finner data som skal brukes
-			lengdeGrad = difiData.entries[i].lengdegrad;
-			breddeGrad = difiData.entries[i].breddegrad;
-			tittel = difiData.entries[i].navn;
-			alt = difiData.entries[i].adresse;
+			var lengdeGrad = difiData.entries[i].lengdegrad;
+			var breddeGrad = difiData.entries[i].breddegrad;
+			var tittel = difiData.entries[i].navn;
+			var alt = difiData.entries[i].adresse;
 
 			//creates the marker
 			var marker = L.marker([breddeGrad, lengdeGrad], {icon: medicineMarker});
@@ -260,6 +297,39 @@ function difiHelsestasjon(map) {
 	return helsestasjonGroup;
 }
 
+function difiHelseBygg(map) {
+	
+	//creates and empty subgroup
+	var helseByggGroup = L.featureGroup.subGroup(parentCluster);
+	
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/stavanger/helsebygg?';
+	
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {	
+
+			//Finner data som skal brukes
+			var lengdeGrad = difiData.entries[i].longitude;
+			var breddeGrad = difiData.entries[i].latitude;
+			var tittel = difiData.entries[i].navn;
+			var alt = difiData.entries[i].adresse;
+
+			//creates the marker
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: hospitalIcon});
+			marker.bindPopup("<strong>" + tittel +  "</strong> <br> Adresse:"+ alt);
+
+			//adds marker to sub group
+			helseByggGroup.addLayer( marker );
+		}
+	});
+
+	return helseByggGroup;
+}
+
 function difiBarnehage(map) {
 	
 	//creates and empty subgroup
@@ -267,6 +337,7 @@ function difiBarnehage(map) {
 	
 	//url til JSON data 
 	var url = 'https://hotell.difi.no/api/json/stavanger/barnehager?';
+	var page = 1;
 	//henter data 
 	$.get(url, function(data) {
 		//var difiData = JSON.parse(data);
@@ -286,6 +357,35 @@ function difiBarnehage(map) {
 			
 			//adds marker to sub group
 			barnehageGroup.addLayer( marker );
+		}
+
+		//Difi only gives the first 100 entries, if there are more they need to be requested on a separete url
+		page++;
+		var pages = difiData.pages;
+		while(page<=pages){
+			var url = 'https://hotell.difi.no/api/json/stavanger/barnehager?page=' + page;
+			$.get(url, function(data) {
+				//var difiData = JSON.parse(data);
+				var difiData = data;
+				
+				for (i = 0; i < difiData.entries.length; i++) {
+					
+					//Finner data som skal brukes
+					var lengdeGrad = difiData.entries[i].lengdegrad;
+					var breddeGrad = difiData.entries[i].breddegrad;
+					var tittel = difiData.entries[i].barnehagens_navn;
+					var alt = difiData.entries[i].adresse;
+
+
+					var marker = L.marker([breddeGrad, lengdeGrad], {icon: kindergartenMarker});
+					marker.bindPopup("<strong> Barnehage: </strong><br>" + tittel + "<br> <strong>Adresse:</strong><br> " + alt);
+					
+					//adds marker to sub group
+					barnehageGroup.addLayer( marker );
+				}
+			});
+
+			page++;
 		}
 	});
 
@@ -307,11 +407,11 @@ function difiToalett(map) {
 		for (i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
-			lengdeGrad = difiData.entries[i].longitude;
-			breddeGrad = difiData.entries[i].latitude;
-			tittel = difiData.entries[i].plassering;
-			alt = difiData.entries[i].adresse;
-			pris = difiData.entries[i].pris;
+			var lengdeGrad = difiData.entries[i].longitude;
+			var breddeGrad = difiData.entries[i].latitude;
+			var tittel = difiData.entries[i].plassering;
+			var alt = difiData.entries[i].adresse;
+			var pris = difiData.entries[i].pris;
 			
 			if(lengdeGrad == "" || breddeGrad == ""){
 				continue;
@@ -326,6 +426,297 @@ function difiToalett(map) {
 	});
 
 	return toalettGroup;
+}
+
+function difiUtsiktsPunkt(map) {
+	
+	//creates and empty subgroup
+	var utsiktsPunkt = L.featureGroup.subGroup(parentCluster);
+
+
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/stavanger/utsiktspunkt?';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			var lengdeGrad = difiData.entries[i].longitude;
+			var breddeGrad = difiData.entries[i].latitude;
+			var tittel = difiData.entries[i].name;
+			var address = difiData.entries[i].adressenavn;
+			
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: pointOfInterest});
+			marker.bindPopup("<strong>Utsiktspunkt:</strong> <br>" + tittel + "<br> Addressenavn: " + address);
+
+			//adds marker to sub group
+			utsiktsPunkt.addLayer(marker);
+		}
+	});
+
+	return utsiktsPunkt;
+}
+
+function difiGravlunder(map) {
+	
+	//creates and empty subgroup
+	var gravlunder = L.featureGroup.subGroup(parentCluster);
+
+
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/stavanger/gravlunder?';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			var lengdeGrad = difiData.entries[i].longitude;
+			var breddeGrad = difiData.entries[i].latitude;
+			var tittel = difiData.entries[i].name;
+			var address = difiData.entries[i].adressenavn;
+			
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: gravlundIcon});
+			marker.bindPopup("<strong>Gravlunder:</strong> <br>" + tittel + "<br> Addressenavn: " + address);
+
+			//adds marker to sub group
+			gravlunder.addLayer(marker);
+		}
+	});
+
+	return gravlunder;
+}
+
+function difiTrosBygning(map) {
+	
+	//creates and empty subgroup
+	var trosBygning = L.featureGroup.subGroup(parentCluster);
+
+
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/stavanger/kirkerkapellermoskeer?';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			var lengdeGrad = difiData.entries[i].longitude;
+			var breddeGrad = difiData.entries[i].latitude;
+			var tittel = difiData.entries[i].name;
+			var address = difiData.entries[i].adressenavn;
+			
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: troIcon});
+			marker.bindPopup("<strong>Relgiøs bygning:</strong> <br>" + tittel + "<br> Addressenavn: " + address);
+
+			//adds marker to sub group
+			trosBygning.addLayer(marker);
+		}
+	});
+
+	return trosBygning;
+}
+
+function difiBadePlass(map) {
+	
+	//creates and empty subgroup
+	var badePlass = L.featureGroup.subGroup(parentCluster);
+
+
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/stavanger/badeplasser?';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			var lengdeGrad = difiData.entries[i].longitude;
+			var breddeGrad = difiData.entries[i].latitude;
+			var tittel = difiData.entries[i].name;
+			var address = difiData.entries[i].adressenavn;
+			
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: vannIcon});
+			marker.bindPopup("<strong>Badeplass:</strong> <br>" + tittel + "<br> Addressenavn: " + address);
+
+			//adds marker to sub group
+			badePlass.addLayer(marker);
+		}
+	});
+
+	return badePlass;
+}
+
+function difiUtleielokaler(map) {
+	
+	//creates and empty subgroup
+	var utleieLokal = L.featureGroup.subGroup(parentCluster);
+
+
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/gjesdal/utleielokaler?';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			var lengdeGrad = difiData.entries[i].lengdegrad;
+			lengdeGrad = lengdeGrad.replace(",", "."); 
+			var breddeGrad = difiData.entries[i].breddegrad;
+			breddeGrad = breddeGrad.replace(",", "."); 
+			var tittel = difiData.entries[i].navn;
+			var address = difiData.entries[i].adresse;
+			var type = difiData.entries[i].type;
+			
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: utleieIcon});
+			marker.bindPopup("<strong>Utleielokal:</strong> <br>" + tittel + "<br> Addressenavn: " + address + "<br> Type: " + type);
+
+			//adds marker to sub group
+			utleieLokal.addLayer(marker);
+		}
+	});
+
+	return utleieLokal;
+}
+
+function difiBarnehageGjesdal(map) {
+	
+	//creates and empty subgroup
+	var barnehageGjesdal = L.featureGroup.subGroup(parentCluster);
+
+
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/gjesdal/barnehager?';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			var lengdeGrad = difiData.entries[i].lengdegrad;
+			lengdeGrad = lengdeGrad.replace(",", "."); 
+			var breddeGrad = difiData.entries[i].breddegrad;
+			breddeGrad = breddeGrad.replace(",", "."); 
+			var tittel = difiData.entries[i].navn;
+			var address = difiData.entries[i].adresse;
+			
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: kindergartenMarker});
+			marker.bindPopup("<strong>Barnehage:</strong> <br>" + tittel + "<br> Addressenavn: " + address);
+
+			//adds marker to sub group
+			barnehageGjesdal.addLayer(marker);
+		}
+	});
+
+	return barnehageGjesdal;
+}
+
+function difiSkoleGjesdal(map) {
+	
+	//creates and empty subgroup
+	var skoleGjesdal = L.featureGroup.subGroup(parentCluster);
+
+
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/gjesdal/grunnskoler?';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			var lengdeGrad = difiData.entries[i].lengdegrad;
+			lengdeGrad = lengdeGrad.replace(",", "."); 
+			var breddeGrad = difiData.entries[i].breddegrad;
+			breddeGrad = breddeGrad.replace(",", "."); 
+			var tittel = difiData.entries[i].navn;
+			var address = difiData.entries[i].adresse;
+			
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: bookIcon});
+			marker.bindPopup("<strong>Grunnskole:</strong> <br>" + tittel + "<br> Addressenavn: " + address);
+
+			//adds marker to sub group
+			skoleGjesdal.addLayer(marker);
+		}
+	});
+
+	return skoleGjesdal;
+}
+
+function difiLekeplass(map) {
+	
+	//creates and empty subgroup
+	var lekePlass = L.featureGroup.subGroup(parentCluster);
+
+
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/stavanger/lekeplasser?';
+
+	var page = 1;
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			var lengdeGrad = difiData.entries[i].longitude;
+			var breddeGrad = difiData.entries[i].latitude;
+			
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: lekePlassIcon});
+			marker.bindPopup("<strong>Lekeplass</strong> <br>");
+
+			//adds marker to sub group
+			lekePlass.addLayer(marker);
+		}
+
+		//Difi only gives the first 100 entries, if there are more they need to be requested on a separete url
+		page++;
+		var pages = difiData.pages;
+		while(page<=pages){
+			var url = 'https://hotell.difi.no/api/json/stavanger/lekeplasser?page=' + page;
+			$.get(url, function(data) {
+				//var difiData = JSON.parse(data);
+				var difiData = data;
+				
+				for (i = 0; i < difiData.entries.length; i++) {
+					
+					//Finner data som skal brukes
+					var lengdeGrad = difiData.entries[i].longitude;
+					var breddeGrad = difiData.entries[i].latitude;
+					
+					var marker = L.marker([breddeGrad, lengdeGrad], {icon: lekePlassIcon});
+					marker.bindPopup("<strong>Lekeplass</strong> <br>");
+
+					//adds marker to sub group
+					lekePlass.addLayer(marker);
+				}
+			});
+
+			page++;
+		}
+
+	});
+	
+
+	return lekePlass;
 }
 
 function difiBomstasjon(map) {
@@ -344,10 +735,10 @@ function difiBomstasjon(map) {
 		for (i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
-			lengdeGrad = difiData.entries[i].long;
-			breddeGrad = difiData.entries[i].lat;
-			tittel = difiData.entries[i].navn;
-			alt = difiData.entries[i].autopass_beskrivelse;
+			var lengdeGrad = difiData.entries[i].long;
+			var breddeGrad = difiData.entries[i].lat;
+			var tittel = difiData.entries[i].navn;
+			var alt = difiData.entries[i].autopass_beskrivelse;
 			
 			var marker = L.marker([breddeGrad, lengdeGrad], {icon: payBooth});
 			marker.bindPopup("<strong>Bomstasjon:</strong> <br>" + tittel + "<br> Beskrivelse: " + alt);
@@ -359,6 +750,7 @@ function difiBomstasjon(map) {
 
 	return bomstasjonGroup;
 }
+
 //-------------------------------------------
 
 function setupNobilLayer(map){
@@ -623,7 +1015,15 @@ function setupJordskredVarsel(map) {
 }
 //-------------------------------------------
 
-
+function roundNumber(number, precision){
+	number = parseFloat(number);
+    precision = Math.abs(parseInt(precision)) || 0;
+    var multiplier = Math.pow(10, precision);
+    var result = number*multiplier;
+    result = Math.round(result);
+    result = result/multiplier;
+    return result;
+}
 
 
 ///////////////////////
