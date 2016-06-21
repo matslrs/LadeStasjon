@@ -55,7 +55,6 @@
 		var activeOverlays        = [];
 		var chargingStationsArray = {};
 		var staticNobil           = {};
-		//var streamNobil           = {};
 		var streamNobilAvailable  = {};
 		var streamNobilOccupied   = {};
 		var streamNobilUnknown    = {};
@@ -244,32 +243,46 @@
 				"> 
 					<div class="panel-body">
 						{{? it.isRealtime == 1}}
-							{{~ it.connectors :value:index}}  
-						        {{? value.error == 1 }}
-								<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
-						     	 	<div class="led-red"></div>
-							    </div>
-								{{?? value.status == -1 }}
-								<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
-						     	 	<div class="led-grey"></div>
-							    </div>
-								{{?? value.status == 0 }}
-								<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
-						     	 	<div class="led-green"></div>
-							    </div>
-								{{?? value.status == 1 }}
-								<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
-						     	 	<div class="led-yellow"></div>
-							    </div>
-								{{?}}
-							{{~}}
+							<table class="table table-hover table-condensed">
+								<tbody>
+									<tr>
+										<td>Kontakt Type</td><td>Kapasitet</td>
+									</tr>
+								{{~ it.connectors :value:index}}
+								  	<tr>
+									    <td>
+									        {{? value.error == 1 }}
+											<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
+									     	 	<div class="led-red"></div>
+										    </div>
+											{{?? value.status == -1 }}
+											<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
+									     	 	<div class="led-grey"></div>
+										    </div>
+											{{?? value.status == 0 }}
+											<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
+									     	 	<div class="led-green"></div>
+										    </div>
+											{{?? value.status == 1 }}
+											<div class="led-box" data-toggle="tooltip" data-html="true" title=" {{=value.statusRead}} <br> <i>Last update: {{=new Date(value.timestamp)}} </i> ">
+									     	 	<div class="led-yellow"></div>
+										    </div>
+											{{?}}
+										
+											{{=value.connector}}
+										</td>
+										<td>
+											{{=value.capacity}}
+										</td>
+									</tr>
+								{{~}}				
+								</tbody>
+							</table>
 						{{??}}
 						<div class="alert alert-info alert-dismissible" role="alert" style="margin:0px;" >
 						  <button type="button button-sm" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 						  Stasjon gir ikke sanntids informasjon.
 						</div>
-						{{?}}
-
 						<table class="table table-hover table-condensed">
 							<tbody>
 								<tr>
@@ -282,7 +295,7 @@
 							    {{~}}					
 							</tbody>
 						</table>
-
+						{{?}}
 					</div>
 				</div>
 	    	</div>

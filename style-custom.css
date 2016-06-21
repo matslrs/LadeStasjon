@@ -67,6 +67,13 @@ img {
     padding : 5px;
 }
 
+#sidebar .panel-body {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
 .containByParent {
     width     : 100%; 
     object-fit: contain;
@@ -89,8 +96,8 @@ img {
 /* Credit to F. Stephen Kirschbaum. Edited Mats */
 .led-grey {
   margin: 0 auto;
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   background-color: #FFFFFF;
   border-radius: 50%;
   box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #000000
@@ -112,8 +119,8 @@ img {
 }
 
 .led-box {
-  height: 1.25*24px;
-  width : 1.25*24px;
+  height: 1.25*16px;
+  width : 1.25*16px;
   margin: 5px;
   float : left;
 }
@@ -126,8 +133,8 @@ img {
 
 .led-red {
   margin           : 0 auto;
-  width            : 24px;
-  height           : 24px;
+  width            : 16px;
+  height           : 16px;
   background-color : #F00;
   border-radius    : 50%;
   box-shadow       : rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 12px;
@@ -140,8 +147,8 @@ img {
 
 .led-yellow {
   margin           : 0 auto;
-  width            : 24px;
-  height           : 24px;
+  width            : 16px;
+  height           : 16px;
   background-color : #FF0;
   border-radius    : 50%;
   box-shadow       : rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #808002 0 -1px 9px, #FF0 0 2px 12px;
@@ -153,8 +160,8 @@ img {
 }
 .led-green {
   margin           : 0 auto;
-  width            : 24px;
-  height           : 24px;
+  width            : 16px;
+  height           : 16px;
   background-color : #ABFF00;
   border-radius    : 50%;
   box-shadow       : rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 2px 12px;
@@ -167,8 +174,8 @@ img {
 
 .led-blue {
   margin          : 0 auto;
-  width           : 24px;
-  height          : 24px;
+  width           : 16px;
+  height          : 16px;
   background-color: #24E0FF;
   border-radius   : 50%;
   box-shadow      : rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #006 0 -1px 9px, #3F8CFF 0 2px 14px;
