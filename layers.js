@@ -81,7 +81,7 @@ function setupOverlayLayers(map) {
 	}
 	if(useBarnehageData) {
 		var barnehageDifi = difiBarnehage(map);
-		overlayMaps["<i class='fa fa-cubes' aria-hidden='true'></i> Barnehage Stavanger"] = barnehageDifi;
+		overlayMaps["<i class='fa fa-child' aria-hidden='true'></i> Barnehage Stavanger"] = barnehageDifi;
 	}
 	if(useToalett) {
 		var toalettDifi = difiToalett(map);
@@ -113,11 +113,11 @@ function setupOverlayLayers(map) {
 	}
 	if(useBarnehageGjesdal) {
 		var barnehageGjesdal = difiBarnehageGjesdal(map);
-		overlayMaps["<i class='fa fa-kindergartenMarker' aria-hidden='true'></i> Barnehage Gjesdal"] = barnehageGjesdal;
+		overlayMaps["<i class='fa fa-child' aria-hidden='true'></i> Barnehage Gjesdal"] = barnehageGjesdal;
 	}
 	if(useGrunnskoleGjesdal) {
 		var grunnskoleGjesdal = difiSkoleGjesdal(map);
-		overlayMaps["<i class='fa fa-bookIcon' aria-hidden='true'></i> Grunnskole Gjesdal"] = grunnskoleGjesdal;
+		overlayMaps["<i class='fa fa-book' aria-hidden='true'></i> Grunnskole Gjesdal"] = grunnskoleGjesdal;
 	}
 
 	if(useBomstasjon) {
