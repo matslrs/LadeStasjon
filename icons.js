@@ -119,6 +119,12 @@ function setupIcons(map){
 	    markerColor: 'darkgreen'
 	});
 
+	miljoStasjon = L.AwesomeMarkers.icon({
+	    prefix: 'fa',
+	    icon: 'fa-recycle',
+	    markerColor: 'green'
+	});
+
 	carCharge = L.AwesomeMarkers.icon({
 	    prefix: 'fa',
 	    icon: 'fa-car ',

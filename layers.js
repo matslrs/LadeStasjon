@@ -9,6 +9,13 @@ function setupBaseLayers(map) {
 		});
 		baseMaps["OpenStreetMap"] = osm_layer;
 	}
+	//Norges Grunnkart Graatone
+	if(useKartverkGraatoneLayer){
+		var kartverk_graatone_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart_graatone&zoom={z}&x={x}&y={y}', {
+			attribution: 'Kartverket'
+		});
+		baseMaps["Norgeskart Gråtone"] = kartverk_graatone_layer;
+	}
 	//kartverket topografisk kart
 	if(useKartverkTopo2Layer){
 		var kartverk_topo2_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}', {
@@ -21,7 +28,7 @@ function setupBaseLayers(map) {
 		var kartverk_sjohovedkart2_layer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=sjo_hovedkart2&zoom={z}&x={x}&y={y}', {
 			attribution: 'Kartverket'
 		});
-		baseMaps["Sea Papirkart"] = kartverk_sjohovedkart2_layer;
+		baseMaps["Sjø Papirkart"] = kartverk_sjohovedkart2_layer;
 	}
 	//kartverket ionosphere
 	if(useKartverkTopo3Layer){			 
@@ -30,6 +37,9 @@ function setupBaseLayers(map) {
 		});
 		baseMaps["Topografisk3 Norgeskart"] = kartverk_toporaster3_layer;
 	}
+
+	var googlehybrid = new L.Google('HYBRID');
+	baseMaps["Google Maps Hybrid"] = googlehybrid;
 
 	return baseMaps;
 }
@@ -86,6 +96,10 @@ function setupOverlayLayers(map) {
 	if(useToalett) {
 		var toalettDifi = difiToalett(map);
 		overlayMaps["<i class='fa fa-venus-mars' aria-hidden='true'></i> Offentlig Toalett Stavanger"] = toalettDifi;
+	}
+	if(useMiljoStation) {
+		var miljoStasjonDifi = difiMiljoStasjon(map);
+		overlayMaps["<i class='fa fa-recycle' aria-hidden='true'></i> Miljøstasjoner Stavanger"] = miljoStasjonDifi;
 	}
 	if(useUtsiktsPunkt) {
 		var utsiktDifi = difiUtsiktsPunkt(map);
@@ -426,6 +440,43 @@ function difiToalett(map) {
 	});
 
 	return toalettGroup;
+}
+
+function difiMiljoStasjon(map) {
+	
+	//creates and empty subgroup
+	var miljoStasjoner = L.featureGroup.subGroup(parentCluster);
+
+	//url til JSON data 
+	var url = 'https://hotell.difi.no/api/json/stavanger/miljostasjoner?';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			var lengdeGrad = difiData.entries[i].longitude;
+			var breddeGrad = difiData.entries[i].latitude;
+			var tittel = difiData.entries[i].navn;
+			var glassMetal = difiData.entries[i].glass_metall;
+			var plast = difiData.entries[i].plast;
+			var tekstilSko = difiData.entries[i].tekstil_sko;
+			
+			if(lengdeGrad == "" || breddeGrad == ""){
+				continue;
+			}
+
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: miljoStasjon});
+			marker.bindPopup("<strong> Miljøstasjon:</strong> "+ tittel +"<br> Glass og metal: "+ glassMetal + "<br> Plast: " + plast + "<br> Tekstil og sko: " + tekstilSko);
+
+			//adds marker to sub group
+			miljoStasjoner.addLayer(marker);
+		}
+	});
+
+	return miljoStasjoner;
 }
 
 function difiUtsiktsPunkt(map) {
