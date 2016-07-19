@@ -136,4 +136,10 @@ function setupIcons(map){
 	    icon: 'fa-archive ',
 	    markerColor: 'beige'
 	});
+
+	bicycleIcon = L.AwesomeMarkers.icon({
+	    prefix: 'fa',
+	    icon: 'fa-bicycle ',
+	    markerColor: 'green'
+	});
 }
