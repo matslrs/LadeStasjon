@@ -813,8 +813,8 @@ function bringPickupPoints(map) {
 
 	$.ajax({
 	    type: 'GET',
-	    //url: "https://mats.maplytic.no/proxy/api.bring.com/pickuppoint/api/pickuppoint/no/all.json",
-	    url: "https://api.bring.com/pickuppoint/api/pickuppoint/no/all.json",
+	    url: "https://mats.maplytic.no/proxy/api.bring.com/pickuppoint/api/pickuppoint/no/all.json",
+	    //url: "https://api.bring.com/pickuppoint/api/pickuppoint/no/all.json",
 	    success: function(data) { 	
 	    	var bringData = data;
 		
