@@ -84,10 +84,20 @@ function setupOverlayLayers(map) {
 		var sykkelNettNordJæren = sykkelNett(map);
 		overlayMaps["<i class='fa fa-bicycle' aria-hidden='true'></i> Sykkel Nett Nord-Jæren"] = sykkelNettNordJæren;
 	}
-	
+
 	if(useTurVei) {
 		var turnettStavanger = turNett(map);
-		overlayMaps["<i class='fa fa-leaf' aria-hidden='true'></i> Tur vei"] = turnettStavanger;
+		overlayMaps["<i class='fa fa-tripadvisor' aria-hidden='true'></i> Tur vei"] = turnettStavanger;
+	}
+
+	if(useByDel) {
+		var bydelStavanger = byDelStavanger(map);
+		overlayMaps["<i class='fa fa-pie-chart ' aria-hidden='true'></i> Tur vei"] = bydelStavanger;
+	}
+
+	if(useSkoleDel) {
+		var skoleGrenserStavanger = skoleGrenserStavanger(map);
+		overlayMaps["<i class='fa fa-pencil-square-o' aria-hidden='true'></i> Tur vei"] = skoleGrenserStavanger;
 	}
 
 	//gets JSON data from difi
@@ -269,6 +279,34 @@ function turNett(map) {
 	return turNettGeoLayer;
 
 }
+
+function byDelStavanger(map) {
+
+	//creates and empty GeoJSON test Layer
+	var turNettGeoLayer = L.geoJson();
+
+	$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/23fef01e-c729-43b2-8fb3-8e127f04b286/resource/9afa13c0-59af-4fb5-a950-b28db8b10ad2/download/wdatasettbydeler.json', function(data) {
+		turNettGeoLayer.addData(data);
+	});
+
+	return turNettGeoLayer;
+
+}
+
+function skoleGrenserStavanger(map) {
+
+	//creates and empty GeoJSON test Layer
+	var turNettGeoLayer = L.geoJson();
+
+	$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/1d0442c1-4521-41b8-bcce-f08d7930b9e5/resource/cfd50d56-80e9-4003-89f3-7f18d7f1b882/download/wdatasettskolekretser.json', function(data) {
+		turNettGeoLayer.addData(data);
+	});
+
+	return turNettGeoLayer;
+
+}
+
+
 
 function loadGrunnkretsTile(map) {
 
