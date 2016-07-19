@@ -806,7 +806,7 @@ function difiBomstasjon(map) {
 	return bomstasjonGroup;
 }
 
-function bringPickupPoints(map) {
+function bringPickupPoints2(map) {
 	
 	//creates and empty subgroup
 	var pickupGroup = L.featureGroup.subGroup(parentCluster);
@@ -840,7 +840,7 @@ function bringPickupPoints(map) {
 	return pickupGroup;
 }
 
-function bringPickupPoints2(map) {
+function bringPickupPoints(map) {
 	
 	//creates and empty subgroup
 	var pickupGroup = L.featureGroup.subGroup(parentCluster);
