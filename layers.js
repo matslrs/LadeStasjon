@@ -244,7 +244,7 @@ function sykkelNett(map) {
 	//creates and empty GeoJSON test Layer
 	var sykkelNettGeoLayer = L.geoJson();
 
-	$.getJSON('http://open.stavanger.kommune.no/dataset/0f0e037e-b5e8-453f-97ca-8ae9be7e523c/resource/4695328a-5857-434d-86ab-97d9acbdb69c/download/cuserssk5017717downloadssykkelnettkartnord-jaeren2016.json', function(data) {
+	$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/0f0e037e-b5e8-453f-97ca-8ae9be7e523c/resource/4695328a-5857-434d-86ab-97d9acbdb69c/download/cuserssk5017717downloadssykkelnettkartnord-jaeren2016.json', function(data) {
 		sykkelNettGeoLayer.addData(data);
 	});
 
