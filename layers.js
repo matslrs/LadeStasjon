@@ -883,7 +883,7 @@ function openStavangerKommunaleBygg(map) {
 	    success: function(data) {
 	      	var openStavangerData = data;
 		
-			for (i = 0; i < openStavangerData.result.records.entries.length; i++) {
+			for (i = 0; i < openStavangerData.result.records.length; i++) {
 				
 				//Finner data som skal brukes
 				var longitude = openStavangerData.result.records[i].lengdegrad;
