@@ -811,14 +811,11 @@ function bringPickupPoints(map) {
 	//creates and empty subgroup
 	var pickupGroup = L.featureGroup.subGroup(parentCluster);
 
-	jQuery.ajax({
-		type: 'GET',
-		url: 'https://mats.maplytic.no/proxy/api.bring.com/pickuppoint/api/pickuppoint/no/all.json',
-		data: {
-			'format': 'JSON'
-			},
-		success: function(data){
-			var bringData = data;
+	$.ajax({
+	    type: 'GET',
+	    url: "https://mats.maplytic.no/proxy/api.bring.com/pickuppoint/api/pickuppoint/no/all.json",
+	    success: function(data) { 	
+	    	var bringData = data;
 		
 			for (i = 0; i < bringData.pickupPoint.length; i++) {
 				
@@ -836,8 +833,9 @@ function bringPickupPoints(map) {
 				//adds marker to sub group
 				pickupGroup.addLayer(marker);
 			}
-		},
-		dataType: 'json'
+	    },
+	    contentType: "application/json",
+	    dataType: 'json'
 	});
 
 	return pickupGroup;
