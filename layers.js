@@ -819,7 +819,41 @@ function bringPickupPoints(map) {
 		var bringData = JSON.parse(data);
 		//var bringData = data;
 		
-		for (i = 0; i < difiData.pickupPoint.length; i++) {
+		for (i = 0; i < bringData.pickupPoint.length; i++) {
+			
+			//Finner data som skal brukes
+			var lengdeGrad = bringData.pickupPoint[i].longitude;
+			var breddeGrad = bringData.pickupPoint[i].latitude;
+			var tittel = bringData.pickupPoint[i].name;
+			var adress = bringData.pickupPoint[i].address;
+			var beskrivelse = bringData.pickupPoint[i].locationDescription;
+			var open = bringData.pickupPoint[i].openingHoursNorwegian;
+			
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: pickupBox});
+			marker.bindPopup("<strong>Pickup Point:</strong> <br>" + tittel + "<br> Adress: " + alt + "<br> Beskrivelse: " + beskrivelse + "<br> Åpen: " + open );
+
+			//adds marker to sub group
+			pickupGroup.addLayer(marker);
+		}
+	});
+
+	return pickupGroup;
+}
+
+function bringPickupPointsBackup(map) {
+	
+	//creates and empty subgroup
+	var pickupGroup = L.featureGroup.subGroup(parentCluster);
+
+
+	//url til JSON data 
+	var url = 'https://api.bring.com/pickuppoint/api/pickuppoint/no/all.json';
+	//henter data 
+	$.get(url, function(data) {
+		var bringData = JSON.parse(data);
+		//var bringData = data;
+		
+		for (i = 0; i < bringData.pickupPoint.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = bringData.pickupPoint[i].longitude;
