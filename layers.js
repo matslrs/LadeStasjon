@@ -847,7 +847,7 @@ function bringPickupPointsBackup(map) {
 
 
 	//url til JSON data 
-	var url = 'https://api.bring.com/pickuppoint/api/pickuppoint/no/all.json';
+	var url = 'https://mats.maplytic.no/proxy/api.bring.com/pickuppoint/api/pickuppoint/no/all.json';
 	//henter data 
 	$.get(url, function(data) {
 		var bringData = JSON.parse(data);
