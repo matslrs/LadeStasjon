@@ -806,7 +806,7 @@ function difiBomstasjon(map) {
 	return bomstasjonGroup;
 }
 
-function bringPickupPoints2(map) {
+function bringPickupPoints(map) {
 	
 	//creates and empty subgroup
 	var pickupGroup = L.featureGroup.subGroup(parentCluster);
@@ -814,6 +814,9 @@ function bringPickupPoints2(map) {
 	jQuery.ajax({
 		type: 'GET',
 		url: 'https://mats.maplytic.no/proxy/api.bring.com/pickuppoint/api/pickuppoint/no/all.json',
+		data: {
+			'format': 'JSON'
+			},
 		success: function(data){
 			var bringData = data;
 		
@@ -840,7 +843,7 @@ function bringPickupPoints2(map) {
 	return pickupGroup;
 }
 
-function bringPickupPoints(map) {
+function bringPickupPoints2(map) {
 	
 	//creates and empty subgroup
 	var pickupGroup = L.featureGroup.subGroup(parentCluster);
