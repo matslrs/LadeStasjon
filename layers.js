@@ -828,7 +828,7 @@ function bringPickupPoints(map) {
 				var open = bringData.pickupPoint[i].openingHoursNorwegian;
 				
 				var marker = L.marker([breddeGrad, lengdeGrad], {icon: pickupBox});
-				marker.bindPopup("<strong>Pickup Point:</strong> <br>" + tittel + "<br> Adress: " + alt + "<br> Beskrivelse: " + beskrivelse + "<br> Åpen: " + open );
+				marker.bindPopup("<strong>Pickup Point:</strong> <br>" + tittel + "<br> Adress: " + adress + "<br> Beskrivelse: " + beskrivelse + "<br> Åpen: " + open );
 
 				//adds marker to sub group
 				pickupGroup.addLayer(marker);
