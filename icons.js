@@ -130,4 +130,10 @@ function setupIcons(map){
 	    icon: 'fa-car ',
 	    markerColor: 'yellow'
 	});
+
+	pickupBox = L.AwesomeMarkers.icon({
+	    prefix: 'fa',
+	    icon: 'fa-archive ',
+	    markerColor: 'beige'
+	});
 }
