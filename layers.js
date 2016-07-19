@@ -875,34 +875,32 @@ function difiLekeplass(map) {
 function openStavangerKommunaleBygg(map) {
 	
 	//creates and empty subgroup
-	var stavangerVarselFeil = L.featureGroup.subGroup(parentCluster);
+	var stavangerUtleieLokal = L.featureGroup.subGroup(parentCluster);
 
 	$.ajax({
 	    url: 'https://mats.maplytic.no/proxy/open.stavanger.kommune.no/api/action/datastore_search?resource_id=0c728874-f9d8-466b-8b81-572d924e3145',
 	    dataType: 'json',
 	    success: function(data) {
-	      	var difiData = data;
+	      	var openStavangerData = data;
 		
-			for (i = 0; i < difiData.entries.length; i++) {
+			for (i = 0; i < openStavangerData.result.records.entries.length; i++) {
 				
 				//Finner data som skal brukes
-				var lengdeGrad = difiData.entries[i].lengdegrad;
-				lengdeGrad = lengdeGrad.replace(",", "."); 
-				var breddeGrad = difiData.entries[i].breddegrad;
-				breddeGrad = breddeGrad.replace(",", "."); 
-				var tittel = difiData.entries[i].navn;
-				var address = difiData.entries[i].adresse;
+				var longitude = openStavangerData.result.records[i].lengdegrad;
+				var latitude = openStavangerData.result.records[i].breddegrad;
+				var service = openStavangerData.result.records[i].service;
+				var address = openStavangerData.result.records[i].adresse;
 				
 				var marker = L.marker([breddeGrad, lengdeGrad], {icon: bookIcon});
-				marker.bindPopup("<strong>Grunnskole:</strong> <br>" + tittel + "<br> Addressenavn: " + address);
+				marker.bindPopup("<strong>Utleielokal:</strong> <br>" + service + "<br> Addressenavn: " + address);
 
 				//adds marker to sub group
-				stavangerVarselFeil.addLayer(marker);
+				stavangerUtleieLokal.addLayer(marker);
 			}
 	    }
 	});
 
-	return stavangerVarselFeil;
+	return stavangerUtleieLokal;
 }
 
 function difiBomstasjon(map) {
