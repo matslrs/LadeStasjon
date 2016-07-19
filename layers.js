@@ -816,8 +816,8 @@ function bringPickupPoints(map) {
 	var url = 'https://api.bring.com/pickuppoint/api/pickuppoint/no/all.json';
 	//henter data 
 	$.get(url, function(data) {
-		//var difiData = JSON.parse(data);
-		var bringData = data;
+		var bringData = JSON.parse(data);
+		//var bringData = data;
 		
 		for (i = 0; i < difiData.pickupPoint.length; i++) {
 			
