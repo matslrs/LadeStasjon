@@ -114,6 +114,10 @@ function setupOverlayLayers(map) {
 		var helseByggDifi = difiHelseBygg(map);
 		overlayMaps["<i class='fa fa-hospital-o' aria-hidden='true'></i> Helsestasjon Stavanger"] = helseByggDifi;
 	}
+	if(useStavangerKommunaleBygg) {
+		var kommunaleByggSavanger = openStavangerKommunaleBygg(map);
+		overlayMaps["<i class='fa fa-building' aria-hidden='true'></i> Bygg Publikumstjeneste"] = kommunaleByggSavanger;
+	}
 	if(useBarnehageData) {
 		var barnehageDifi = difiBarnehage(map);
 		overlayMaps["<i class='fa fa-child' aria-hidden='true'></i> Barnehage Stavanger"] = barnehageDifi;
@@ -157,11 +161,6 @@ function setupOverlayLayers(map) {
 	if(useGrunnskoleGjesdal) {
 		var grunnskoleGjesdal = difiSkoleGjesdal(map);
 		overlayMaps["<i class='fa fa-book' aria-hidden='true'></i> Grunnskole Gjesdal"] = grunnskoleGjesdal;
-	}
-
-	if(useStavangerKommunaleBygg) {
-		var kommunaleByggSavanger = openStavangerKommunaleBygg(map);
-		overlayMaps["<i class='fa fa-book' aria-hidden='true'></i> Bygg Publikumstjeneste"] = kommunaleByggSavanger;
 	}
 
 	if(useBomstasjon) {
@@ -892,7 +891,7 @@ function openStavangerKommunaleBygg(map) {
 				var address = openStavangerData.result.records[i].adresse;
 				
 				var marker = L.marker([latitude, longitude], {icon: utleieIcon});
-				marker.bindPopup("<strong>Utleielokal:</strong> <br>" + service + "<br> Addressenavn: " + address);
+				marker.bindPopup("<strong>Bygg Publikumstjeneste:</strong> <br>" + service + "<br> Addressenavn: " + address);
 
 				//adds marker to sub group
 				stavangerUtleieLokal.addLayer(marker);
