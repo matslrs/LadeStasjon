@@ -96,7 +96,7 @@ function setupOverlayLayers(map) {
 	}
 
 	if(useSkoleDel) {
-		var skoleGrenserStavanger = skoleGrenserStavanger(map);
+		var skoleGrenserStavanger = getSkoleGrenserStavanger(map);
 		overlayMaps["<i class='fa fa-pencil-square-o' aria-hidden='true'></i> Tur vei"] = skoleGrenserStavanger;
 	}
 
@@ -293,7 +293,7 @@ function byDelStavanger(map) {
 
 }
 
-function skoleGrenserStavanger(map) {
+function getSkoleGrenserStavanger(map) {
 
 	//creates and empty GeoJSON test Layer
 	var turNettGeoLayer = L.geoJson();
