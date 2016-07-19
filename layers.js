@@ -159,6 +159,11 @@ function setupOverlayLayers(map) {
 		overlayMaps["<i class='fa fa-book' aria-hidden='true'></i> Grunnskole Gjesdal"] = grunnskoleGjesdal;
 	}
 
+	if(useStavangerKommunaleBygg) {
+		var kommunaleByggSavanger = openStavangerKommunaleBygg(map);
+		overlayMaps["<i class='fa fa-book' aria-hidden='true'></i> Kommunale bygg med publikumstjeneste"] = kommunaleByggSavanger;
+	}
+
 	if(useBomstasjon) {
 		var bomstasjonDifi = difiBomstasjon(map);
 		overlayMaps["<i class='fa fa-ticket' aria-hidden='true'></i> Bomstasjoner Norge"] = bomstasjonDifi;
@@ -867,35 +872,34 @@ function difiLekeplass(map) {
 	return lekePlass;
 }
 
-function openStavangerVarselFeil(map) {
+function openStavangerKommunaleBygg(map) {
 	
 	//creates and empty subgroup
 	var stavangerVarselFeil = L.featureGroup.subGroup(parentCluster);
 
-
-	//url til JSON data 
-	var url = 'https://mats.maplytic.no/proxy/';
-	//henter data 
-	$.get(url, function(data) {
-		//var difiData = JSON.parse(data);
-		var difiData = data;
+	$.ajax({
+	    url: 'http://open.stavanger.kommune.no/api/action/datastore_search?resource_id=0c728874-f9d8-466b-8b81-572d924e3145',
+	    dataType: 'jsonp',
+	    success: function(data) {
+	      	var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
-			
-			//Finner data som skal brukes
-			var lengdeGrad = difiData.entries[i].lengdegrad;
-			lengdeGrad = lengdeGrad.replace(",", "."); 
-			var breddeGrad = difiData.entries[i].breddegrad;
-			breddeGrad = breddeGrad.replace(",", "."); 
-			var tittel = difiData.entries[i].navn;
-			var address = difiData.entries[i].adresse;
-			
-			var marker = L.marker([breddeGrad, lengdeGrad], {icon: bookIcon});
-			marker.bindPopup("<strong>Grunnskole:</strong> <br>" + tittel + "<br> Addressenavn: " + address);
+			for (i = 0; i < difiData.entries.length; i++) {
+				
+				//Finner data som skal brukes
+				var lengdeGrad = difiData.entries[i].lengdegrad;
+				lengdeGrad = lengdeGrad.replace(",", "."); 
+				var breddeGrad = difiData.entries[i].breddegrad;
+				breddeGrad = breddeGrad.replace(",", "."); 
+				var tittel = difiData.entries[i].navn;
+				var address = difiData.entries[i].adresse;
+				
+				var marker = L.marker([breddeGrad, lengdeGrad], {icon: bookIcon});
+				marker.bindPopup("<strong>Grunnskole:</strong> <br>" + tittel + "<br> Addressenavn: " + address);
 
-			//adds marker to sub group
-			stavangerVarselFeil.addLayer(marker);
-		}
+				//adds marker to sub group
+				stavangerVarselFeil.addLayer(marker);
+			}
+	    }
 	});
 
 	return stavangerVarselFeil;
