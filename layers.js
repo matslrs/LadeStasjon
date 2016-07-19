@@ -886,8 +886,8 @@ function openStavangerKommunaleBygg(map) {
 			for (i = 0; i < openStavangerData.result.records.length; i++) {
 				
 				//Finner data som skal brukes
-				var longitude = openStavangerData.result.records[i].lengdegrad;
-				var latitude = openStavangerData.result.records[i].breddegrad;
+				var longitude = openStavangerData.result.records[i].longitude;
+				var latitude = openStavangerData.result.records[i].latitude;
 				var service = openStavangerData.result.records[i].service;
 				var address = openStavangerData.result.records[i].adresse;
 				
