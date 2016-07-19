@@ -161,7 +161,7 @@ function setupOverlayLayers(map) {
 
 	if(useStavangerKommunaleBygg) {
 		var kommunaleByggSavanger = openStavangerKommunaleBygg(map);
-		overlayMaps["<i class='fa fa-book' aria-hidden='true'></i> Kommunale bygg med publikumstjeneste"] = kommunaleByggSavanger;
+		overlayMaps["<i class='fa fa-book' aria-hidden='true'></i> Bygg Publikumstjeneste"] = kommunaleByggSavanger;
 	}
 
 	if(useBomstasjon) {
@@ -891,7 +891,7 @@ function openStavangerKommunaleBygg(map) {
 				var service = openStavangerData.result.records[i].service;
 				var address = openStavangerData.result.records[i].adresse;
 				
-				var marker = L.marker([breddeGrad, lengdeGrad], {icon: bookIcon});
+				var marker = L.marker([latitude, longitude], {icon: utleieIcon});
 				marker.bindPopup("<strong>Utleielokal:</strong> <br>" + service + "<br> Addressenavn: " + address);
 
 				//adds marker to sub group
