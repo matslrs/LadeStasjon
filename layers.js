@@ -84,6 +84,11 @@ function setupOverlayLayers(map) {
 		var sykkelNettNordJæren = sykkelNett(map);
 		overlayMaps["<i class='fa fa-bicycle' aria-hidden='true'></i> Sykkel Nett Nord-Jæren"] = sykkelNettNordJæren;
 	}
+	
+	if(useTurVei) {
+		var turnettStavanger = turNett(map);
+		overlayMaps["<i class='fa fa-leaf' aria-hidden='true'></i> Tur vei"] = turnettStavanger;
+	}
 
 	//gets JSON data from difi
 	if(useHelseStasjonData) {
@@ -251,6 +256,20 @@ function sykkelNett(map) {
 	return sykkelNettGeoLayer;
 
 }
+
+function turNett(map) {
+
+	//creates and empty GeoJSON test Layer
+	var turNettGeoLayer = L.geoJson();
+
+	$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/bf627d4a-f115-41a2-82b9-d19de3cd5414/resource/64909cfb-3eb5-47dc-9bcb-d8fb5161f7a7/download/turveger.json', function(data) {
+		turNettGeoLayer.addData(data);
+	});
+
+	return turNettGeoLayer;
+
+}
+
 function loadGrunnkretsTile(map) {
 
 	GrunnkretsTile = L.tileLayer('https://mats.maplytic.no/tile/grunnkretser/{z}/{x}/{y}.png?linewidth=1');
@@ -792,6 +811,40 @@ function difiLekeplass(map) {
 	return lekePlass;
 }
 
+function openStavangerVarselFeil(map) {
+	
+	//creates and empty subgroup
+	var stavangerVarselFeil = L.featureGroup.subGroup(parentCluster);
+
+
+	//url til JSON data 
+	var url = 'https://mats.maplytic.no/proxy/';
+	//henter data 
+	$.get(url, function(data) {
+		//var difiData = JSON.parse(data);
+		var difiData = data;
+		
+		for (i = 0; i < difiData.entries.length; i++) {
+			
+			//Finner data som skal brukes
+			var lengdeGrad = difiData.entries[i].lengdegrad;
+			lengdeGrad = lengdeGrad.replace(",", "."); 
+			var breddeGrad = difiData.entries[i].breddegrad;
+			breddeGrad = breddeGrad.replace(",", "."); 
+			var tittel = difiData.entries[i].navn;
+			var address = difiData.entries[i].adresse;
+			
+			var marker = L.marker([breddeGrad, lengdeGrad], {icon: bookIcon});
+			marker.bindPopup("<strong>Grunnskole:</strong> <br>" + tittel + "<br> Addressenavn: " + address);
+
+			//adds marker to sub group
+			stavangerVarselFeil.addLayer(marker);
+		}
+	});
+
+	return stavangerVarselFeil;
+}
+
 function difiBomstasjon(map) {
 	
 	//creates and empty subgroup
@@ -883,40 +936,6 @@ function bringPickupPoints(map) {
 	    },
 	    contentType: "application/json",
 	    dataType: 'json'
-	});
-
-	return pickupGroup;
-}
-
-function bringPickupPoints2(map) {
-	
-	//creates and empty subgroup
-	var pickupGroup = L.featureGroup.subGroup(parentCluster);
-
-
-	//url til JSON data 
-	var url = 'https://mats.maplytic.no/proxy/api.bring.com/pickuppoint/api/pickuppoint/no/all.json';
-	//henter data 
-	$.get(url, function(data) {
-		var bringData = JSON.parse(data);
-		//var bringData = data;
-		
-		for (i = 0; i < bringData.pickupPoint.length; i++) {
-			
-			//Finner data som skal brukes
-			var lengdeGrad = bringData.pickupPoint[i].longitude;
-			var breddeGrad = bringData.pickupPoint[i].latitude;
-			var tittel = bringData.pickupPoint[i].name;
-			var adress = bringData.pickupPoint[i].address;
-			var beskrivelse = bringData.pickupPoint[i].locationDescription;
-			var open = bringData.pickupPoint[i].openingHoursNorwegian;
-			
-			var marker = L.marker([breddeGrad, lengdeGrad], {icon: pickupBox});
-			marker.bindPopup("<strong>Pickup Point:</strong> <br>" + tittel + "<br> Adress: " + alt + "<br> Beskrivelse: " + beskrivelse + "<br> Åpen: " + open );
-
-			//adds marker to sub group
-			pickupGroup.addLayer(marker);
-		}
 	});
 
 	return pickupGroup;
