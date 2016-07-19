@@ -801,32 +801,12 @@ function difiBomstasjon(map) {
 			//adds marker to sub group
 			bomstasjonGroup.addLayer(marker);
 		}
-	});
-
-	$.get(url, function(data) {
-		//var difiData = JSON.parse(data);
-		var difiData = data;
-		
-		for (i = 0; i < difiData.entries.length; i++) {
-			
-			//Finner data som skal brukes
-			var lengdeGrad = difiData.entries[i].long;
-			var breddeGrad = difiData.entries[i].lat;
-			var tittel = difiData.entries[i].navn;
-			var alt = difiData.entries[i].autopass_beskrivelse;
-			
-			var marker = L.marker([breddeGrad, lengdeGrad], {icon: payBooth});
-			marker.bindPopup("<strong>Bomstasjon:</strong> <br>" + tittel + "<br> Beskrivelse: " + alt);
-
-			//adds marker to sub group
-			bomstasjonGroup.addLayer(marker);
-		}
 
 		//Difi only gives the first 100 entries, if there are more they need to be requested on a separete url
 		page++;
 		var pages = difiData.pages;
 		while(page<=pages){
-			var url = 'http://hotell.difi.no/api/json/vegvesen/bomstasjoner?page=' + page;
+			var url = 'https://hotell.difi.no/api/json/vegvesen/bomstasjoner?page=' + page;
 			$.get(url, function(data) {
 				//var difiData = JSON.parse(data);
 				var difiData = data;
