@@ -92,12 +92,17 @@ function setupOverlayLayers(map) {
 
 	if(useByDel) {
 		var bydelStavanger = byDelStavanger(map);
-		overlayMaps["<i class='fa fa-pie-chart ' aria-hidden='true'></i> Tur vei"] = bydelStavanger;
+		overlayMaps["<i class='fa fa-pie-chart ' aria-hidden='true'></i> Stavanger bydeler"] = bydelStavanger;
 	}
 
 	if(useSkoleDel) {
 		var skoleGrenserStavanger = getSkoleGrenserStavanger(map);
-		overlayMaps["<i class='fa fa-pencil-square-o' aria-hidden='true'></i> Tur vei"] = skoleGrenserStavanger;
+		overlayMaps["<i class='fa fa-pencil-square-o' aria-hidden='true'></i> Stavanger skole grenser"] = skoleGrenserStavanger;
+	}
+
+	if(useVinterBeredskap) {
+		var vinterBeredskapStavanger = getVinterBeredskapStavanger(map);
+		overlayMaps["<i class='fa fa-asterisk' aria-hidden='true'></i> Vinterberedskap Stavanger"] = vinterBeredskapStavanger;
 	}
 
 	//gets JSON data from difi
@@ -283,26 +288,39 @@ function turNett(map) {
 function byDelStavanger(map) {
 
 	//creates and empty GeoJSON test Layer
-	var turNettGeoLayer = L.geoJson();
+	var bydelStavangerLayer = L.geoJson();
 
 	$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/23fef01e-c729-43b2-8fb3-8e127f04b286/resource/9afa13c0-59af-4fb5-a950-b28db8b10ad2/download/wdatasettbydeler.json', function(data) {
-		turNettGeoLayer.addData(data);
+		bydelStavangerLayer.addData(data);
 	});
 
-	return turNettGeoLayer;
+	return bydelStavangerLayer;
 
 }
 
 function getSkoleGrenserStavanger(map) {
 
 	//creates and empty GeoJSON test Layer
-	var turNettGeoLayer = L.geoJson();
+	var skoleGrenserStavangerLayer = L.geoJson();
 
 	$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/1d0442c1-4521-41b8-bcce-f08d7930b9e5/resource/cfd50d56-80e9-4003-89f3-7f18d7f1b882/download/wdatasettskolekretser.json', function(data) {
-		turNettGeoLayer.addData(data);
+		skoleGrenserStavangerLayer.addData(data);
 	});
 
-	return turNettGeoLayer;
+	return skoleGrenserStavangerLayer;
+
+}
+
+function getVinterBeredskapStavanger(map) {
+
+	//creates and empty GeoJSON test Layer
+	var vinterBeredskapStavangerLayer = L.geoJson();
+
+	$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/1b85ba90-b675-4831-87fd-4d0de893df18/resource/17286153-1ea2-45bd-bc0e-c51c53263fcc/download/wkartvinterberedskap.json', function(data) {
+		vinterBeredskapStavangerLayer.addData(data);
+	});
+
+	return vinterBeredskapStavangerLayer;
 
 }
 
