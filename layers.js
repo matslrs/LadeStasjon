@@ -878,7 +878,7 @@ function openStavangerKommunaleBygg(map) {
 	var stavangerVarselFeil = L.featureGroup.subGroup(parentCluster);
 
 	$.ajax({
-	    url: 'https://mats.maplytic.no/proxy/open.stavanger.kommune.no/api/action/datastore_search?resource_id=0c728874-f9d8-466b-8b81-572d924e3145',
+	    url: 'https://mats.maplytic.no/proxy?url=https://open.stavanger.kommune.no/api/action/datastore_search?resource_id=0c728874-f9d8-466b-8b81-572d924e3145',
 	    dataType: 'jsonp',
 	    success: function(data) {
 	      	var difiData = data;
