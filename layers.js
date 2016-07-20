@@ -400,7 +400,7 @@ function difiHelsestasjon(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {	
+		for (var i = 0; i < difiData.entries.length; i++) {	
 
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].lengdegrad;
@@ -433,7 +433,7 @@ function difiHelseBygg(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {	
+		for (var i = 0; i < difiData.entries.length; i++) {	
 
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].longitude;
@@ -466,7 +466,7 @@ function difiBarnehage(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].lengdegrad;
@@ -491,7 +491,7 @@ function difiBarnehage(map) {
 				//var difiData = JSON.parse(data);
 				var difiData = data;
 				
-				for (i = 0; i < difiData.entries.length; i++) {
+				for (var i = 0; i < difiData.entries.length; i++) {
 					
 					//Finner data som skal brukes
 					var lengdeGrad = difiData.entries[i].lengdegrad;
@@ -527,7 +527,7 @@ function difiToalett(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].longitude;
@@ -563,7 +563,7 @@ function difiMiljoStasjon(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].longitude;
@@ -601,7 +601,7 @@ function difiUtsiktsPunkt(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].longitude;
@@ -633,7 +633,7 @@ function difiGravlunder(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].longitude;
@@ -665,7 +665,7 @@ function difiTrosBygning(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].longitude;
@@ -697,7 +697,7 @@ function difiBadePlass(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].longitude;
@@ -729,7 +729,7 @@ function difiUtleielokaler(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].lengdegrad;
@@ -764,7 +764,7 @@ function difiBarnehageGjesdal(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].lengdegrad;
@@ -798,7 +798,7 @@ function difiSkoleGjesdal(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].lengdegrad;
@@ -834,7 +834,7 @@ function difiLekeplass(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].longitude;
@@ -856,7 +856,7 @@ function difiLekeplass(map) {
 				//var difiData = JSON.parse(data);
 				var difiData = data;
 				
-				for (i = 0; i < difiData.entries.length; i++) {
+				for (var i = 0; i < difiData.entries.length; i++) {
 					
 					//Finner data som skal brukes
 					var lengdeGrad = difiData.entries[i].longitude;
@@ -890,7 +890,7 @@ function openStavangerKommunaleBygg(map) {
 	    success: function(data) {
 	      	var openStavangerData = data;
 		
-			for (i = 0; i < openStavangerData.result.records.length; i++) {
+			for (var i = 0; i < openStavangerData.result.records.length; i++) {
 				
 				//Finner data som skal brukes
 				var longitude = openStavangerData.result.records[i].longitude;
@@ -921,7 +921,7 @@ function openStavangerGrillGjesdal(map) {
 	    success: function(data) {
 	      	var openStavangerData = data;
 		
-			for (i = 0; i < openStavangerData.result.records.length; i++) {
+			for (var i = 0; i < openStavangerData.result.records.length; i++) {
 				
 				//Finner data som skal brukes
 				var longitude = openStavangerData.result.records[i].longitude;
@@ -951,7 +951,7 @@ function openStavangerFiskeGjesdal(map) {
 	    success: function(data) {
 	      	var openStavangerData = data;
 		
-			for (i = 0; i < openStavangerData.result.records.length; i++) {
+			for (var i = 0; i < openStavangerData.result.records.length; i++) {
 				
 				//Finner data som skal brukes
 				var longitude = openStavangerData.result.records[i].longitude;
@@ -985,7 +985,7 @@ function difiBomstasjon(map) {
 		//var difiData = JSON.parse(data);
 		var difiData = data;
 		
-		for (i = 0; i < difiData.entries.length; i++) {
+		for (var i = 0; i < difiData.entries.length; i++) {
 			
 			//Finner data som skal brukes
 			var lengdeGrad = difiData.entries[i].long;
@@ -1009,7 +1009,7 @@ function difiBomstasjon(map) {
 				//var difiData = JSON.parse(data);
 				var difiData = data;
 				
-				for (i = 0; i < difiData.entries.length; i++) {
+				for (var i = 0; i < difiData.entries.length; i++) {
 					
 					//Finner data som skal brukes
 					var lengdeGrad = difiData.entries[i].long;
@@ -1044,7 +1044,7 @@ function bringPickupPoints(map) {
 	    success: function(data) { 	
 	    	var bringData = data;
 		
-			for (i = 0; i < bringData.pickupPoint.length; i++) {
+			for (var i = 0; i < bringData.pickupPoint.length; i++) {
 				
 				//Finner data som skal brukes
 				var lengdeGrad = bringData.pickupPoint[i].longitude;
@@ -1107,11 +1107,11 @@ function setupFlomVarsel(map) {
 	    	var kommuneNr = [];
 
 	    	//går gjennom alle komuner
-	    	for(i=0;i<flomTest.length;i++){
+	    	for(var i=0;i<flomTest.length;i++){
 	    		//hvis fylke har høy nok aktivitets nivå
 	    		if( flomTest[i].HighestActivityLevel > 1){
 	    			//gå gjennom kommuner i det fylke
-	    			for(j=0;j<flomTest[i].MunicipalityList.length;j++){
+	    			for(var j=0;j<flomTest[i].MunicipalityList.length;j++){
 	    				//hvis kommunen høyt nok aktivitets nivå --> process
 	    				if( flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel > 1){
 
@@ -1161,7 +1161,7 @@ function setupFlomVarsel(map) {
 
 		    	var sqlFlomKommunerTemp = 'WHERE komm IN (';
 		    	//append the rest of the query code
-		    	for(i=0;i<kommuneNr.length;i++){
+		    	for(var i=0;i<kommuneNr.length;i++){
 
 		    		if(i==0){
 		    			appendString = kommuneNr[i];
@@ -1185,7 +1185,7 @@ function setupFlomVarsel(map) {
 		    	//Hent data
 				$.getJSON(url, function(data) {
 
-					for(i=0;i<data.features.length;i++){
+					for(var i=0;i<data.features.length;i++){
 
 						//dårlig quick fix?
 						if(data.features[i].properties.komm < 1000){
@@ -1225,11 +1225,11 @@ function setupJordskredVarsel(map) {
 	    	var kommuneNr = [];
 
 	    	//går gjennom alle komuner
-	    	for(i=0;i<flomTest.length;i++){
+	    	for(var i=0;i<flomTest.length;i++){
 	    		//hvis fylke har høy nok aktivitets nivå
 	    		if( flomTest[i].HighestActivityLevel > 1){
 	    			//gå gjennom kommuner i det fylke
-	    			for(j=0;j<flomTest[i].MunicipalityList.length;j++){
+	    			for(var j=0;j<flomTest[i].MunicipalityList.length;j++){
 	    				//hvis kommunen høyt nok aktivitets nivå --> process
 	    				if( flomTest[i].MunicipalityList[j].WarningList[0].ActivityLevel > 1){
 
@@ -1279,7 +1279,7 @@ function setupJordskredVarsel(map) {
 
 		    	var sqlSkredKommunerTemp = 'WHERE komm IN (';
 		    	//append the rest of the query code
-		    	for(i=0;i<kommuneNr.length;i++){
+		    	for(var i=0;i<kommuneNr.length;i++){
 
 		    		if(i==0){
 		    			appendString = kommuneNr[i];
@@ -1303,7 +1303,7 @@ function setupJordskredVarsel(map) {
 		    	//Hent data
 				$.getJSON(url, function(data) {
 
-					for(i=0;i<data.features.length;i++){
+					for(var i=0;i<data.features.length;i++){
 						//dårlig quick fix
 						if(data.features[i].properties.komm < 1000){
 							kNr = '0' + data.features[i].properties.komm;
