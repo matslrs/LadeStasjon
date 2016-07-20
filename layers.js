@@ -162,6 +162,14 @@ function setupOverlayLayers(map) {
 		var grunnskoleGjesdal = difiSkoleGjesdal(map);
 		overlayMaps["<i class='fa fa-book' aria-hidden='true'></i> Grunnskole Gjesdal"] = grunnskoleGjesdal;
 	}
+	if(useGrillPlassGjesdal) {
+		var grillplassGjesdal = openStavangerGrillGjesdal(map);
+		overlayMaps["<i class='fa fa-fire' aria-hidden='true'></i> Grtillplasser Gjesdal"] = grillplassGjesdal;
+	}
+	if(useFiskeGjesdal) {
+		var grillplassGjesdal = openStavangerFiskeGjesdal(map);
+		overlayMaps["<i class='fa fa-tint' aria-hidden='true'></i> Grtillplasser Gjesdal"] = grillplassGjesdal;
+	}
 
 	if(useBomstasjon) {
 		var bomstasjonDifi = difiBomstasjon(map);
@@ -900,6 +908,68 @@ function openStavangerKommunaleBygg(map) {
 	});
 
 	return stavangerUtleieLokal;
+}
+
+function openStavangerGrillGjesdal(map) {
+	
+	//creates and empty subgroup
+	var grillPlassGjesdalLayer = L.featureGroup.subGroup(parentCluster);
+
+	$.ajax({
+	    url: 'https://mats.maplytic.no/proxy/open.stavanger.kommune.no/api/action/datastore_search?resource_id=580606f5-8d5e-46bf-95c1-105668f15a48',
+	    dataType: 'json',
+	    success: function(data) {
+	      	var openStavangerData = data;
+		
+			for (i = 0; i < openStavangerData.result.records.length; i++) {
+				
+				//Finner data som skal brukes
+				var longitude = openStavangerData.result.records[i].longitude;
+				var latitude = openStavangerData.result.records[i].latitude;
+				var name = openStavangerData.result.records[i].navn;
+				
+				var marker = L.marker([latitude, longitude], {icon: fireIcon});
+				marker.bindPopup("<strong>Grill Plass:</strong> <br>" + name);
+
+				//adds marker to sub group
+				grillPlassGjesdalLayer.addLayer(marker);
+			}
+	    }
+	});
+
+	return grillPlassGjesdalLayer;
+}
+
+function openStavangerFiskeGjesdal(map) {
+	
+	//creates and empty subgroup
+	var fiskeGjesdal = L.featureGroup.subGroup(parentCluster);
+
+	$.ajax({
+	    url: 'https://mats.maplytic.no/proxy/open.stavanger.kommune.no/api/action/datastore_search?resource_id=c4025934-b7b7-49f2-b0df-b7e61d9f9204',
+	    dataType: 'json',
+	    success: function(data) {
+	      	var openStavangerData = data;
+		
+			for (i = 0; i < openStavangerData.result.records.length; i++) {
+				
+				//Finner data som skal brukes
+				var longitude = openStavangerData.result.records[i].longitude;
+				var latitude = openStavangerData.result.records[i].latitude;
+				var name = openStavangerData.result.records[i].navn;
+				var adresse = openStavangerData.result.records[i].adresse;
+				var beskrivelse = openStavangerData.result.records[i].beskrivelse;
+				
+				var marker = L.marker([latitude, longitude], {icon: fishingIcon});
+				marker.bindPopup("<strong>Vassdrag:</strong> <br>" + name + "<br> Adresse: " + address + "<br> Beskrivelse: " + beskrivelse);
+
+				//adds marker to sub group
+				fiskeGjesdal.addLayer(marker);
+			}
+	    }
+	});
+
+	return fiskeGjesdal;
 }
 
 function difiBomstasjon(map) {

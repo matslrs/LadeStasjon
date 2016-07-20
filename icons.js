@@ -107,6 +107,12 @@ function setupIcons(map){
 	    markerColor: 'cadetblue'
 	});
 
+	fishingIcon = L.AwesomeMarkers.icon({
+	    prefix: 'fa',
+	    icon: 'fa-tint',
+	    markerColor: 'blue'
+	});
+
 	payBooth = L.AwesomeMarkers.icon({
 	    prefix: 'fa',
 	    icon: 'fa-ticket ',
@@ -141,5 +147,11 @@ function setupIcons(map){
 	    prefix: 'fa',
 	    icon: 'fa-bicycle ',
 	    markerColor: 'green'
+	});
+
+	fireIcon = L.AwesomeMarkers.icon({
+	    prefix: 'fa',
+	    icon: 'fa-fire ',
+	    markerColor: 'red'
 	});
 }
