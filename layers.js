@@ -924,9 +924,9 @@ function openStavangerGrillGjesdal(map) {
 			for (var i = 0; i < openStavangerData.result.records.length; i++) {
 				
 				//Finner data som skal brukes
-				var longitude = openStavangerData.result.records[i].longitude;
-				var latitude = openStavangerData.result.records[i].latitude;
-				var name = openStavangerData.result.records[i].navn;
+				var longitude = openStavangerData.result.records[i].Longitude;
+				var latitude = openStavangerData.result.records[i].Latitude;
+				var name = openStavangerData.result.records[i].Navn;
 				
 				var marker = L.marker([latitude, longitude], {icon: fireIcon});
 				marker.bindPopup("<strong>Grill Plass:</strong> <br>" + name);
@@ -954,11 +954,11 @@ function openStavangerFiskeGjesdal(map) {
 			for (var i = 0; i < openStavangerData.result.records.length; i++) {
 				
 				//Finner data som skal brukes
-				var longitude = openStavangerData.result.records[i].longitude;
-				var latitude = openStavangerData.result.records[i].latitude;
-				var name = openStavangerData.result.records[i].navn;
-				var adresse = openStavangerData.result.records[i].adresse;
-				var beskrivelse = openStavangerData.result.records[i].beskrivelse;
+				var longitude = openStavangerData.result.records[i].Longitude;
+				var latitude = openStavangerData.result.records[i].Latitude;
+				var name = openStavangerData.result.records[i].Navn;
+				var adresse = openStavangerData.result.records[i].Adresse;
+				var beskrivelse = openStavangerData.result.records[i].Beskrivelse;
 				
 				var marker = L.marker([latitude, longitude], {icon: fishingIcon});
 				marker.bindPopup("<strong>Vassdrag:</strong> <br>" + name + "<br> Adresse: " + adresse + "<br> Beskrivelse: " + beskrivelse);
