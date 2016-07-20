@@ -961,7 +961,7 @@ function openStavangerFiskeGjesdal(map) {
 				var beskrivelse = openStavangerData.result.records[i].beskrivelse;
 				
 				var marker = L.marker([latitude, longitude], {icon: fishingIcon});
-				marker.bindPopup("<strong>Vassdrag:</strong> <br>" + name + "<br> Adresse: " + address + "<br> Beskrivelse: " + beskrivelse);
+				marker.bindPopup("<strong>Vassdrag:</strong> <br>" + name + "<br> Adresse: " + adresse + "<br> Beskrivelse: " + beskrivelse);
 
 				//adds marker to sub group
 				fiskeGjesdal.addLayer(marker);
