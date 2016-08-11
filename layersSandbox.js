@@ -217,7 +217,7 @@ function weatherData(map){
 				var tittel = data[i].Stadnamn;
 				var type = data[i].Stadtypebokmål;
 				var link = data[i].Bokmål;
-				var link = link.replace("http", "https"); 
+				var link = link.replace("http://www.", "https://mats.maplytic.no/proxy/"); 
 
 				var marker = L.marker([breddeGrad, lengdeGrad], {icon: sunIcon});
 				marker.bindPopup("<strong>Været for "+ tittel +"</strong> <br> Type sted: "+ type + "<br> Været:");
