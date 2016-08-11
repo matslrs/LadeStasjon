@@ -235,7 +235,7 @@ function weatherData(map){
 
 function weatherClick(e){
 	var date = new Date();
-	var time = d.getTime(); 
+	var time = date.getTime(); 
 	//if more than 10 min since last update for this marker, allow a new update.
 	if(time>e.target.timeUpdated + 600000){
 		console.log("requesting updated weater forecast!");
