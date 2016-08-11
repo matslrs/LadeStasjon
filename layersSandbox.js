@@ -202,7 +202,7 @@ function setupOverlayLayers(map) {
 function weatherData(map){
 	var weather = L.featureGroup.subGroup(parentCluster);
 
-	$.getJSON("værSteder.json", function(json) {
+	$.getJSON("weatherPlaces.json", function(json) {
 	    //console.log(json); // this will show the info in firebug console
 
 		var data = json;	
