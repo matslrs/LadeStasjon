@@ -217,10 +217,10 @@ function weatherData(map){
 				var tittel = data[i].Stadnamn;
 				var type = data[i].Stadtypebokmål;
 				var link = data[i].Bokmål;
-				var link = link.replace("http://www.", "https://mats.maplytic.no/proxy/"); 
+				var link = link.replace("http://www.", "https://mats.maplytic.no/proxy?url=https://"); 
 
 				var marker = L.marker([breddeGrad, lengdeGrad], {icon: sunIcon});
-				marker.bindPopup("<strong>Været for "+ tittel +"</strong> <br> Type sted: "+ type + "<br> Været:");
+				marker.bindPopup("<strong>Været for "+ tittel +"</strong> <br> Type sted: "+ type + "<br><br>");
 				marker.weatherLink = link;
 				marker.timeUpdated = 0;
 				marker.on('click', weatherClick);
@@ -258,9 +258,9 @@ function readWeatherForecast(xml, marker){
   var popContent = marker.getPopup().getContent();
   var x = xmlDoc.getElementsByTagName("text");
   for (i = 0; i <x.length; i++) { 
-    popContent += "<br>" +
+    popContent += "<br><strong>" +
     x[i].getElementsByTagName("title")[0].childNodes[0].nodeValue +
-    "<br>" +
+    "</strong><br>" +
     x[i].getElementsByTagName("body")[0].childNodes[0].nodeValue +
     "<br><br>";
   }
