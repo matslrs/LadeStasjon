@@ -221,6 +221,7 @@ function weatherData(map){
 				var marker = L.marker([breddeGrad, lengdeGrad], {icon: sunIcon});
 				marker.bindPopup("<strong>Været for "+ tittel +"</strong> <br> Type sted: "+ type + "<br> Været:");
 				marker.weatherLink = link;
+				marker.timeUpdated = 0;
 				marker.on('click', weatherClick);
 
 				//adds marker to sub group
@@ -233,16 +234,20 @@ function weatherData(map){
 }
 
 function weatherClick(e){
-	console.log("content: " + e.target.getPopup().getContent());
-	
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-	if (xhttp.readyState == 4 && xhttp.status == 200) {
-	  readWeatherForecast(xhttp, e.target);
+	var time = getTime();
+	//if more than 10 min since last update for this marker, allow a new update.
+	if(time>e.target.timeUpdated + 600000){
+		console.log("requesting updated weater forecast!");
+		e.target.timeUpdated = time;
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+		  readWeatherForecast(xhttp, e.target);
+		}
+		};
+		xhttp.open("GET", e.target.weatherLink, true);
+		xhttp.send();
 	}
-	};
-	xhttp.open("GET", e.target.weatherLink, true);
-	xhttp.send();
 }
 
 function readWeatherForecast(xml, marker){
