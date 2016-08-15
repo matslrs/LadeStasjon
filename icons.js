@@ -154,4 +154,10 @@ function setupIcons(map){
 	    icon: 'fa-fire ',
 	    markerColor: 'red'
 	});
+
+	sunIcon = L.AwesomeMarkers.icon({
+	    prefix: 'fa',
+	    icon: 'fa-sun-o',
+	    markerColor: 'darkgreen'
+	});
 }
