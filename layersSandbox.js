@@ -256,11 +256,10 @@ function weatherClick(e){
 }
 
 function readWeatherForecast(xml, marker){
-	var i;
 	var xmlDoc = xml.responseXML;
 	var popContent = marker.getPopup().getContent();
 	var x = xmlDoc.getElementsByTagName("text");
-	for (i = 0; i <x.length; i++) { 
+	for (var i = 0; i <x.length; i++) { 
 	    popContent += "<br><strong>" +
 	    x[i].getElementsByTagName("title")[0].childNodes[0].nodeValue +
 	    "</strong><br>" +

@@ -2,7 +2,6 @@
 <html>
 <head>
 	
-	<link rel="stylesheet" href="mapTwo-style.css" />
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
 	<link rel="stylesheet" href="leafletdraw/leaflet.draw.css" />
 	<link rel="stylesheet" href="leafletsearch/leaflet-search.src.css" />
@@ -10,6 +9,7 @@
 	<link rel="stylesheet" href="markercluster/MarkerCluster.Default.css" />
 	<link rel="stylesheet" href="awesome-markers/leaflet.awesome-markers.css" />
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<meta charset="UTF-8">
 	
@@ -24,12 +24,15 @@
 	<script src="markercluster/leaflet.markercluster-src.js"></script>
 	<script src="markercluster/leaflet.featuregroup.subgroup-src.js"></script>
 	<script src="awesome-markers/leaflet.awesome-markers.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
     <script src="https://maps.google.com/maps/api/js?v=3&sensor=false"></script>
     <script src="./Google.js"></script>
 	
+	<!-- custom style always last -->
+	<link rel="stylesheet" href="mapTwo-style.css" />
 	<script>
 
 		//-----------------------------
@@ -103,7 +106,8 @@
 
 		//-----------------------------
 		//GLOBAL VARIABLES
-
+		var searchResultsHtml = "";
+		var searchResultsMouseOver = false;
 		//dynamic layers
 		//DB maplytic
 		if(useFylkerDbQ){
@@ -154,16 +158,42 @@
 </head>
 
 <body>
-	<div id="mapid"></div>
+
+	
+
+	<div id="mapid">
+		<div class="container" id="searchElements" >
+		    <div class="row">
+		        <div class="col-md-4 col-md-offset-3">
+		            <form action="" class="search-form">
+		                <div class="form-group has-feedback">
+		            		<label for="search" class="sr-only">search</label>
+		            		<input type="text" class="form-control" name="search" id="search" placeholder="Søk på stedsnavn for været">
+		              		<span class="glyphicon glyphicon-search form-control-feedback"></span>
+		            	</div>
+		            </form>
+		            	
+		        </div>
+		        <div class="row" >
+			    	<div class="col-xs-4 col-xs-offset-3">
+						<div id="searchResults">
+						</div>
+					</div>
+				</div>
+		    </div>
+		</div>
+	</div>
+
+	
 	
 	<script>
 
 		//Set up icons to be used
-		setupIcons(mymap);
+		setupIcons(mymap);								//denna må flyttas ner
 
 		//bounds of the map
-		var southWest = L.latLng(33, -21),
-	    northEast = L.latLng(90, 46),
+		var southWest = L.latLng(33, -36),
+	    northEast = L.latLng(90, 61),
 	    bounds = L.latLngBounds(southWest, northEast);
 
 		//Creates MAP
@@ -218,6 +248,167 @@
 		    return div;
 		};
 		legend.addTo(mymap);
+
+		$("form").on('submit',function(e){
+  	  		e.preventDefault();
+  	 		console.log("'form' on 'submit'")
+		});
+
+
+		$( 'input').focusin(function() {
+			$('.has-feedback').addClass("showClass");
+			$( "#searchResults" ).html( searchResultsHtml );
+			listButtonEvents();
+		});
+		$('input').focusout(function() {
+			if(!searchResultsMouseOver){
+				$('.has-feedback').removeClass("showClass");
+				$( "#searchResults" ).html( "" );
+			}
+		});
+
+
+	    $("#searchElements").on('mouseover',function(e){
+	    	searchResultsMouseOver = true;
+  	  		mymap.dragging.disable();
+		});
+		$("#searchElements").on('mouseout',function(e){
+			searchResultsMouseOver = false;
+  	  		mymap.dragging.enable();
+		});
+
+		$('#search').keyup(function() {
+			delay(function(){
+				console.log('func called');
+				var searchText = $('#search').val();
+				console.log(searchText);
+				weatherSearch(searchText);
+			}, 800 );
+		});
+
+		var delay = (function(){
+			var timer = 0;
+			console.log('pre');
+			return function(callback, ms){
+				console.log('inside');
+				clearTimeout (timer);
+				timer = setTimeout(callback, ms);
+			};
+			console.log('post');
+		})();
+
+		function weatherSearch(searchText){
+			var url = "https://ws.geonorge.no/SKWS3Index/ssr/sok?navn=" + searchText + "*&antPerSide=10&epsgKode=4326&eksakteForst=true&side=0";
+
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (xhttp.readyState == 4 && xhttp.status == 200) {
+				  readWeatherSearch(xhttp);
+				}
+			};
+			xhttp.open("GET", url, true);
+			xhttp.send();
+		}
+
+		function readWeatherSearch(xml){
+			var i;
+			var xmlDoc = xml.responseXML;
+			searchResultsHtml = '<ul class="list-group">';
+			var x = xmlDoc.getElementsByTagName("stedsnavn");
+			for (i = 0; i <x.length; i++) { 
+				if (typeof x[i].getElementsByTagName("stedsnavn")[0] === "undefined") {
+					continue;
+				}
+
+				var sted = x[i].getElementsByTagName("stedsnavn")[0].childNodes[0].nodeValue;
+				var kommune = x[i].getElementsByTagName("kommunenavn")[0].childNodes[0].nodeValue;
+				var fylke = x[i].getElementsByTagName("fylkesnavn")[0].childNodes[0].nodeValue;
+				var type = x[i].getElementsByTagName("navnetype")[0].childNodes[0].nodeValue;
+				var stedUrl = sted.split(" ").join("_");
+				var kommuneUrl = kommune.split(" ").join("_");
+				var fylkeUrl = fylke.split(" ").join("_");
+			    searchResultsHtml += '<button type="button" class="list-group-item"';
+			    searchResultsHtml += 'data-sted="' + stedUrl + '" ';
+			    searchResultsHtml += 'data-kommune="' + kommuneUrl + '" ';
+			    searchResultsHtml += 'data-fylke="' + fylkeUrl + '" >';
+			    searchResultsHtml += '<strong>';
+			    searchResultsHtml += sted;
+			    searchResultsHtml += "</strong>, ";
+			    searchResultsHtml += kommune;
+			    searchResultsHtml += ", ";
+			    searchResultsHtml += fylke;
+			    searchResultsHtml += ", <strong>Type sted: ";
+			    searchResultsHtml += type;
+			    searchResultsHtml += "</strong>";
+			    searchResultsHtml += "</button>";
+
+			    $( "body" ).data( "foo", 52 );
+		  	}
+		  	searchResultsHtml += "</ul>";
+		  	$( "#searchResults" ).html( searchResultsHtml );
+
+		  	listButtonEvents();
+		}
+
+		function listButtonEvents(){
+			$( "button" ).click(function(e) {
+		  		e.preventDefault();
+		  		//var placeText = e.target.innerText;
+		  		//placeText = String(placeText);
+		  		//placeText = placeText.replace(", ", ',');
+		  		//var place = placeText.split(", ");
+				console.log("list item clicked ");
+				$('.has-feedback').removeClass("showClass");
+				$( "#searchResults" ).html( "" );
+				//for(var i = 0; i<3; i++){
+				//	place[i].split(" ").join(_)
+				//}
+				var url = "http://www.yr.no/sted/Norge/" + e.target.getAttribute("data-fylke") + "/" + e.target.getAttribute("data-kommune") + "/" + e.target.getAttribute("data-sted") + "/varsel.xml";
+				weatherListClick(url);
+			});
+		}
+
+		function weatherListClick(link){
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (xhttp.readyState == 4 && xhttp.status == 200) {
+				  	var xmlDoc = xml.responseXML;
+					var popContent ="";
+					var textForecast = xmlDoc.getElementsByTagName("text");
+				    popContent += "<br><strong>" +
+				    textForecast.getElementsByTagName("title")[0].childNodes[0].nodeValue +
+				    "</strong><br>" +
+				    textForecast.getElementsByTagName("body")[0].childNodes[0].nodeValue +
+				    "<br><br>";
+				    console.log(popContent);
+
+				    positionElement = getAllElementsWithAttribute(xmlDoc, "latitude");
+				    latLongPos = [positionElement.getAttribute("latitude"), positionElement.getAttribute("longitude")];
+				  	weatherSearchMarker = L.marker(latLongPos).addTo(map);
+				  	weatherSearchMarker.getPopup().setContent(popContent);
+				  	weatherSearchMarker.openPopup();
+				  	mymap.panTo(latLongPos);
+
+				}
+			};
+			xhttp.open("GET", link, true);
+			xhttp.send();
+		}
+
+		function getAllElementsWithAttribute(htmlOrXml, attribute)
+		{
+		  var matchingElements = [];
+		  var allElements = htmlOrXml.getElementsByTagName('*');
+		  for (var i = 0, n = allElements.length; i < n; i++)
+		  {
+		    if (allElements[i].getAttribute(attribute) !== null)
+		    {
+		      matchingElements.push(allElements[i]);
+		    }
+		  }
+		  return matchingElements;
+		}
+
 
 	</script>	
 </body>
