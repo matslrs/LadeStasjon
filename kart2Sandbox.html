@@ -373,7 +373,7 @@
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (xhttp.readyState == 4 && xhttp.status == 200) {
-				  	var xmlDoc = xml.responseXML;
+				  	var xmlDoc = xhttp.responseXML;
 					var popContent ="";
 					var textForecast = xmlDoc.getElementsByTagName("text");
 				    popContent += "<br><strong>" +
