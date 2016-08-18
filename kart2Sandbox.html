@@ -388,7 +388,7 @@
 				    	console.log("positionElement length = " + positionElement.length);
 				    }
 				    latLongPos = [positionElement[0].getAttribute("latitude"), positionElement[0].getAttribute("longitude")];
-				  	weatherSearchMarker = L.marker(latLongPos).addTo(map);
+				  	weatherSearchMarker = L.marker(latLongPos).addTo(mymap);
 				  	weatherSearchMarker.getPopup().setContent(popContent);
 				  	weatherSearchMarker.openPopup();
 				  	mymap.panTo(latLongPos);
