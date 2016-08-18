@@ -384,7 +384,10 @@
 				    console.log(popContent);
 
 				    positionElement = getAllElementsWithAttribute(xmlDoc, "latitude");
-				    latLongPos = [positionElement.getAttribute("latitude"), positionElement.getAttribute("longitude")];
+				    if(positionElement.length > 1 || positionElement.length == 0){
+				    	console.log("positionElement length = " + positionElement.length);
+				    }
+				    latLongPos = [positionElement[0].getAttribute("latitude"), positionElement[0].getAttribute("longitude")];
 				  	weatherSearchMarker = L.marker(latLongPos).addTo(map);
 				  	weatherSearchMarker.getPopup().setContent(popContent);
 				  	weatherSearchMarker.openPopup();
