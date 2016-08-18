@@ -353,16 +353,14 @@
 		function listButtonEvents(){
 			$( "button" ).click(function(e) {
 		  		e.preventDefault();
-		  		//var placeText = e.target.innerText;
-		  		//placeText = String(placeText);
-		  		//placeText = placeText.replace(", ", ',');
-		  		//var place = placeText.split(", ");
 				console.log("list item clicked ");
+
+				//update search and search list elements
 				$('.has-feedback').removeClass("showClass");
 				$( "#searchResults" ).html( "" );
-				//for(var i = 0; i<3; i++){
-				//	place[i].split(" ").join(_)
-				//}
+				//enable dragging on map
+				mymap.dragging.enable();
+				//build urls and get yr.no weather data
 				var url = "http://www.yr.no/sted/Norge/" + e.target.getAttribute("data-fylke") + "/" + e.target.getAttribute("data-kommune") + "/" + e.target.getAttribute("data-sted") + "/varsel.xml";
 				var url = url.replace("http://www.", "https://mats.maplytic.no/proxy?url=https://www."); 
 				weatherListClick(url);
@@ -373,23 +371,25 @@
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (xhttp.readyState == 4 && xhttp.status == 200) {
+
 				  	var xmlDoc = xhttp.responseXML;
 					var popContent ="";
 					var textForecast = xmlDoc.getElementsByTagName("text");
+					//build popupContent
 				    popContent += "<br><strong>" +
 				    textForecast[0].getElementsByTagName("title")[0].childNodes[0].nodeValue +
 				    "</strong><br>" +
 				    textForecast[0].getElementsByTagName("body")[0].childNodes[0].nodeValue +
 				    "<br><br>";
 				    console.log(popContent);
-
+				    //get position
 				    positionElement = getAllElementsWithAttribute(xmlDoc, "latitude");
 				    if(positionElement.length > 1 || positionElement.length == 0){
 				    	console.log("positionElement length = " + positionElement.length);
 				    }
 				    latLongPos = [positionElement[0].getAttribute("latitude"), positionElement[0].getAttribute("longitude")];
 				  	weatherSearchMarker = L.marker(latLongPos).addTo(mymap);
-				  	weatherSearchMarker.setPopupContent(popContent);
+				  	weatherSearchMarker.bindPopup(popContent);
 				  	weatherSearchMarker.openPopup();
 				  	mymap.panTo(latLongPos);
 
