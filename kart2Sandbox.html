@@ -362,12 +362,12 @@
 				mymap.dragging.enable();
 				//build urls and get yr.no weather data
 				var url = "http://www.yr.no/sted/Norge/" ;
-				var url += e.target.getAttribute("data-fylke");
+				url += e.target.getAttribute("data-fylke");
 				if(e.target.getAttribute("data-kommune") != "Spitsbergen");
-				var url += "/" + e.target.getAttribute("data-kommune");
-				var url += "/" + e.target.getAttribute("data-sted");
-				var url += "/varsel.xml";
-				var url = url.replace("http://www.", "https://mats.maplytic.no/proxy?url=https://www."); 
+				url += "/" + e.target.getAttribute("data-kommune");
+				url += "/" + e.target.getAttribute("data-sted");
+				url += "/varsel.xml";
+				url = url.replace("http://www.", "https://mats.maplytic.no/proxy?url=https://www."); 
 				weatherListClick(url);
 			});
 		}
