@@ -364,6 +364,7 @@
 				//	place[i].split(" ").join(_)
 				//}
 				var url = "http://www.yr.no/sted/Norge/" + e.target.getAttribute("data-fylke") + "/" + e.target.getAttribute("data-kommune") + "/" + e.target.getAttribute("data-sted") + "/varsel.xml";
+				var url = url.replace("http://www.", "https://mats.maplytic.no/proxy?url=https://www."); 
 				weatherListClick(url);
 			});
 		}
