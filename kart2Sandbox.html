@@ -377,9 +377,9 @@
 					var popContent ="";
 					var textForecast = xmlDoc.getElementsByTagName("text");
 				    popContent += "<br><strong>" +
-				    textForecast.getElementsByTagName("title")[0].childNodes[0].nodeValue +
+				    textForecast[0].getElementsByTagName("title")[0].childNodes[0].nodeValue +
 				    "</strong><br>" +
-				    textForecast.getElementsByTagName("body")[0].childNodes[0].nodeValue +
+				    textForecast[0].getElementsByTagName("body")[0].childNodes[0].nodeValue +
 				    "<br><br>";
 				    console.log(popContent);
 
