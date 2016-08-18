@@ -389,7 +389,7 @@
 				    }
 				    latLongPos = [positionElement[0].getAttribute("latitude"), positionElement[0].getAttribute("longitude")];
 				  	weatherSearchMarker = L.marker(latLongPos).addTo(mymap);
-				  	weatherSearchMarker.getPopup().setContent(popContent);
+				  	weatherSearchMarker.setPopupContent(popContent);
 				  	weatherSearchMarker.openPopup();
 				  	mymap.panTo(latLongPos);
 
