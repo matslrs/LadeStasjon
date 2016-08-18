@@ -158,12 +158,12 @@ function setupIcons(map){
 	sunIcon = L.AwesomeMarkers.icon({
 	    prefix: 'fa',
 	    icon: 'fa-sun-o',
-	    markerColor: 'darkgreen'
+	    markerColor: 'lightblue'
 	});
 
 	sunWeatherSearchIcon = L.AwesomeMarkers.icon({
 	    prefix: 'fa',
 	    icon: 'fa-sun-o',
-	    markerColor: 'cadetblue'
+	    markerColor: 'blue'
 	});
 }
