@@ -192,8 +192,8 @@
 		setupIcons(mymap);								//denna må flyttas ner
 
 		//bounds of the map
-		var southWest = L.latLng(33, -36),
-	    northEast = L.latLng(90, 61),
+		var southWest = L.latLng(33, -40),
+	    northEast = L.latLng(90, 70),
 	    bounds = L.latLngBounds(southWest, northEast);
 
 		//Creates MAP
@@ -361,7 +361,12 @@
 				//enable dragging on map
 				mymap.dragging.enable();
 				//build urls and get yr.no weather data
-				var url = "http://www.yr.no/sted/Norge/" + e.target.getAttribute("data-fylke") + "/" + e.target.getAttribute("data-kommune") + "/" + e.target.getAttribute("data-sted") + "/varsel.xml";
+				var url = "http://www.yr.no/sted/Norge/" ;
+				var url += e.target.getAttribute("data-fylke");
+				if(e.target.getAttribute("data-kommune") != "Spitsbergen");
+				var url += "/" + e.target.getAttribute("data-kommune");
+				var url += "/" + e.target.getAttribute("data-sted");
+				var url += "/varsel.xml";
 				var url = url.replace("http://www.", "https://mats.maplytic.no/proxy?url=https://www."); 
 				weatherListClick(url);
 			});
