@@ -283,7 +283,7 @@
 				var searchText = $('#search').val();
 				console.log(searchText);
 				weatherSearch(searchText);
-			}, 800 );
+			}, 600 );
 		});
 
 		var delay = (function(){
@@ -303,23 +303,22 @@
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (xhttp.readyState == 4 && xhttp.status == 200) {
-				  readWeatherSearch(xhttp);
+				  readSsrSearch(xhttp);
 				}
 			};
 			xhttp.open("GET", url, true);
 			xhttp.send();
 		}
 
-		function readWeatherSearch(xml){
-			var i;
+		function readSsrSearch(xml){
 			var xmlDoc = xml.responseXML;
 			searchResultsHtml = '<ul class="list-group">';
 			var x = xmlDoc.getElementsByTagName("stedsnavn");
-			for (i = 0; i <x.length; i++) { 
+			for (var i = 0; i <x.length; i++) { 
 				if (typeof x[i].getElementsByTagName("stedsnavn")[0] === "undefined") {
 					continue;
 				}
-
+				//build list html element
 				var sted = x[i].getElementsByTagName("stedsnavn")[0].childNodes[0].nodeValue;
 				var kommune = x[i].getElementsByTagName("kommunenavn")[0].childNodes[0].nodeValue;
 				var fylke = x[i].getElementsByTagName("fylkesnavn")[0].childNodes[0].nodeValue;
@@ -341,12 +340,10 @@
 			    searchResultsHtml += type;
 			    searchResultsHtml += "</strong>";
 			    searchResultsHtml += "</button>";
-
-			    $( "body" ).data( "foo", 52 );
 		  	}
 		  	searchResultsHtml += "</ul>";
 		  	$( "#searchResults" ).html( searchResultsHtml );
-
+		  	//update events to the new list
 		  	listButtonEvents();
 		}
 
@@ -368,7 +365,6 @@
 				}
 				url += "/" + e.target.getAttribute("data-sted");
 				url += "/varsel.xml";
-				//url = url.replace("http://www.", "https://mats.maplytic.no/proxy?url=https://www."); 
 				weatherListClick(url);
 			});
 		}
@@ -381,15 +377,22 @@
 				  	var xmlDoc = xhttp.responseXML;
 					var popContent ="";
 					var textForecast = xmlDoc.getElementsByTagName("text");
+					var tabularForecast = xmlDoc.getElementsByTagName("tabular");
+					var tabularArrayForecast = tabularForecast[0].getElementsByTagName("time");
+					// for(var i=0; i<tabularArrayForecast.length; i++){
+					// 	time = tabularArrayForecast[i].getAttribute('from');
+					// 	console.log(time);
+					// }
 					//build popupContent
-				    popContent += "<br><strong>" +
-				    textForecast[0].getElementsByTagName("title")[0].childNodes[0].nodeValue +
-				    "</strong><br>" +
-				    textForecast[0].getElementsByTagName("body")[0].childNodes[0].nodeValue +
+				    // popContent += "<br><strong>" +
+				    //textForecast[0].getElementsByTagName("title")[0].childNodes[0].nodeValue +
+				    //"</strong><br>" +
+				    popContent += textForecast[0].getElementsByTagName("body")[0].childNodes[0].nodeValue +
 				    "<br><br>";
 				    console.log(popContent);
+				    popContent += getTableWithWeatherData(tabularArrayForecast);
 				    //get position
-				    positionElement = getAllElementsWithAttribute(xmlDoc, "latitude");
+				    positionElement = getAllElementsWithThisAttribute(xmlDoc, "latitude");
 				    if(positionElement.length > 1 || positionElement.length == 0){
 				    	console.log("positionElement length = " + positionElement.length);
 				    }
@@ -405,7 +408,41 @@
 			xhttp.send();
 		}
 
-		function getAllElementsWithAttribute(htmlOrXml, attribute)
+		function getTableWithWeatherData(data){
+			var html = '<div class="panel panel-default"><div class="panel-heading">';
+			html += '<strong>Værvarsel</strong>';
+			html += '</div>';
+			html += ' <table class="table table-condensed"><tbody>';
+			for(var i=0; i<4; i++){
+				timeFrom = data[i].getAttribute('from');
+				timeTo = data[i].getAttribute('to');
+				været = data[i].getElementsByTagName("symbol")[0].getAttribute('name');
+				symbol = data[i].getElementsByTagName("symbol")[0].getAttribute('var');
+				precipitation = data[i].getElementsByTagName("precipitation")[0].getAttribute('value');
+				temperature = data[i].getElementsByTagName("temperature")[0].getAttribute('value');
+
+				html += '<tr><td><strong>';
+				html += 'Time</strong></td><td><strong>' + timeFrom + ' til ' + timeTo;
+				html += '</strong></td></tr>';
+
+				html += '<tr><td>';
+				html += 'Været</td><td>' + '<IMG SRC="images/yr/b48/' + symbol + '.png" ALT="' + været + '"height="42" width="42">';
+				html += '</td></tr>';
+
+				html += '<tr><td>';
+				html += 'Regn</td><td>' + precipitation + " mm";
+				html += '</td></tr>';
+
+				html += '<tr><td>';
+				html += 'Temperatur</td><td>' + temperature + " Celsius";
+				html += '</td></tr>';
+			}
+			html += '</table></div>';
+
+			return html;
+		}
+
+		function getAllElementsWithThisAttribute(htmlOrXml, attribute)
 		{
 		  var matchingElements = [];
 		  var allElements = htmlOrXml.getElementsByTagName('*');
