@@ -76,6 +76,42 @@ html, body, #mapid {
     font-size: 95%;
 }
 
+/*#weatherTemp { 
+    padding-left: 30px; 
+    margin-right: -15px;
+    margin-top: -10px;
+}
+#weatherImg {
+    margin-top: -15px; 
+    margin-bottom: -15px;
+}
+
+#weatherPlace {
+    text-align: center;
+}*/
+/*
+.leaflet-popup-content {
+    width: 300px; 
+}*/
+/*
+denna classen som bestemme bredde:;
+class="leaflet-popup-content"
+*/
+/*#weatherPopupH2 {
+    margin-top: 0px; 
+    margin-bottom: 0px;
+}*/
+
+/*#weatherPopupH3 {
+    margin-top: 0px; 
+    margin-bottom: 0px;
+}*/
+
+/*#weatherPopupRow {
+    margin-left: 0px;
+    margin-right: 0px;
+}*/
+
 .list-group-item
 {
   padding: 5px 10px;
@@ -132,9 +168,9 @@ html, body, #mapid {
     object-fit: contain;
 }
 
-.leaflet-popup-content {
+/*.leaflet-popup-content {
     width: 300px; 
-}
+}*/
 
 .connectorText {
     font: 15px arial, sans-serif;
