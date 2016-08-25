@@ -76,6 +76,11 @@ html, body, #mapid {
     font-size: 95%;
 }
 
+#weatherImg {
+    padding-left: 0px; 
+    padding-right: 0px;
+}
+
 /*#weatherTemp { 
     padding-left: 30px; 
     margin-right: -15px;
