@@ -164,7 +164,7 @@ function setupOverlayLayers(map) {
 	}
 	if(useGrillPlassGjesdal) {
 		var grillplassGjesdal = openStavangerGrillGjesdal(map);
-		overlayMaps["<i class='fa fa-fire' aria-hidden='true'></i> Grtillplasser Gjesdal"] = grillplassGjesdal;
+		overlayMaps["<i class='fa fa-fire' aria-hidden='true'></i> Grillplasser Gjesdal"] = grillplassGjesdal;
 	}
 	if(useFiskeGjesdal) {
 		var fiskeplassGjesdal = openStavangerFiskeGjesdal(map);
