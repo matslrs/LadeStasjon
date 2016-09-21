@@ -5,12 +5,13 @@ function setupSearch(map) {
 			jsonpParam: 'json_callback',
 			propertyName: 'display_name',
 			propertyLoc: ['lat','lon'],
+			textPlaceholder: 'Nominatim Search',
 			circleLocation: false,
 			markerLocation: false,			
 			autoType: false,
 			autoCollapse: true,
 			minLength: 2,
-			zoom:10
+			zoom:14
 	}) );
 
 }
