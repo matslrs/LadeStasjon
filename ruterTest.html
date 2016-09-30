@@ -50,7 +50,7 @@
 					coords[0] = data.features[i].geometry.coordinates[j][1];
 					coords[1] = data.features[i].geometry.coordinates[j][0];
 					feature[j] = coords;
-					speed[j] = 500;
+					speed[j] = 350;
 
 				}
 				jarleRuterArray[i] = feature;
@@ -68,8 +68,10 @@
 		var myMovingMarker = L.Marker.movingMarker(coordsArray[index], speedArray[index]).addTo(mymap);
 
 		myMovingMarker.on('end', function() {
+			//myMovingMarker.bindPopup('<b>Idx' + index + '</b>', {closeOnClick: false, minWidth: 10, maxWidth: 20}).openPopup();
+			mymap.removeLayer(myMovingMarker);
+
 			moveThroughCoordsAtSpeed(coordsArray, speedArray, index+1);
-			myMovingMarker.bindPopup('<b>Idx' + index + '</b>', {closeOnClick: false, minWidth: 10, maxWidth: 20}).openPopup();
 		});
 
 		myMovingMarker.start();
