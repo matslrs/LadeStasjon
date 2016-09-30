@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<link rel="stylesheet" href="style-custom.css" />
+	<link rel="stylesheet" href="leaflet/leaflet.css" />
+	<link rel="stylesheet" href="leafletdraw/leaflet.draw.css" />
+	<link rel="stylesheet" href="leafletsearch/leaflet-search.src.css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta charset="UTF-8"> 	
+	
+	<script src="events.js"></script>
+	<script src="functions.js"></script>
+	<script src="leaflet/leaflet-src.js"></script>
+	<script src="jquery/jquery-1.12.1.js"></script>
+	<script type="text/javascript" src="MovingMarker.js"></script>
+
+	<script>
+		//check the function setupBaseLayers(map) in layers.js to see names on maps
+		var startMap = "OpenStreetMap";
+	</script>
+	
+	
+</head>
+
+<body>
+
+	<script>
+	function sykkelNett(map) {
+		//creates and empty GeoJSON test Layer
+		var sykkelNettGeoLayer = L.geoJson();
+		$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/0f0e037e-b5e8-453f-97ca-8ae9be7e523c/resource/4695328a-5857-434d-86ab-97d9acbdb69c/download/cuserssk5017717downloadssykkelnettkartnord-jaeren2016.json', function(data) {
+			sykkelNettGeoLayer.addData(data);
+		});
+		return sykkelNettGeoLayer;
+	}
+
+	function jarleRuter(map) {
+		//creates and empty GeoJSON test Layer
+		var jarleRuterLayer = L.geoJson();
+		$.getJSON('data/geoJson/jarleRuter/jarleRuter.geojson', function(data) {
+			jarleRuterLayer.addData(data);
+			var jarleRuterArray = [];
+			var jarleRuterArraySpeed = [];
+			for(var i=0; i<data.features.length; i++){
+				var feature = [];
+				var speed = [];
+				for(var j=0; j<data.features[i].geometry.coordinates.length; j++){
+					var coords = [];
+					coords[0] = data.features[i].geometry.coordinates[j][1];
+					coords[1] = data.features[i].geometry.coordinates[j][0];
+					feature[j] = coords;
+					speed[j] = 500;
+
+				}
+				jarleRuterArray[i] = feature;
+				jarleRuterArraySpeed[i] = speed;
+			}
+
+			moveThroughCoordsAtSpeed(jarleRuterArray, jarleRuterArraySpeed, 0);
+
+		});
+		return jarleRuterLayer;
+	}
+
+	function moveThroughCoordsAtSpeed(coordsArray, speedArray, index){
+		if(index == coordsArray.length)	return;
+		var myMovingMarker = L.Marker.movingMarker(coordsArray[index], speedArray[index]).addTo(mymap);
+
+		myMovingMarker.on('end', function() {
+			moveThroughCoordsAtSpeed(coordsArray, speedArray, index+1);
+			myMovingMarker.bindPopup('<b>Index: ' + index + '</b>', {closeOnClick: false}).openPopup();
+		});
+
+		myMovingMarker.start();
+	}
+	</script>	
+
+	<div id="mapid"></div>	
+	<script>		
+		//Creates MAP
+		var mymap = L.map('mapid', { 
+			center: [58.8534, 5.7317],
+			zoom: 10
+		});
+
+
+
+		var baseMaps =[];
+		//OpenStreetMap layer
+		baseMaps["OpenStreetMap"] = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'});
+		//Norges Grunnkart Graatone
+		baseMaps["Norgeskart Gråtone"] = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart_graatone&zoom={z}&x={x}&y={y}', {attribution: 'Kartverket'});
+
+		var overlayMaps =[];
+		overlayMaps["Sykkel Nett Nord-Jæren"] = sykkelNett(mymap);
+		var jarleRuter = jarleRuter(mymap);
+		overlayMaps["Jarle ruter"] = jarleRuter;
+
+
+		//Set initial base map here:
+		baseMaps[startMap].addTo(mymap);
+		overlayMaps["Jarle ruter"].addTo(mymap);
+		 //Layer control
+		L.control.layers(baseMaps, overlayMaps).addTo(mymap);		 	
+	 	//find location and set view and zoom
+		mymap.locate({
+			setView: true,
+			maxZoom: 16
+		});
+
+
+		// var myMovingMarker = L.Marker.movingMarker([[58.8534, 5.7317],[50.45, 30.523333]], [200000]).addTo(mymap);
+		// myMovingMarker.start();
+		 	 
+	</script>
+</body>
+</html>
