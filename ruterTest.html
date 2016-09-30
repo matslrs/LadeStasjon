@@ -69,7 +69,7 @@
 
 		myMovingMarker.on('end', function() {
 			moveThroughCoordsAtSpeed(coordsArray, speedArray, index+1);
-			myMovingMarker.bindPopup('<b>Index: ' + index + '</b>', {closeOnClick: false}).openPopup();
+			myMovingMarker.bindPopup('<b>Idx' + index + '</b>', {closeOnClick: false, minWidth: 10, maxWidth: 20}).openPopup();
 		});
 
 		myMovingMarker.start();
