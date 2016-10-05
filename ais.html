@@ -208,6 +208,46 @@
 
         legend.addTo(map);
 
+        var legendTop = L.control({position: 'topright'});
+        legendTop.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML += '<b>Geografisk område:</b><br>';
+            div.innerHTML += 'Rogaland - Valgt<br>';
+            div.innerHTML += 'Hordaland<br>';
+            div.innerHTML += 'Agder<br>';
+            div.innerHTML += '<br>';
+
+            div.innerHTML += '<b>Aldersgrupper:</b><br>';
+            div.innerHTML += '0-14<br>';
+            div.innerHTML += '15-25 - Valgt<br>';
+            div.innerHTML += '26-55 - Valgt<br>';
+            div.innerHTML += '56-80<br>';
+            div.innerHTML += '<br>';
+
+            div.innerHTML += '<b>Kjønn:</b><br>';
+            div.innerHTML += 'Mann - Valgt<br>';
+            div.innerHTML += 'Kvinne - Valgt<br>';
+            div.innerHTML += '<br>';
+
+            div.innerHTML += '<b>Nasjonalitet:</b><br>';
+            div.innerHTML += 'Norsk – Valgt<br>';
+            div.innerHTML += 'Svensk<br>';
+            div.innerHTML += 'Amerikansk<br>';
+            div.innerHTML += 'Italiensk<br>';
+            div.innerHTML += 'Kinesisk<br>';
+            div.innerHTML += '<br>';
+
+            div.innerHTML += '<b>Preferert befraktningsmetode:</b><br>';
+            div.innerHTML += 'Bil – Valgt<br>';
+            div.innerHTML += 'Buss<br>';
+            div.innerHTML += 'Tog<br>';
+            div.innerHTML += 'Sykkel<br>';
+            div.innerHTML += 'Gange<br>';
+            return div;
+        };
+
+        legendTop.addTo(map);
+
         setupIcons();
         var jarleRuter = jarleRuter(map);
         
