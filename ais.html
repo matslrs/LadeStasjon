@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Maptrends AIS Demo</title>
+  	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<link rel="stylesheet" href="leaflet/leaflet.css" />
+
+	<script src="leaflet/leaflet-src.js"></script>
+    <script src="torque.full.js"></script>
+    <script src="jquery/jquery-1.12.1.js"></script>
+    <script type="text/javascript" src="MovingMarker.js"></script>
+
+
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		html, body, #map {
+			height: 100%;
+		}
+        .info {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+        .legend {
+            line-height: 18px;
+            color: #555;
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 1.0;
+        }
+        .legend input {
+            vertical-align: top;
+        }
+        .legend img {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+        }
+	</style>
+</head>
+<body>
+	<div id="map"></div>
+
+	<script>
+    var map = new L.Map('map', {
+        minZoom: 2,
+        maxZoom: 20,
+        crs: L.CRS.EPSG3857
+    }).setView([59.036, 5.697], 10);
+    
+        var notopolayer = new L.TileLayer.WMS("https://opencache.statkart.no/gatekeeper/gk/gk.open", {
+            layers: 'topo2graatone',
+            format: 'image/png',
+            attribution: '<a href="http://kartverket.no/">Kartverket</a>',
+            transparent: false
+        }).addTo(map);
+        
+        // define the torque layer style using cartocss
+        var steps = 800;
+        var resolution = 1;
+        var CARTOCSS = [
+            'Map {',
+            '-torque-frame-count: '+steps+';',
+            '-torque-animation-duration: 40;',
+            '-torque-resolution: '+resolution+'',
+            '}',
+            '#layer {',
+            '  marker-width: 2;',
+            '  marker-fill-opacity: 0.8;',
+            '  marker-fill: #FEE391; ',
+            '  comp-op: "lighten";',
+            '  [value = 1] { marker-width: 4; marker-fill: #000000; }',
+            '  [frame-offset = 1] { marker-width: 4; marker-fill-opacity: 0.05;}',
+            '  [frame-offset = 2] { marker-width: 6; marker-fill-opacity: 0.02;}',
+            '}'
+        ].join('\n');
+        
+        var start = new Date(2016, 8, 23, 0, 0).getTime();//1474575669750;
+        var end =   new Date(2016, 8, 23, 23, 59).getTime();//1474822710870;
+        var sql = "select 1, time, geom from maptrends_ais where geom && _BBOX_";
+        
+        var torqueLayer = new L.TorqueLayer({
+            tileJSON: 'https://halset.maplytic.no/tile/maptrends_ais.torque.json?start='+start+
+            '&end='+end+'&sql=' + encodeURIComponent(sql) +'&data_steps=' + steps + '&resolution=' + resolution + "&v=3&store=true"+
+            '&api_key=20799ad8-4b3d-4b44-83a9-c4f18e39705f',
+            cartocss: CARTOCSS,
+            attribution: '<a href="http://www.ecc.no/">ECC</a>'
+        });
+        torqueLayer.addTo(map);
+        torqueLayer.play();
+        
+        function get(id) {
+            return document.getElementById(id);
+        }
+        
+        torqueLayer.on('change:time', function(e) {
+            get('stepRange').value = e.step;
+            var d = e.time;
+            get('stepTime').innerHTML = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes();
+        });
+        
+        function setStep(step) {
+            torqueLayer.setStep(parseInt(step));
+        }
+        
+        function playPause() {
+            torqueLayer.toggle();
+            get("playPause").text = torqueLayer.isRunning() ? 'pause' : 'start';
+        }
+        
+        var timeSliderControl = L.control({position: 'bottomleft'});
+        timeSliderControl.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info');
+            L.DomEvent.disableClickPropagation(div);
+
+            div.innerHTML += '<span id="stepTime"></span> ';
+            div.innerHTML += '[ <a id="playPause" onclick="playPause()">pause</a> ]<br>';
+            
+            div.innerHTML += '<input type="range" name="step" id="stepRange" value="0" min="0" max="'+steps+'" oninput="setStep(this.value)" onchange="setStep(this.value)">';
+        
+            return div;
+        };
+        timeSliderControl.addTo(map);
+
+
+        function jarleRuter(map) {
+            //creates and empty GeoJSON test Layer
+            var jarleRuterLayer = L.geoJson();
+            $.getJSON('data/geoJson/jarleRuter/jarleruter.geojson', function(data) {
+                jarleRuterLayer.addData(data);
+                var jarleRuterArray = [];
+                var jarleRuterArraySpeed = [];
+                for(var i=0; i<data.features.length; i++){
+                    var feature = [];
+                    var speed = [];
+                    for(var j=0; j<data.features[i].geometry.coordinates.length; j++){
+                        var coords = [];
+                        coords[0] = data.features[i].geometry.coordinates[j][1];
+                        coords[1] = data.features[i].geometry.coordinates[j][0];
+                        feature[j] = coords;
+                        speed[j] = 700;
+
+                    }
+                    jarleRuterArray[i] = feature;
+                    jarleRuterArraySpeed[i] = speed;
+                }
+
+                moveThroughCoordsAtSpeed(jarleRuterArray, jarleRuterArraySpeed, 0);
+
+            });
+            return jarleRuterLayer;
+        }
+
+        function moveThroughCoordsAtSpeed(coordsArray, speedArray, index){
+            if(index == coordsArray.length) return;
+            var k = coordsArray[index].length;
+            var j = k;
+            var routeArray = coordsArray[index];
+            var timeArray = speedArray[index];
+            for(var i=0; i<k; i++){
+                j--;
+                routeArray[routeArray.length] = routeArray[j];
+                timeArray[timeArray.length] = timeArray[j];
+
+            }
+
+            var myMovingMarker = L.Marker.movingMarker(routeArray, speedArray[index], {loop: true}).addTo(map);
+            // var icon = myMovingMarker.options.icon;
+            // icon.options.iconSize = [10, 10];
+            // myMovingMarker.setIcon(icon);
+
+            myMovingMarker.on('end', function() { });
+            myMovingMarker.start();
+
+            moveThroughCoordsAtSpeed(coordsArray, speedArray, index+1);
+        }
+
+        var jarleRuter = jarleRuter(map);
+        
+	</script>
+</body>
+</html>
+

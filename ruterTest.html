@@ -50,7 +50,7 @@
 					coords[0] = data.features[i].geometry.coordinates[j][1];
 					coords[1] = data.features[i].geometry.coordinates[j][0];
 					feature[j] = coords;
-					speed[j] = 350;
+					speed[j] = 700;
 
 				}
 				jarleRuterArray[i] = feature;
@@ -65,14 +65,29 @@
 
 	function moveThroughCoordsAtSpeed(coordsArray, speedArray, index){
 		if(index == coordsArray.length)	return;
-		var myMovingMarker = L.Marker.movingMarker(coordsArray[index], speedArray[index]).addTo(mymap);
+
+		var k = coordsArray[index].length;
+		var j = k;
+		var routeArray = coordsArray[index];
+		var timeArray = speedArray[index];
+		for(var i=0; i<k; i++){
+			j--;
+			routeArray[routeArray.length] = routeArray[j];
+			timeArray[timeArray.length] = timeArray[j];
+
+		}
+
+		var myMovingMarker = L.Marker.movingMarker(routeArray, speedArray[index], {loop: true}).addTo(mymap);
+
 
 		myMovingMarker.on('end', function() {
 			//myMovingMarker.bindPopup('<b>Idx' + index + '</b>', {closeOnClick: false, minWidth: 10, maxWidth: 20}).openPopup();
-			mymap.removeLayer(myMovingMarker);
+			//mymap.removeLayer(myMovingMarker);
 
-			moveThroughCoordsAtSpeed(coordsArray, speedArray, index+1);
+			//moveThroughCoordsAtSpeed(coordsArray, speedArray, index+1);
 		});
+
+		moveThroughCoordsAtSpeed(coordsArray, speedArray, index+1);
 
 		myMovingMarker.start();
 	}
@@ -97,14 +112,13 @@
 		var overlayMaps =[];
 		overlayMaps["Sykkel Nett Nord-Jæren"] = sykkelNett(mymap);
 		var jarleRuter = jarleRuter(mymap);
-		overlayMaps["Jarle ruter"] = jarleRuter;
+		//overlayMaps["Jarle ruter"] = jarleRuter;
 
 
 		//Set initial base map here:
 		baseMaps[startMap].addTo(mymap);
-		overlayMaps["Jarle ruter"].addTo(mymap);
 		 //Layer control
-		L.control.layers(baseMaps, overlayMaps).addTo(mymap);		 	
+		//L.control.layers(baseMaps, overlayMaps).addTo(mymap);		 	
 	 	//find location and set view and zoom
 		mymap.locate({
 			setView: true,
