@@ -22,6 +22,24 @@ function setupIcons(map){
  //    redIcon = new LeafIcon({iconUrl: 'leaflet/images/leaf-red.png'}),
  //    orangeIcon = new LeafIcon({iconUrl: 'leaflet/images/leaf-orange.png'});
 
+ 	emptyColorIcons = [];
+
+ 	emptyRedIcon = L.AwesomeMarkers.icon({
+	    markerColor: 'red'
+	});
+	emptyColorIcons[emptyColorIcons.length] = emptyRedIcon;
+
+	emptyOrangeIcon = L.AwesomeMarkers.icon({
+	    markerColor: 'orange'
+	});
+	emptyColorIcons[emptyColorIcons.length] = emptyOrangeIcon;
+
+	emptyGreenIcon = L.AwesomeMarkers.icon({
+	    markerColor: 'green'
+	});
+	emptyColorIcons[emptyColorIcons.length] = emptyGreenIcon;
+
+
 	
 	chargerError = L.AwesomeMarkers.icon({
 	    prefix: 'ion',

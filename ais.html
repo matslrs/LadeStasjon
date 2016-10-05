@@ -7,10 +7,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
+    <link rel="stylesheet" href="awesome-markers/leaflet.awesome-markers.css" />
 
 	<script src="leaflet/leaflet-src.js"></script>
     <script src="torque.full.js"></script>
     <script src="jquery/jquery-1.12.1.js"></script>
+    <script src="icons.js"></script>
+    <script src="bower_components/drmonty-leaflet-awesome-markers/js/leaflet.awesome-markers.js"></script>
     <script type="text/javascript" src="MovingMarker.js"></script>
 
 
@@ -182,7 +185,8 @@
 
             }
 
-            var myMovingMarker = L.Marker.movingMarker(routeArray, speedArray[index], {loop: true}).addTo(map);
+            var icon = emptyColorIcons[Math.floor(Math.random()*emptyColorIcons.length)];
+            var myMovingMarker = L.Marker.movingMarker(routeArray, speedArray[index], {icon: icon, loop: true}).addTo(map);
             // var icon = myMovingMarker.options.icon;
             // icon.options.iconSize = [10, 10];
             // myMovingMarker.setIcon(icon);
@@ -193,6 +197,18 @@
             moveThroughCoordsAtSpeed(coordsArray, speedArray, index+1);
         }
 
+        var legend = L.control({position: 'bottomright'});
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML += '<i style="background-color:rgb(97,190,30)"></i> 1-20 <br>';
+            div.innerHTML += '<i style="background-color:rgb(240,131,0)"></i> 21-50 <br>';
+            div.innerHTML += '<i style="background-color:rgb(256,32,32)"></i> 51-150 <br>';
+            return div;
+        };
+
+        legend.addTo(map);
+
+        setupIcons();
         var jarleRuter = jarleRuter(map);
         
 	</script>
