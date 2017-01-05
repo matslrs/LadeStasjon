@@ -1,6 +1,6 @@
 {
   "name": "sidebar-v2",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "homepage": "https://github.com/Turbo87/sidebar-v2",
   "authors": [
     "Tobias Bieniek <tobias.bieniek@qsc.de>"
@@ -26,14 +26,14 @@
     "examples",
     ".gitignore"
   ],
-  "_release": "0.3.0",
+  "_release": "0.3.1",
   "_resolution": {
     "type": "version",
-    "tag": "v0.3.0",
-    "commit": "b5223c25a17523f41d5e3406183d3e5bb2fb6ae7"
+    "tag": "v0.3.1",
+    "commit": "24c584e5a8f2abdcd9c0148b5fa2a117a3b547f8"
   },
   "_source": "https://github.com/Turbo87/sidebar-v2.git",
-  "_target": "^0.3.0",
+  "_target": "^0.3.1",
   "_originalSource": "sidebar-v2",
   "_direct": true
 }

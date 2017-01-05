@@ -1,54 +1,32 @@
 {
-  "name": "elbilstasjon",
-  "description": "elbil ladestasjon",
-  "main": "nobilUtils.js",
-  "authors": [
-    "mala15 <mats@ecc.no>"
-  ],
-  "license": "ISC",
-  "homepage": "",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
+  "name": "ecc-demo",
+  "description": "Demo/Test sider for ECC. Laget av mats@ecc.no",
+  "version": "1.0.0",
   "dependencies": {
-    "leaflet": "^0.7.7",
-    "leaflet.markercluster": "^0.5.0",
-    "drmonty-leaflet-awesome-markers": "^2.0.2",
-    "jquery": "^2.2.4",
-    "bootstrap": "^3.3.6",
-    "leaflet-0": "https://github.com/ghybs/Leaflet.FeatureGroup.SubGroup/tree/leaflet-0.7",
-    "leaflet-search": "^1.9.7",
-    "sidebar-v2": "^0.3.0",
-    "doT": "^1.0.1",
-    "font-awesome": "fontawesome#^4.6.3",
-    "leaflet-featuregroup-subgroup": "^0.1.1"
+    "leaflet": "0.7.7",
+    "dot": "doT#^1.1.0",
+    "bootstrap-sass": "bootstrap-sass-official#^3.3.7",
+    "leaflet.markercluster": "0.5",
+    "Leaflet.awesome-markers": "^2.0.2",
+    "sidebar-v2": "^0.3.1",
+    "leaflet-search": "^2.7.0",
+    "components-font-awesome": "^4.7.0"
   },
   "overrides": {
-    "bootstrap": {
+    "dot": {
       "main": [
-        "dist/css/bootstrap.css",
-        "dist/js/bootstrap.js"
+        "dot.min.js"
       ]
     },
     "sidebar-v2": {
-      "main": [ 
-        "js/leaflet-sidebar.js",
-        "css/leaflet-sidebar.min.css"
-      ]
-    },
-    "font-awesome": {
       "main": [
-        "css/font-awesome.min.css"
-      ]
-    },
-    "leaflet-featureGroup-subgroup": {
-      "main": [
-        "leaflet.featuregroup.subgroup-src.js"
+      	"css/leaflet-sidebar.css",
+        "js/leaflet-sidebar.js"
+
       ]
     }
+  },
+  "resolutions": {
+    "leaflet": "0.7.7"
   }
 }

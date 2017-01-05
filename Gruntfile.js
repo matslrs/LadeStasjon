@@ -1,29 +1,63 @@
-module.exports = function(grunt) {
+module.exports = function(grunt) { 
+	grunt.initConfig({ pkg: grunt.file.readJSON('package.json'), 
+		
+		less: {
+			development: {
+				options: {
+					paths: 'css/less',
+					yuicompress: true
+				},
+					files: {
+					'css/style.css': 'css/less/style.less'
+				}
+			}
+		},
 
-  // Project configuration.
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
-	  wiredep: {
+		watch: {
+			less: {
+				files: 'css/less/*.less',
+				tasks: 'less'
+			},
+			sass: {
+				files: 'css/sass/*.scss',
+				tasks: 'sass'
+			}
+		},
+
+		sass: {
+		    // this is the "dev" Sass config used with "grunt watch" command
+            dev: {
+                options: {
+                    style: 'expanded',
+                    // tell Sass to look in the Bootstrap stylesheets directory when compiling
+                    loadPath: 'node_modules/bootstrap-sass/assets/stylesheets'
+                },
+                files: {
+		       		'css/themeStyle.css': 'css/sass/style.scss'
+		     	}
+            },
+            // this is the "production" Sass config used with the "grunt buildcss" command
+            dist: {
+                options: {
+                    style: 'compressed',
+                    loadPath: 'node_modules/bootstrap-sass/assets/stylesheets'
+                },
+                files: {
+			    	'css/themeStyle.css': 'css/sass/style.scss'
+			    }
+            }
+	  	},
+
+		wiredep: {
 	        target: {
-	          src: '*.html' // point to your HTML file.
+	          	src: '*.html' // point to your HTML file.
 	        }
-	      },
-		  sass: {                              // Task
-		      dist: {                            // Target
-		        options: {                       // Target options
-		          style: 'expanded'
-		        },
-		        files: {                         // Dictionary of files
-		          'main.css': 'main.scss',       // 'destination': 'source'
-		          'widgets.css': 'widgets.scss'
-		        }
-		      }
-		    }
-  });
-  
-  grunt.loadNpmTasks('grunt-wiredep');
-  grunt.loadNpmTasks('grunt-contrib-sass');
-  // Default task(s).
-  grunt.registerTask('default', ['wiredep', 'sass']);
+	  	},
+	});
 
-};
+	grunt.loadNpmTasks('grunt-contrib-less');
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-sass');
+	grunt.loadNpmTasks('grunt-wiredep');
+
+}

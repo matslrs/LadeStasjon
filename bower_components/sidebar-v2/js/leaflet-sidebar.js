@@ -72,9 +72,12 @@ L.Control.Sidebar = L.Control.extend(/** @lends L.Control.Sidebar.prototype */ {
 
         for (i = this._tabitems.length - 1; i >= 0; i--) {
             child = this._tabitems[i];
-            L.DomEvent
-                .on(child.querySelector('a'), 'click', L.DomEvent.preventDefault )
-                .on(child.querySelector('a'), 'click', this._onClick, child);
+            var sub = child.querySelector('a');
+            if (sub.hasAttribute('href') && sub.getAttribute('href').slice(0,1) == '#') {
+                L.DomEvent
+                    .on(sub, 'click', L.DomEvent.preventDefault )
+                    .on(sub, 'click', this._onClick, child);
+            }
         }
 
         for (i = this._closeButtons.length - 1; i >= 0; i--) {
@@ -86,12 +89,23 @@ L.Control.Sidebar = L.Control.extend(/** @lends L.Control.Sidebar.prototype */ {
     },
 
     /**
+     * @deprecated - Please use remove() instead of removeFrom(), as of Leaflet 0.8-dev, the removeFrom() has been replaced with remove()
+     * Removes this sidebar from the map.
+     * @param {L.Map} map
+     * @returns {Sidebar}
+     */
+     removeFrom: function(map) {
+         console.log('removeFrom() has been deprecated, please use remove() instead as support for this function will be ending soon.');
+         this.remove(map);
+     },
+
+    /**
      * Remove this sidebar from the map.
      *
      * @param {L.Map} map
      * @returns {Sidebar}
      */
-    removeFrom: function (map) {
+    remove: function (map) {
         var i, child;
 
         this._map = null;

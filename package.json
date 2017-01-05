@@ -1,22 +1,17 @@
 {
-  "name": "elbilstasjon",
+  "name": "ecc-demo",
   "version": "1.0.0",
-  "description": "elbil ladestasjon",
-  "main": "nobilUtils.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
+  "description": "ECC Demo",
   "devDependencies": {
+    "dot": "^1.0.3",
     "grunt": "^1.0.1",
-    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-less": "^1.4.0",
     "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
     "grunt-wiredep": "^3.0.1"
   },
   "dependencies": {
-    "bower": "^1.7.9",
-    "bower-requirejs": "^1.2.0",
-    "wiredep": "^4.0.0"
+    "dot": "^1.0.3",
+    "leaflet.featuregroup.subgroup": "^0.1.2"
   }
 }
