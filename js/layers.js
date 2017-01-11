@@ -367,7 +367,7 @@ function turNett(map) {
 	//creates and empty GeoJSON test Layer
 	var turNettGeoLayer = L.geoJson();
 
-	$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/bf627d4a-f115-41a2-82b9-d19de3cd5414/resource/64909cfb-3eb5-47dc-9bcb-d8fb5161f7a7/download/turveger.json', function(data) {
+	$.getJSON('https://open.stavanger.kommune.no/dataset/bf627d4a-f115-41a2-82b9-d19de3cd5414/resource/e1fe43ad-c4b6-4e12-a3b4-6e864c57f96a/download/turveger.json', function(data) {
 		turNettGeoLayer.addData(data);
 	});
 
@@ -380,7 +380,7 @@ function byDelStavanger(map) {
 	//creates and empty GeoJSON test Layer
 	var bydelStavangerLayer = L.geoJson();
 
-	$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/23fef01e-c729-43b2-8fb3-8e127f04b286/resource/9afa13c0-59af-4fb5-a950-b28db8b10ad2/download/wdatasettbydeler.json', function(data) {
+	$.getJSON('https://open.stavanger.kommune.no/dataset/23fef01e-c729-43b2-8fb3-8e127f04b286/resource/cd32c3c2-4db8-4b38-a42e-9d944a1ae40d/download/bydeler.json', function(data) {
 		bydelStavangerLayer.addData(data);
 	});
 
@@ -393,7 +393,7 @@ function getSkoleGrenserStavanger(map) {
 	//creates and empty GeoJSON test Layer
 	var skoleGrenserStavangerLayer = L.geoJson();
 
-	$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/1d0442c1-4521-41b8-bcce-f08d7930b9e5/resource/cfd50d56-80e9-4003-89f3-7f18d7f1b882/download/wdatasettskolekretser.json', function(data) {
+	$.getJSON('https://open.stavanger.kommune.no/dataset/1d0442c1-4521-41b8-bcce-f08d7930b9e5/resource/263b665b-d937-44e9-a3a5-07e68da2ac9a/download/skolekretser.json', function(data) {
 		skoleGrenserStavangerLayer.addData(data);
 	});
 
@@ -406,7 +406,7 @@ function getVinterBeredskapStavanger(map) {
 	//creates and empty GeoJSON test Layer
 	var vinterBeredskapStavangerLayer = L.geoJson();
 
-	$.getJSON('https://mats.maplytic.no/proxy/open.stavanger.kommune.no/dataset/1b85ba90-b675-4831-87fd-4d0de893df18/resource/17286153-1ea2-45bd-bc0e-c51c53263fcc/download/wkartvinterberedskap.json', function(data) {
+	$.getJSON('https://open.stavanger.kommune.no/dataset/1b85ba90-b675-4831-87fd-4d0de893df18/resource/0982be76-168e-4932-99b0-6d72740622cb/download/vinterberedskap.json', function(data) {
 		vinterBeredskapStavangerLayer.addData(data);
 	});
 
@@ -993,7 +993,7 @@ function openStavangerGrillGjesdal(map) {
 	var grillPlassGjesdalLayer = L.featureGroup.subGroup(parentCluster);
 
 	$.ajax({
-	    url: 'https://mats.maplytic.no/proxy/open.stavanger.kommune.no/api/action/datastore_search?resource_id=580606f5-8d5e-46bf-95c1-105668f15a48',
+	    url: 'https://open.stavanger.kommune.no/api/action/datastore_search?resource_id=fd6dc8bc-5df7-469f-81ec-9df61b67179e',
 	    dataType: 'json',
 	    success: function(data) {
 	      	var openStavangerData = data;
