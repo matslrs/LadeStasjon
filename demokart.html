@@ -63,7 +63,9 @@
 		var streamNobilError      = {};
 		var fylkeQuery            = {};
 		var flomDataQuery         = {};
+		var flomKommuneInfo       = [];
 		var skredDataQuery        = {};
+		var skredKommuneInfo      = [];
 		var sidebarLayers         = {};
 		var sidebarInfo           = {};
 		var preferredPanel        = [1,0,0];	//sets which panels to open by default in sidebar
@@ -232,7 +234,6 @@
 			    }
 			});
 			var sqlFlomKommuner = null;
-			var flomKommuneInfo = [];
 		}
 
 		//NVE Skred data:
@@ -246,7 +247,6 @@
 			    }
 			});
 			var sqlSkredKommuner = null;
-			var skredKommuneInfo = [];
 		}
 		//parent marker cluster
 		parentCluster = new L.MarkerClusterGroup({
