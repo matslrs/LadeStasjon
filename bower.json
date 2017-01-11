@@ -1,0 +1,32 @@
+{
+  "name": "ecc-demo",
+  "description": "Demo/Test sider for ECC. Laget av mats@ecc.no",
+  "version": "1.0.0",
+  "dependencies": {
+    "leaflet": "0.7.7",
+    "dot": "doT#^1.1.0",
+    "bootstrap-sass": "bootstrap-sass-official#^3.3.7",
+    "leaflet.markercluster": "0.5",
+    "Leaflet.awesome-markers": "^2.0.2",
+    "sidebar-v2": "^0.3.1",
+    "leaflet-search": "^2.7.0",
+    "components-font-awesome": "^4.7.0"
+  },
+  "overrides": {
+    "dot": {
+      "main": [
+        "dot.min.js"
+      ]
+    },
+    "sidebar-v2": {
+      "main": [
+      	"css/leaflet-sidebar.css",
+        "js/leaflet-sidebar.js"
+
+      ]
+    }
+  },
+  "resolutions": {
+    "leaflet": "0.7.7"
+  }
+}
