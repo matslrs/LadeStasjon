@@ -15,7 +15,7 @@
   "overrides": {
     "dot": {
       "main": [
-        "dot.min.js"
+        "doT.min.js"
       ]
     },
     "sidebar-v2": {
