@@ -83,19 +83,19 @@ function setupOverlayLayers(map) {
 	overlayMaps["grunnkretsBorder"] = GrunnkretsTile;
 
 	var sykkelNettNordJæren = sykkelNett(map);
-	overlayMapsDummy["<i class='fa fa-bicycle' aria-hidden='true'></i> Sykkel Nett Nord-Jæren"] = sykkelNettNordJæren;
+	overlayMaps["bicycleNetwork"] = sykkelNettNordJæren;
 
 	var turnettStavanger = turNett(map);
-	overlayMapsDummy["<i class='fa fa-tripadvisor' aria-hidden='true'></i> Tur vei"] = turnettStavanger;
+	overlayMaps["walkingTrail"] = turnettStavanger;
 
 	var bydelStavanger = byDelStavanger(map);
-	overlayMapsDummy["<i class='fa fa-pie-chart ' aria-hidden='true'></i> Stavanger bydeler"] = bydelStavanger;
+	overlayMaps["stavangerDistricts"] = bydelStavanger;
 
 	var skoleGrenserStavanger = getSkoleGrenserStavanger(map);
-	overlayMapsDummy["<i class='fa fa-pencil-square-o' aria-hidden='true'></i> Stavanger skole grenser"] = skoleGrenserStavanger;
+	overlayMaps["schoolBordersStavanger"] = skoleGrenserStavanger;
 
 	var vinterBeredskapStavanger = getVinterBeredskapStavanger(map);
-	overlayMapsDummy["<i class='fa fa-asterisk' aria-hidden='true'></i> Vinterberedskap Stavanger"] = vinterBeredskapStavanger;
+	overlayMaps["winterPreperation"] = vinterBeredskapStavanger;
 
 	var helseStasjonDifi = difiHelsestasjon(map);
 	overlayMaps["healthStationLayer"] = helseStasjonDifi;
@@ -143,13 +143,13 @@ function setupOverlayLayers(map) {
 	overlayMapsDummy["<i class='fa fa-fire' aria-hidden='true'></i> Grillplasser Gjesdal"] = grillplassGjesdal;
 
 	var fiskeplassGjesdal = openStavangerFiskeGjesdal(map);
-	overlayMapsDummy["<i class='fa fa-tint' aria-hidden='true'></i> Fiskeplass Gjesdal"] = fiskeplassGjesdal;
+	overlayMaps["fishingArea"] = fiskeplassGjesdal;
 
 	var bomstasjonDifi = difiBomstasjon(map);
 	overlayMaps["layerBomstasjon"] = bomstasjonDifi;
 
 	var pickupPointsBring = bringPickupPoints(map);
-	overlayMapsDummy["<i class='fa fa-archive' aria-hidden='true'></i> Pickup Points Norge"] = pickupPointsBring;
+	overlayMaps["bringPickup"] = pickupPointsBring;
 
 	//NVE
 	if(useFloodData){
@@ -163,10 +163,10 @@ function setupOverlayLayers(map) {
 
 	//weatehr
 	var værData = weatherData(map);
-	overlayMapsDummy["<i class='fa fa-sun-o' aria-hidden='true'></i> Vær data"] = værData;
+	overlayMapsDummy["weatherForecasts"] = værData;
 
 	var værDataPost = weatherDataPostCode(map);
-	overlayMapsDummy["<i class='fa fa-sun-o' aria-hidden='true'></i> Vær data post kode"] = værDataPost;
+	overlayMapsDummy["weatherForecastsPostal"] = værDataPost;
 
 
 	return overlayMapsDummy;
