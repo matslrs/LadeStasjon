@@ -225,7 +225,7 @@
 		//create if use
 		//NVE Flom data:
 		if(useFloodData){
-			var flomDataQuery = L.geoJson(null, {
+			flomDataQuery = L.geoJson(null, {
 			    style: function (feature) {
 			        return {color: feature.properties.color};
 			    },
@@ -238,7 +238,7 @@
 
 		//NVE Skred data:
 		if(useLandslideData){
-			var skredDataQuery = L.geoJson(null, {
+			skredDataQuery = L.geoJson(null, {
 			    style: function (feature) {
 			        return {color: feature.properties.color};
 			    },
