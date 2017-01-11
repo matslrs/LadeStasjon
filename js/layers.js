@@ -148,11 +148,11 @@ function setupOverlayLayers(map) {
 	//NVE
 	if(useFloodData){
 		setupFlomVarsel(map);
-		overlayMapsDummy["Flom Varsel 5.12-15"] = flomDataQuery;
+		overlayMaps["floodForecast"] = flomDataQuery;
 	}
 	if(useLandslideData){
 		setupJordskredVarsel(map);
-		overlayMapsDummy["Jordskred Varsel 5.12-15"] = skredDataQuery;
+		overlayMaps["landslideForecast"] = skredDataQuery;
 	}
 
 	//weatehr
