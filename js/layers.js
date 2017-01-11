@@ -63,21 +63,15 @@ function setupOverlayLayers(map) {
 		overlayMaps["layerLadeError"] 		= streamNobilError;
 		overlayMaps["layerLadeUnknown"] 	= streamNobilUnknown;
 	}
-	
-	//data som hentes fra mats.maplytic.no
-	if(useFylkerDbQ){
-		setupDbLayer(map);
-		overlayMapsDummy["Fylker Mpltc SQL"] = fylkeQuery;
-	}
 
 	var FylkeGeoJLayer = loadFylkeGeoJSONs(map);
-	overlayMapsDummy["Fylker Mpltc GSN"] = FylkeGeoJLayer;
+	overlayMaps["fylkeBorder"] = FylkeGeoJLayer;
 
 	var KommuneGeoJLayer = loadKommuneGeoJSONs(map);
-	overlayMapsDummy["Komuner Mpltc GSN"] = KommuneGeoJLayer;
+	overlayMaps["municipalityBorder"] = KommuneGeoJLayer;
 
 	var maplyticTiles = maplyticTileApi(map);
-	overlayMaps["fylkeBorder"] = maplyticTiles;
+	overlayMaps["fylkeBorderv2"] = maplyticTiles;
 
 	var GrunnkretsTile = loadGrunnkretsTile(map);
 	overlayMaps["grunnkretsBorder"] = GrunnkretsTile;
@@ -104,7 +98,7 @@ function setupOverlayLayers(map) {
 	overlayMaps["healthBuildingLayer"] = helseByggDifi;
 
 	var kommunaleByggSavanger = openStavangerKommunaleBygg(map);
-	overlayMapsDummy["<i class='fa fa-building' aria-hidden='true'></i> Bygg Publikumstjeneste"] = kommunaleByggSavanger;
+	overlayMaps["municipalityBuildingStavanger"] = kommunaleByggSavanger;
 
 	var barnehageDifi = difiBarnehage(map);
 	overlayMaps["kindergartenStavanger"] = barnehageDifi;
@@ -140,7 +134,7 @@ function setupOverlayLayers(map) {
 	overlayMaps["schoolGjesdal"] = grunnskoleGjesdal;
 
 	var grillplassGjesdal = openStavangerGrillGjesdal(map);
-	overlayMapsDummy["<i class='fa fa-fire' aria-hidden='true'></i> Grillplasser Gjesdal"] = grillplassGjesdal;
+	overlayMaps["grillingArea"] = grillplassGjesdal;
 
 	var fiskeplassGjesdal = openStavangerFiskeGjesdal(map);
 	overlayMaps["fishingArea"] = fiskeplassGjesdal;
@@ -163,10 +157,10 @@ function setupOverlayLayers(map) {
 
 	//weatehr
 	var værData = weatherData(map);
-	overlayMapsDummy["weatherForecasts"] = værData;
+	overlayMaps["weatherForecasts"] = værData;
 
 	var værDataPost = weatherDataPostCode(map);
-	overlayMapsDummy["weatherForecastsPostal"] = værDataPost;
+	overlayMaps["weatherForecastsPostal"] = værDataPost;
 
 
 	return overlayMapsDummy;
@@ -962,7 +956,7 @@ function openStavangerKommunaleBygg(map) {
 	var stavangerUtleieLokal = L.featureGroup.subGroup(parentCluster);
 
 	$.ajax({
-	    url: 'https://mats.maplytic.no/proxy/open.stavanger.kommune.no/api/action/datastore_search?resource_id=0c728874-f9d8-466b-8b81-572d924e3145',
+	    url: 'https://open.stavanger.kommune.no/api/action/datastore_search?resource_id=0c728874-f9d8-466b-8b81-572d924e3145',
 	    dataType: 'json',
 	    success: function(data) {
 	      	var openStavangerData = data;
@@ -1023,7 +1017,7 @@ function openStavangerFiskeGjesdal(map) {
 	var fiskeGjesdal = L.featureGroup.subGroup(parentCluster);
 
 	$.ajax({
-	    url: 'https://mats.maplytic.no/proxy/open.stavanger.kommune.no/api/action/datastore_search?resource_id=c4025934-b7b7-49f2-b0df-b7e61d9f9204',
+	    url: 'https://open.stavanger.kommune.no/api/action/datastore_search?resource_id=eac99e21-33b4-4bf6-81d4-608b2a4de7f1',
 	    dataType: 'json',
 	    success: function(data) {
 	      	var openStavangerData = data;
@@ -1178,7 +1172,7 @@ function setupFlomVarsel(map) {
 	//test data for storm dag 5.12-15
 	$.ajax({
 	    type: 'GET',
-	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.3/api/CountyOverview/1/2015-12-5/2015-12-5",
+	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/flood/v1.0.4/api/CountyOverview/1/2015-12-5/2015-12-5",
 	    success: function(data) { 	
 	    	flomTest = data;
 	    	var kommuneNr = [];
@@ -1296,7 +1290,7 @@ function setupJordskredVarsel(map) {
 	//test data for storm dag 5.12-15
 	$.ajax({
 	    type: 'GET',
-	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/landslide/v1.0.3/api/CountyOverview/1/2015-12-5/2015-12-5",
+	    url: "https://mats.maplytic.no/proxy/api01.nve.no/hydrology/forecast/landslide/v1.0.4/api/CountyOverview/1/2015-12-5/2015-12-5",
 	    success: function(data) { 	
 	    	flomTest = data;
 	    	var kommuneNr = [];
