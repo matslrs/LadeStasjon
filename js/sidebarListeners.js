@@ -13,12 +13,14 @@ function sidebarLayersListeners() {
 
             layer = overlayMaps[$listItem.attr('id')];
             if(!isChecked){
-                mymap.addLayer(layer);
-                layer.bringToFront();
+                Map.addLayer(layer);
+                // mymap.addLayer(layer);
+                // layer.bringToFront();
                 //layer.addTo(mymap);
             } else{
+                Map.removeLayer(layer);
                 //layer.removeFrom(mymap);
-                mymap.removeLayer(layer);
+                //mymap.removeLayer(layer);
             }
 
             var oppositeChecked = !$listItem.data('checked');

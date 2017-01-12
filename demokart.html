@@ -29,21 +29,10 @@
 		//SETTINGS	
 		//SELECT BASE START MAP!
 		var startMap                 = "OpenStreetMap";	//check the function
-		//Base layers
-		var useOsmLayer              = true;
-		var useKartverkGraatoneLayer = true;
-		//Overlay layers
-		var useStaticNobilLayer      = true;
-		var useRealTimeNobilLayer    = true;
 		//only norway
 		var useOnlyNor               = false;
 		//Marker Clustering
 		var clusterRadius            = 80;	//lower number --> smaller but more cluster points
-		//Get Lat/long on map click
-		var latLongClick             = false;
-		//NVE
-		var useFloodData = true;
-		var useLandslideData = true;
 		//END SETTINGS
 		//-----------------------------
 		
@@ -206,7 +195,7 @@
     </div>
 
 
-	<div id="mapid" class="sidebar-map"></div>
+	<div id="map" class="sidebar-map"></div>
 	<div class="descriptionBox"></div>
 	<script src="bower_components/jquery/dist/jquery.js"></script>
 
@@ -224,126 +213,38 @@
 		templateSidebarHtmlTest = doT.template(templateSidebarInfoHtmlTest);
 
 
-		//create if use
-		//NVE Flom data:
-		if(useFloodData){
-			flomDataQuery = L.geoJson(null, {
-			    style: function (feature) {
-			        return {color: feature.properties.color};
-			    },
-			    onEachFeature: function (feature, layer) {
-			        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
-			    }
-			});
-			var sqlFlomKommuner = null;
-		}
+		//Set up icons to be used
+		setupIcons();
 
-		//NVE Skred data:
-		if(useLandslideData){
-			skredDataQuery = L.geoJson(null, {
-			    style: function (feature) {
-			        return {color: feature.properties.color};
-			    },
-			    onEachFeature: function (feature, layer) {
-			        layer.bindPopup("<strong>" + feature.properties.navn +  "</strong> <br>" + "Varsel: " + feature.properties.beskrivelse);
-			    }
-			});
-			var sqlSkredKommuner = null;
-		}
-		//parent marker cluster
+		Map.init('map');
+
+		sidebarLayers = L.control.sidebar('sidebarLayers', {position: 'left'}).addTo(Map.getMap());
+		sidebarInfo = L.control.sidebar('sidebarInfo', {position: 'right'}).addTo(Map.getMap());
+
 		parentCluster = new L.MarkerClusterGroup({
 			showCoverageOnHover: false,
 			animateAddingMarkers: true,
 			maxClusterRadius: clusterRadius
 		});
-		//a child marker cluster
-		//streamNobil = L.featureGroup.subGroup(parentCluster);
-		streamNobilAvailable = L.featureGroup.subGroup(parentCluster);
-		streamNobilOccupied  = L.featureGroup.subGroup(parentCluster);
-		staticNobil          = L.featureGroup.subGroup(parentCluster);
-		streamNobilUnknown   = L.featureGroup.subGroup(parentCluster);
-		streamNobilError     = L.featureGroup.subGroup(parentCluster);
+		parentCluster.addTo(Map.getMap());
 
-		//Set up icons to be used
-		setupIcons();
+		OpenStavangerData.init();
+		DifiData.init();
+		NveData.init(Map.getMap());
+		//NobilData.init();
+		MaplyticData.init();
+		YrData.init();
+		BringData.init();
 
-		//bounds of the map
-		var southWest = L.latLng(48, -35),
-	    northEast = L.latLng(75, 65),
-	    bounds = L.latLngBounds(southWest, northEast);
+		//setupOverlayLayers(Map.getMap());
 
-		//Creates MAP
-		mymap = L.map('mapid', { 
-			center: [58.8534, 5.7317],
-			maxBounds: bounds,
-			minZoom: 4,
-			maxZoom: 18,
-			zoom: 8,
-			zoomControl: false
-		});
-
-
-		L.control.zoom({
-		     position:'topright'
-		}).addTo(mymap);
-
-		// mymap.addControl(new customControl());
-
-		sidebarLayers = L.control.sidebar('sidebarLayers', {position: 'left'}).addTo(mymap);
-		sidebarInfo = L.control.sidebar('sidebarInfo', {position: 'right'}).addTo(mymap);
-
-		events(mymap);
-
-		parentCluster.addTo(mymap);
-
-		//sets up base map layers
-		var baseMaps = setupBaseLayers(mymap);
-		//sets up overlay layers
-		var overlayMapsDummy = setupOverlayLayers(mymap);
-		//overlayMaps = setupOverlayLayers(mymap);
-		//var overlayMaps = [];
-		//setupOverlayLayers(mymap);
-
-		getStationsToBeUsed();
-
-		//Layer control
-		layerControl = L.control.layers(baseMaps, overlayMapsDummy).addTo(mymap);
-		//var layerControl = L.control.layers(baseMaps, overlayMapsDummy).addTo(mymap);
-
-		//Set initial base map here:
-		baseMaps[startMap].addTo(mymap);
-		// overlayMaps[" <i style='background-color:rgb(97,190,30)'></i>Available"].addTo(mymap);
-		// overlayMaps[" <i style='background-color:rgb(240,131,0)'></i> Occupied"].addTo(mymap);
-		// overlayMaps[" <i style='background-color:rgb(256,32,32)'></i> Error"].addTo(mymap);
-		// overlayMaps[" <i style='background-color:rgb(69,69,69)'></i> Unknown"].addTo(mymap);
-
-		//setupSearch(mymap);
+		//setupSearch(Map.getMap());
 		
-		//find location and set view and zoom
-		mymap.locate({
-			setView: true,
-			maxZoom: 16
-		}); 	
 
 		//ATTRIBUTIONS: 
-   		mymap.attributionControl.addAttribution('<a href="http://info.nobil.no/">Nobil</a>');
-
-		// var legend = L.control({position: 'bottomright'});
-		// legend.onAdd = function (mymap) {
-		//     var div = L.DomUtil.create('div', 'info legend');
-	 //        div.innerHTML += '<i style="background-color:rgb(97,190,30)"></i> Kontakt(er) ledig <br>';
-	 //        div.innerHTML += '<i style="background-color:rgb(240,131,0)"></i> Kontakt(er) opptatt <br>';
-	 //        div.innerHTML += '<i style="background-color:rgb(30,144,255)"></i> Kontakt(er) statisk <br>';
-	 //        div.innerHTML += '<i style="background-color:rgb(256,32,32)"></i> Kontakt(er) feil <br>';
-	 //        div.innerHTML += '<i style="background-color:rgb(69,69,69)"></i> Kontakt(er) ukjent';
-		//     return div;
-		// };
-
-		// legend.addTo(mymap);
+   		Map.getMap().attributionControl.addAttribution('<a href="http://info.nobil.no/">Nobil</a>');
 
 		sidebarLayersListeners();
-
-
 	});
 
 
@@ -360,9 +261,15 @@
 	<script src="bower_components/leaflet-search/dist/leaflet-search.src.js"></script>
 	<!-- endbower -->
 
-	<script src="js/nobilUtils.js"></script>
+	<script src="js/map.js"></script>
+	<script src="js/openStavangerData.js"></script>
+	<script src="js/difiData.js"></script>
+	<script src="js/nveData.js"></script>
+	<script src="js/yrData.js"></script>
+	<script src="js/nobilData.js"></script>
+	<script src="js/maplyticData.js"></script>
+	<script src="js/bringData.js"></script>
 	<script src="js/functions.js"></script>
-	<script src="js/layers.js"></script>
 	<script src="js/icons.js"></script>
 	<script src="js/sidebarListeners.js"></script>
 	<script src="js/leaflet.featuregroup.subgroup-src.js"></script>
@@ -395,7 +302,7 @@
 		    <div class="panel panel-default panel-sm">
 		      <div class="panel-heading panel-heading-sm">
 		        <h5 class="panel-title">
-		          <a data-toggle="collapse" href="#collapse1" onclick="updatePrefferedPanel(1)"><i class="material-icons">power</i> Connectors Info</a>
+		          <a data-toggle="collapse" href="#collapse1" onclick="NobilData.updatePrefferedPanel(1)"><i class="material-icons">power</i> Connectors Info</a>
 		        </h5>
 		      </div>
 
@@ -470,7 +377,7 @@
 		    <div class="panel panel-default panel-sm">
 		      <div class="panel-heading panel-heading-sm">
 		        <h5 class="panel-title">
-		          <a data-toggle="collapse" href="#collapse2" onclick="updatePrefferedPanel(2)"><i class="material-icons">ev_station</i>Charging Station Info</a>
+		          <a data-toggle="collapse" href="#collapse2" onclick="NobilData.updatePrefferedPanel(2)"><i class="material-icons">ev_station</i>Charging Station Info</a>
 		        </h5>
 		      </div>
 				<div id="collapse2" class="panel-collapse 
@@ -513,7 +420,7 @@
 		    <div class="panel panel-default panel-sm">
 		      <div class="panel-heading panel-heading-sm">
 		        <h5 class="panel-title">
-		          <a data-toggle="collapse" href="#collapse3" onclick="updatePrefferedPanel(3)"><i class="fi-map"></i> Location</a>
+		          <a data-toggle="collapse" href="#collapse3" onclick="NobilData.updatePrefferedPanel(3)"><i class="fi-map"></i> Location</a>
 		        </h5>
 		      </div>
 				<div id="collapse3" class="panel-collapse 
